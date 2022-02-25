@@ -1,0 +1,1 @@
+每一行 是一个line 每个line有四个field 每个field有自己的值

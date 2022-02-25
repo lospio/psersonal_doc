@@ -1,0 +1,103 @@
+{
+  "main": {
+    "id": "45113916af52a053",
+    "type": "split",
+    "children": [
+      {
+        "id": "aa5e6c1ef7cb6f30",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "fish安装.md",
+            "mode": "preview",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "2352bcafa4a0e27d",
+    "type": "split",
+    "children": [
+      {
+        "id": "b8b2d2ab8028d754",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cb9d43ff6667e226",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "4047dea2caaea2a3",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "vim",
+                "matchingCase": true,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "85cd1fd95b807370",
+    "type": "split",
+    "children": [
+      {
+        "id": "59e48dc16953d170",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "dad9872458e5c5a5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "fish安装.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "aa5e6c1ef7cb6f30",
+  "lastOpenFiles": [
+    "fish安装.md",
+    "未命名.md",
+    "pg编译脚本.md",
+    "普通用户添加权限.md",
+    "perl.md",
+    "vagrant使用.md",
+    "pg完全编译.md",
+    "2022年1月13日/show create table 记录.md",
+    "2022年1月13日.md",
+    "修改dns.md"
+  ]
+}
