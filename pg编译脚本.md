@@ -27,7 +27,8 @@ if [[ "${BUILD_MODE}" == "RELEASE" ]]; then
         --with-system-tzdata=/usr/share/zoneinfo \
         --enable-nls \
         --disable-dtrace \
-        #--enable-debug \
+        --enable-debug \
         --enable-tap-tests \
-        --disable-rpath
+        --disable-rpath\
+	    --prefix=/usr/pgsql/10_debug_o2
 ```
