@@ -1,0 +1,2 @@
+- ERROR: could not resize shared memory segment "/PostgreSQL.540344065" to 2097152 bytes: No space left on device
+	- [修改docker --shm-size](https://blog.csdn.net/jiangbenchu/article/details/112955183) 

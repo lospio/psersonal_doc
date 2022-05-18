@@ -1,0 +1,6 @@
+- 算子
+	- nested loop
+	- hash
+	- merge join
+- 外表驱动内内表
+- select 叶节点都是scan，一次取一个数据

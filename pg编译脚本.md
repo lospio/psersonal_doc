@@ -30,5 +30,5 @@ if [[ "${BUILD_MODE}" == "RELEASE" ]]; then
         --enable-debug \
         --enable-tap-tests \
         --disable-rpath\
-	    --prefix=/usr/pgsql/10_debug_o2
+	    --prefix=/usr/lib/spatial/postgresql-10
 ```
