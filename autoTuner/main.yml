@@ -1,0 +1,12 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: begin
+  become: yes
+  hosts: all 
+  any_error_fatal: true
+  roles:
+  - role: collector
+  - role: analyzer
+  - role: publisher
+
+  
