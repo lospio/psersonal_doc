@@ -1,22 +1,47 @@
 # Citus Query Tune
-## What is Citus?
+## 1. What is Citus?
 
 Citus is an open source extension to Postgres that distributes data and queries across multiple nodes in a cluster. 
 
-## How does Citus work?
+## 2. How does Citus work?
 Citus transforms Postgres into a distributed database with features like sharding, a distributed SQL engine, reference tables, and distributed tables.
-### Distributed Query Executor
+### a. Distributed Query Executor
 Citus’s distributed executor runs distributed query plans and handles failures. The executor is well suited for getting fast responses to queries involving filters, aggregations and co-located joins, as well as running single-tenant queries with full SQL coverage. It opens one connection per shard to the workers as needed and sends all fragment queries to them. It then fetches the results from each fragment query, merges them, and gives the final results back to the user.
-### push-pull design
+### b. Push-pull design
 By recursively planning the query Citus can run the subquery separately, push the results to all workers, run the main fragment query, and pull the results back to the coordinator. The “push-pull” design supports subqueries like the one above.
 
-## Tune
+## 3. Tune
+### a. Table Distribution and Shards
+###### ⅰ. 首先创建分布式表，我们应该选取合适的分布式列，遵循以下标准：
+- 必须包含primary key ,unique index
+- 选取最常用的join key
+- 选取最常用的filter column
+###### ⅱ. 合适的分布列可以帮助我们优化数据库性能，通过如下方式：
+- filter 剪枝 
+	prune away unrelated shards，ensuring that the query hits only those shards which overlap with the WHERE clause ranges
+- join key 下推
+	The Citus executes the join only between those shards which have matching  overlapping distribution column ranges. All these shard joins can be executed in parallel on the workers and hence are more efficient.
+### b. PostgreSQL tuning
+#### ⅰ. 步骤
+1. 创建Citus集群，导入数据
+2. 在CN节点运行EXPLAIN命令
+3. 分析plan
+#### ⅱ. Read Performance
+- `shared_buffers` 定义了数据库用于缓存数据的内存大小。
+	- 当节点RAM不小于1GB的时候，建议设置为内存的1/4。
+	- 否则，建议设置为15%。
+	- 设置上限为内存的40%，超过这个上限PostgreSQL的表现没有变得更好。
+- `work_mem` 定义了在写入临时磁盘文件之前查询操作（例如排序或哈希表）使用的基本最大内存量。
+	- 有很多复杂排序时，增加该值。
+	- 磁盘活动比较高，但是内存很大的时候，且处于空闲时，增加该值。
+#### ⅲ. Write Performance
+- `checkpoint_timeout` 自动检查WAL检查点之间的最长时间。增加这个值，会增加recovery的时长，但是会减少checkpoint的调用次数。
+- `max_wal_size` 在自动checkpoint之间允许的WAL大小。增加这个值，会增加recovery的时长，但是会减少checkpoint的调用次数。
+### c. Scaling Out Performance
+
 ### parameter
 1. distribution column 分布列 合适的分布式列应该是最常使用的join key 以及 filter column。
-	- filter 剪枝 
-	>prune away unrelated shards，ensuring that the query hits only those shards which overlap with the WHERE clause ranges
-	- join key 下推
-	>The Citus executes the join only between those shards which have matching  overlapping distribution column ranges. All these shard joins can be executed in parallel on the workers and hence are more efficient.
+	
 2. using SSDS rather than HDDS
 > This is because HDDs are able to show decent performance when you have sequential reads over contiguous blocks of data, but have significantly lower random read / write performance.
 
