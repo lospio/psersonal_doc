@@ -1,0 +1,14 @@
+---
+- hosts: cn
+  tasks:
+  - name: get distributed column
+  - name: get shards count
+  - name: get disk usage
+  - name: get max_intermediate_result_size
+  - name: get citus.max_adaptive_exectuor_pool_size
+  - name: get citus.executor_slow_start_interval
+  - name: get citus.max_cached_conns_per_worker
+  - name: get citus.max_shared_pool_size
+  - name: get citus.task_assignment_policy
+  - name: get citus.binary_worker_copy_format
+  - name: get citus.enable_binary_protocol

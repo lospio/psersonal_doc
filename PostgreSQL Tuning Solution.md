@@ -84,3 +84,4 @@
 - set `wal_level`to `minimal`, `archive_mode`to `off`, and `max_wal_senders`to 0；导入大量数据时，使用base backup比增量更新wal 数据更快。
 # 3.参考
 - https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server
+- https://github.com/le0pard/pgtune/blob/master/assets/selectors/configuration.js

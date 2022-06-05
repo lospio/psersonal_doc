@@ -1,0 +1,24 @@
+---
+- hosts: all
+  tasks:
+  - name: get max_connections
+  - name: get shared_buffers
+  - name: get effective_cahe_size
+  - name: get autovacuum
+  - name: get default_statistics_target
+  - name: get work_mem
+  - name: get wal_sync_method
+  - name: get wal_buffers
+  - name: get constraint_exclusion
+  - name: get checkpoint_timeout
+  - name: get cursor_tuple_fraction
+  - name: get max_prepared_transactions
+  - name: autovacuum_work_mem
+  - name: get wal_buffers
+  - name: get autocommit
+  - name: get maintenance_work_mem
+  - name: get max_wal_size
+  - name: get wal_level
+  - name: get archive_mode
+  - name: get max_wal_senders
+  - name: get PostgreSQL Version

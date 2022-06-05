@@ -38,42 +38,44 @@ By recursively planning the query Citus can run the subquery separately, push th
 - `checkpoint_timeout` 自动检查WAL检查点之间的最长时间。增加这个值，会增加recovery的时长，但是会减少checkpoint的调用次数。
 - `max_wal_size` 在自动checkpoint之间允许的WAL大小。增加这个值，会增加recovery的时长，但是会减少checkpoint的调用次数。
 ### c. Scaling Out Performance
-
-### parameter
-1. distribution column 分布列 合适的分布式列应该是最常使用的join key 以及 filter column。
-	
-2. using SSDS rather than HDDS
+#### ⅰ. 影响因素
+1. 使用SSDS。
+2. 选择足够空间的硬盘。查询各个表占用内存大小，通过基础的统计信息，获取对硬件的需求
+由于 Citus 在工作节点上并行运行所有片段查询，假设使用了合适的内存，用户可以将查询的性能横向扩展为集群中所有 CPU 内核的计算能力的累积。
+3. 选择合适的shard数量
+	```shell
+	1.shards num = worker num;
+	2.shards num = worker num * cpu cores * 因子(1/4);
+	```
+- `using SSDS rather than HDDS`
+	SSDS和HDDS在顺序读取连续数据块时有相似的性能，但是随机读取，写数据时，SSDS数倍优于HDDS
 > This is because HDDs are able to show decent performance when you have sequential reads over contiguous blocks of data, but have significantly lower random read / write performance.
-
-3. the number of shards
-shards数应该大于等于cpu核数
->To ensure maximum parallelism, you should create enough shards on each node such that there is at least one shard per CPU core.Another consideration to keep in mind is that Citus will prune away unrelated shards if the query has filters on the distribution column. So, creating more shards than the number of cores might also be beneficial so that you can achieve greater parallelism even after shard pruning.
-
-4. `max_intermediate_result_size`
-允许的中间结果大小，超过会报错
-5. CTEs avoid push-pull excution
+### d. Distributed Query Performance Tuning 
+一旦将数据分布在集群中，并且每个worker都针对最佳性能进行了优化，此时我们应该能够看到查询的高性能提升。 在此之后，最后一步是调整一些分布式性能调整参数。
+#### ⅰ. 步骤
+1. 首先检查分布式查询运行的时间。使用`\timing`参数，在CN上运行`query`，在worker上运行`fragment query`,更方便的找到系统瓶颈点。
+2. 调整参数。
+#### ⅱ. General Parameter
+- `max_intermediate_result_size` 允许的worker间传递的中间结果大小，超过会报错。
+	由于 [Subquery/CTE Push-Pull Execution](https://docs.citusdata.com/en/v11.0-beta/develop/reference_processing.html#push-pull-execution)，我们需要避免网络传输花费过多的影响性能，我们可以设置该参数，避免中间结果过大，增加网络传输消耗进而影响性能。
+- `CTEs avoid push-pull excution`
 	>- Tables should be colocated
 	>- The CTE queries should not require any merge steps (e.g., LIMIT or GROUP BY on a non distributionkey)
 	>- Tables and CTEs should be joined on distribution keys
-6. `citus.max_adaptive_exectuor_pool_size` 
->Set citus.max_adaptive_executor_pool_size (integer) to a low value like 1 or 2 for transactional workloads with short queries (e.g. < 20ms of latency).For analytical workloads where parallelism is critical, leave this setting at its default value of 16.
-7. `citus.executor_slow_start_interval`
->a high value like 100ms for transactional workloads comprised of short queries that are bound on network latency rather than parallelism. For analytical workloads, leave this setting at its default value of 10ms.
-8. `citus.max_cached_conns_per_worker`
->The default value of 1 for citus.max_cached_conns_per_worker (integer) is reasonable. A larger value such as 2 might be helpful for clusters that use a small number of concurrent sessions, but it’s not wise to go much further (e.g. 16 would be too high). If set too high, sessions will hold idle connections and use worker resources unnecessarily.
-9. `citus.max_shared_pool_size`
- 和worker的设置`max_connections`匹配
-10. `citus.task_assignment_policy`根据shard位置分配任务，可以设置分配算法
-	- The greedy policy 均匀分配
-	>The greedy policy aims to distribute tasks evenly across the workers. This policy is the default and works well in most of the cases.
-    - The round-robin policy 循环分配
-    >The round-robin policy assigns tasks to workers in a round-robin fashion alternating between different replicas. This enables much better cluster utilization when the shard count for a table is low compared to the number of workers.
-	- The first-replica policy 
-	>The third policy is the first-replica policy which assigns tasks on the basis of the insertion order of placements (replicas) for the shards. With this policy, users can be sure of which shards will be accessed on each machine. This helps in providing stronger memory residency guarantees by allowing you to keep your working set in memory and use it for querying.
-11. `citus.enable_binary_protocol` 允许传送数据使用二进制文件 减少带宽使用
-12. Insert and Update: Throughput Checklist
-	- Check the network latency between your application and your database. High latencies will impact your write throughput.
-	- Ingest data using concurrent threads. If the roundtrip latency during an INSERT is 4ms, you can process 250 INSERTs/second over one thread. If you run 100 concurrent threads, you will see your write throughput increase with the number of threads.
-	- Check whether the nodes in your cluster have CPU or disk bottlenecks. Ingested data passes through the coordinator node, so check whether your coordinator is bottlenecked on CPU.
-	- Avoid closing connections between INSERT statements. This avoids the overhead of connection setup.
-	- Remember that column size will affect insert speed. Rows with big JSON blobs will take longer than those with small columns like integers.
+#### ⅲ. Advanced Parameter
+#####  A. Connection Managemen
+在执行多分片查询时，Citus 必须平衡并行性的收益与数据库连接的开销。 查询执行部分解释了将查询转换为worker任务并获得与worker的数据库连接的步骤。
+- `citus.max_adaptive_exectuor_pool_size`  对transactional workloads，设置为一个小的值类似于1或者2；对analytical workloads，默认值16是一个很好的选择。
+- `citus.executor_slow_start_interval`  对transactional workloads设置为一个高的值（100ms);对analytical workloads，默认值（10ms）
+- `citus.max_cached_conns_per_worker` 默认值 1 是合理的。 对于使用少量并发会话的集群来说，较大的值（例如 2）可能会有所帮助，但更进一步是不明智的（例如，16 会太高）。 如果设置得太高，会话将保持空闲连接并不必要地使用工作人员资源。
+- `citus.max_shared_pool_size` 和worker的设置`max_connections`匹配。
+##### B. Task Assignment Policy
+Citus 查询计划器根据分片位置将任务分配给工作节点。 可以通过设置 citus.task_assignment_policy 配置参数来选择进行这些分配时使用的算法。 用户可以更改此配置参数以选择最适合其用例的策略。
+- The greedy policy 旨在将任务平均分配给worker。 此策略是默认策略，在大多数情况下都能正常工作。
+- The round-robin policy 以循环方式在不同副本之间交替将任务分配给工作人员。 当表的分片数量与工作人员的数量相比较低时，这可以实现更好的集群利用率。
+- The first-replica policy 它根据分片的放置（副本）的插入顺序分配任务。 使用此策略，用户可以确定将在每台机器上访问哪些分片。 通过允许您将工作集保存在内存中并将其用于查询，这有助于提供更强大的内存驻留保证。
+##### C. Intermediate Data Transfer Format
+在 Postgres 13 及更低版本上，Citus 默认以文本格式在工作人员之间传输中间查询数据。 对于某些数据类型，如 hll 或 hstore 数组，序列化和反序列化数据的成本可能很高。 在这种情况下，使用二进制格式传输中间数据可以提高查询性能。 您可以启用 `citus.binary_worker_copy_format (boolean)` 配置选项以使用二进制格式。
+##### D. Binary protocol
+在某些情况下，大部分查询时间都花在将查询结果从工作人员发送到协调器上。 这主要发生在查询请求多行时（例如 select * from table），或者当结果列使用大类型（例如来自 postgresql-hll 和 tdigest 扩展的 hll 或 tdigest）时。
+在这些情况下，将 `citus.enable_binary_protocol` 设置为 true 可能会有所帮助，这会将结果的编码更改为二进制，而不是使用文本编码。 二进制编码显着降低了具有紧凑二进制表示的类型的带宽，例如 hll、tdigest、时间戳和双精度。
