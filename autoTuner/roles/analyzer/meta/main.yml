@@ -1,4 +1,4 @@
 ---
 dependencies:
-  - {role: postgresql_collector}
-  - {role: citus_colelctor}
+  - {role: pg_analyzer}
+  - {role: citus_analyzer}

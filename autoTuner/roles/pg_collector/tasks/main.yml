@@ -3,6 +3,12 @@
   tasks:
   - name: get max_connections
   - name: get shared_buffers
+    shell: |
+      echo -e "\nshared_buffers: `psql -p 5005 -h localhost -c 'show shared_buffers'|sed -n '3p' |awk -FM '{print$1}'|sed s/[[:space:]]//g`" >> {{ansible_dir}}/statistic.yml
+    remote_user: root
+  - name: get total memory
+    shell: |
+      echo -e "\ntotal_memory: `df . -kh |sed -n '2p'|awk '{print $2}'`" >>  {{ansible_dir}}/statistic.yml
   - name: get effective_cahe_size
   - name: get autovacuum
   - name: get default_statistics_target

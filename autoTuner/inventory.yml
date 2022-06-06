@@ -1,0 +1,13 @@
+---
+all:
+  children:
+    cn_node:
+      hosts:
+        172.16.3.124: {port: 5432}
+    workers:
+      hosts:
+        172.34.222.31: {port: 5432}
+        172.34.222.212: {port: 5432}
+
+  vars:
+    ansible_dir: /root/autoTuner_tmp
