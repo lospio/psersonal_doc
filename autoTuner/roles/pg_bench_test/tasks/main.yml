@@ -1,0 +1,13 @@
+- name: run pg_bench_test
+  tags: pg_bench_test
+  when: inventory_hostname in  groups['cn_node']
+  block: 
+    - name: echo sql fiel
+      shell: 
+        chdir: {{ansible_dir}}
+        cmd: echo {{slow_sql}} >> slow_sql.sql
+
+    - name: run pg_bench
+      shell:
+        chdir: {{ansible_dir}}
+        cmd: nohup pg_bench  -c 1 -j 1 -n -s 100 -T 300 -f slow_sql.sql -p {{port}} -h localhost -U postgres -f slow_sql.sql &

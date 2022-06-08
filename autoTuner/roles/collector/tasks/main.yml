@@ -1,0 +1,14 @@
+- name: get all statistic
+  tags: get_statistic
+  block:
+    - name: show all
+      ignore_errors: true
+      shell: |
+        psql -p 5432 -h localhost -c 'show all' |awk -F '|' '{print$1, $2}' >> {{ansible_dir}}/statistic{{ip_addr}}.yml 
+
+    - name: fetch statistic
+      ignore_errors: true
+      fetch: 
+        dest: "{{ansible_dir}}/statistic{{ip_addr}}.yml"
+        fail_on_missing: yes
+        src: "{{ansible_dir}}/statistic{{ip_addr}}.yml"
