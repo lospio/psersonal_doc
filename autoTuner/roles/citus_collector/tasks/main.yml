@@ -1,4 +1,4 @@
----
+
 - hosts: cn
   tasks:
   - name: get all items

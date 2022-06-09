@@ -3,11 +3,12 @@ all:
   children:
     cn_node:
       hosts:
-        172.16.3.124: {port: 5432}
+        192.168.223.129: {port: 5432, ip_addr: 192.168.223.129}
     workers:
       hosts:
-        172.34.222.31: {port: 5432}
-        172.34.222.212: {port: 5432}
+        192.168.60.12: {port: 5432, ip_addr: 192.168.60.12}
+        192.168.60.13: {port: 5432, ip_addr: 192.168.60.13}
 
   vars:
     ansible_dir: /root/autoTuner_tmp
+    slow_sql: select * from tt_01;

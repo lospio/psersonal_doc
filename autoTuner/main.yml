@@ -2,11 +2,31 @@
 ---
 - name: begin
   become: yes
-  hosts: all 
+  hosts: cn_node 
   any_error_fatal: true
-  roles:
-  - role: collector
-  - role: analyzer
-  - role: publisher
+  # roles:
+  # - role: collector
+  # - role: analyzer
+  # - role: publisher
+  block: 
+    - name: echo sql fiel
+      shell: 
+        chdir: {{ansible_dir}}
+        cmd: echo {{slow_sql}} >> slow_sql.sql
+
+    - name: run pg_bench
+      shell:
+        chdir: {{ansible_dir}}
+        cmd: nohup pg_bench  -c 1 -j 1 -n -s 100 -T 300 -f slow_sql.sql -p 5300 -h localhost -U postgres -f slow_sql.sql &
+
+    - name: get pid
+      shell: ps -efw --sort=-pid |grep pgbench |grep -v grep |sed -n '1p'
+      register: target_pid
+    
+    - name: print pid
+      debug:
+        msg: {{ target_pid}}
+
+
 
   
