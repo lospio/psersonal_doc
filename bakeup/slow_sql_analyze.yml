@@ -1,0 +1,8 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: begin
+  become: yes
+  hosts: all 
+  roles:
+    - role: flame_graph
+...

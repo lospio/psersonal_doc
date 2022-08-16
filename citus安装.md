@@ -16,7 +16,7 @@ sudo yum -y install libzstd-devel
 #安装
 make
 make isntall
-#初始化
+#初始化。、
 su - postgres
 cd ~
 mkdir citus

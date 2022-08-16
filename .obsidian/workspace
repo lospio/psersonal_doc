@@ -4,13 +4,13 @@
     "type": "split",
     "children": [
       {
-        "id": "aa5e6c1ef7cb6f30",
+        "id": "4eb0a4d9428df523",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "fish安装.md",
-            "mode": "preview",
+            "file": "Citus部署.md",
+            "mode": "source",
             "source": false
           }
         }
@@ -27,33 +27,44 @@
         "type": "tabs",
         "children": [
           {
-            "id": "cb9d43ff6667e226",
-            "type": "leaf",
-            "state": {
-              "type": "file-explorer",
-              "state": {}
-            }
-          },
-          {
             "id": "4047dea2caaea2a3",
             "type": "leaf",
             "state": {
               "type": "search",
               "state": {
-                "query": "vim",
+                "query": "docker",
                 "matchingCase": true,
-                "explainSearch": false,
-                "collapseAll": false,
-                "extraContext": false,
+                "explainSearch": true,
+                "collapseAll": true,
+                "extraContext": true,
                 "sortOrder": "alphabetical"
               }
             }
+          },
+          {
+            "id": "6f1920733d98d7b6",
+            "type": "leaf",
+            "state": {
+              "type": "excalidraw",
+              "state": {
+                "file": "excalidraw/patroni选主.excalidraw.md"
+              }
+            }
+          },
+          {
+            "id": "accbca1890220019",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 310.5
   },
   "right": {
     "id": "85cd1fd95b807370",
@@ -69,7 +80,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "fish安装.md",
+                "file": "Citus部署.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -79,25 +90,45 @@
                 "unlinkedCollapsed": true
               }
             }
+          },
+          {
+            "id": "2b69b530db715191",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "c515616fdadda8b9",
+            "type": "leaf",
+            "state": {
+              "type": "advanced-tables-toolbar",
+              "state": {}
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
     "width": 300,
     "collapsed": true
   },
-  "active": "aa5e6c1ef7cb6f30",
+  "active": "4eb0a4d9428df523",
   "lastOpenFiles": [
-    "fish安装.md",
-    "未命名.md",
-    "pg编译脚本.md",
-    "普通用户添加权限.md",
-    "perl.md",
-    "vagrant使用.md",
-    "pg完全编译.md",
-    "2022年1月13日/show create table 记录.md",
-    "2022年1月13日.md",
-    "修改dns.md"
+    "postgresql SDK.md",
+    "Citus部署.md",
+    "citus安装.md",
+    "jdbc_fdw 操作文档及相关sql.md",
+    "jdbc_fdw安装使用.md",
+    "jdbc_fdw 部署.md",
+    "jdbc_fdw测试报告.md",
+    "jdbc_fdw，postgres_fdw，local测试结果对比.md",
+    "jdbc_fdw测试报告（完整版）.pdf",
+    "jdbc_fdw测试结果.md"
   ]
 }

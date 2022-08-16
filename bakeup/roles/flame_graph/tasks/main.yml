@@ -1,0 +1,45 @@
+- name: unzip and copy flame graph
+  unarchive:
+    src: "FlameGraph-master.zip"
+    dest: "{{ansible_dir}}"
+    remote_src: no
+
+
+- name: echo sql file
+  shell: 
+    chdir: "{{ansible_dir}}"
+    cmd: echo "{{slow_sql}}" > slow_sql.sql
+
+- name: get query plan
+  shell:
+    chdir: "{{ansible_dir}}"
+    cmd: /usr/pgsql/10_debug_o2/bin/./psql -c 'explain analyze verbose {{slow_sql}}' -U postgres -h localhost > query.plan
+
+- name: fetch query plan
+  fetch:
+    src: "{{ansible_dir}}/query.plan"
+    dest: "{{ansible_dir}}"
+    
+
+- name: run pg_bench
+  shell:
+    chdir: "{{ansible_dir}}"
+    cmd: nohup /usr/pgsql/10_debug_o2/bin/./pgbench  -c 1 -j 1 -n -s 100 -T 300 -f {{ansible_dir}}/slow_sql.sql -U postgres -h localhost &
+
+- name: get pid
+  shell: ps -efw --sort=-pid |grep pgbench |grep -v grep |sed -n '1p' |awk '{print $2}'
+  register: target_pid
+
+- name: add pid
+  shell: expr {{target_pid.stdout}} + 2 | cat
+  register: num
+
+- name: perf record
+  shell:
+    chdir: "{{flame_dir}}"
+    cmd: |
+      perf record -F 99 --call-graph dwarf -p {{num.stdout}} -- sleep 20
+      perf script | ./stackcollapse-perf.pl > test.perf-folded
+      ./flamegraph.pl test.perf-folded > test.svg
+
+
