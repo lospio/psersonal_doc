@@ -4,12 +4,12 @@
     "type": "split",
     "children": [
       {
-        "id": "4eb0a4d9428df523",
+        "id": "2d333da902429ab4",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "Citus部署.md",
+            "file": "Spacture获取元信息sql.md",
             "mode": "source",
             "source": false
           }
@@ -32,7 +32,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "docker",
+                "query": "",
                 "matchingCase": true,
                 "explainSearch": true,
                 "collapseAll": true,
@@ -64,7 +64,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 310.5
+    "width": 330.5
   },
   "right": {
     "id": "85cd1fd95b807370",
@@ -80,7 +80,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Citus部署.md",
+                "file": "Spacture获取元信息sql.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -118,17 +118,17 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "4eb0a4d9428df523",
+  "active": "2d333da902429ab4",
   "lastOpenFiles": [
-    "postgresql SDK.md",
-    "Citus部署.md",
-    "citus安装.md",
     "jdbc_fdw 操作文档及相关sql.md",
+    "Patroni选主机制梳理.md",
+    "patroni配置worker流量自动切换使用文档.md",
+    "Spacture获取元信息sql.md",
+    "气象局常年值表大小优化方案.md",
+    "气象局业务调优@常年值表大小优化.md",
+    "perl.md",
     "jdbc_fdw安装使用.md",
-    "jdbc_fdw 部署.md",
-    "jdbc_fdw测试报告.md",
-    "jdbc_fdw，postgres_fdw，local测试结果对比.md",
-    "jdbc_fdw测试报告（完整版）.pdf",
-    "jdbc_fdw测试结果.md"
+    "jdbc_fdw_sql_2 测试结果.md",
+    "jdbc_fdw 和local对比.md"
   ]
 }

@@ -2,7 +2,7 @@
 ```shell
 ln -s /share/java/jdk1.8.0_321/jre/lib/amd64/libjava.so /usr/libjava.so
 ln -s /share/java/jdk1.8.0_321/jre/lib/amd64/libzip.so /usr/libzip.so
-#将jdbc驱动jar包放入classpath环境变量下
+# **将jdbc驱动jar包放入classpath环境变量下**
 
 ```
 ---
@@ -15,9 +15,10 @@ CREATE SERVER  gbase_server1 FOREIGN DATA WRAPPER jdbc_fdw OPTIONS(
 drivername 'com.gbase.jdbc.Driver',
 url 'jdbc:gbase://172.18.130.28:5258/test',
 querytimeout '100',
-jarfile '/share/lib/gbase-connector-java-8.3.81.53-build55.4.1-bin.jar',
+jarfile '/share/lib/gbase-connector-java-8.3.81.53-build55.4.1-bin.jar',dr
 maxheapsize '6000'
 );
+
 ```
 ```sql
 CREATE USER MAPPING FOR CURRENT_USER SERVER gbase_server1 OPTIONS(username 'root',password '123');
@@ -30,17 +31,17 @@ CREATE FOREIGN TABLE gf_tt02 (id int options(key 'true'),d_data date) SERVER gba
 ```sql
 CREATE SERVER  pg_server FOREIGN DATA WRAPPER jdbc_fdw OPTIONS(
 drivername 'org.postgresql.Driver',
-url 'jdbc:postgresql://192.168.223.129:5432/postgres',
+url 'jdbc:postgresql://172.26.2.41:5432/postgres',
 querytimeout '100',
-jarfile '/share/lib/postgresql-42.2.5.jar',
+jarfile '/usr/local/java/jdk1.8.0_341/lib/postgresql-42.2.25.jar',
 maxheapsize '600'
 );
 ```
 ```sql
-CREATE USER MAPPING FOR CURRENT_USER SERVER pg_server OPTIONS(username 'postgres',password '1234');
+CREATE USER MAPPING FOR CURRENT_USER SERVER pg_server OPTIONS(username 'postgres',password '123456');
 ```
 ```sql
-CREATE FOREIGN TABLE f_tt01 (int id, name char(20)) SERVER pg_server options(table 'tt01');
+CREATE FOREIGN TABLE f_tt01 (id int, name char(20)) SERVER pg_server options(table_name 'tt01');
 ```
 ---
 ## 创建测试表 gbase

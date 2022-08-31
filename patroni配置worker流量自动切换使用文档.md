@@ -6,7 +6,7 @@
 - [x] 按review意见修改
 - [x] 确认节点打印信息
 # 1. 部署步骤
-1. 解压安装包至指定位置[`$dir`]
+1. 解压安装包至指定位置[`$dir`]，启动patroni集群后，在任意节点运行pre_switch.py，只需要运行一次。
 2. 修改目录所有者，添加执行权限
 	```bash
 	chown -R postgres:postgres $dir
