@@ -9,8 +9,8 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "fish安装.md",
-            "mode": "preview",
+            "file": "气象局常年值表大小优化方案.md",
+            "mode": "source",
             "source": false
           }
         }
@@ -69,7 +69,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "fish安装.md",
+                "file": "气象局常年值表大小优化方案.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -89,15 +89,15 @@
   },
   "active": "aa5e6c1ef7cb6f30",
   "lastOpenFiles": [
+    "查看主备机状态.md",
+    "常年值表sql与分析.md",
+    "气象局常年值表大小优化方案.md",
+    "气象局业务调优@常年值表大小优化.md",
+    "冬奥数据迁移方案（内部）.md",
+    "冬奥数据迁移方案.md",
+    "资源隔离方案.md",
     "fish安装.md",
     "未命名.md",
-    "pg编译脚本.md",
-    "普通用户添加权限.md",
-    "perl.md",
-    "vagrant使用.md",
-    "pg完全编译.md",
-    "2022年1月13日/show create table 记录.md",
-    "2022年1月13日.md",
-    "修改dns.md"
+    "pg编译脚本.md"
   ]
 }
