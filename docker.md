@@ -18,3 +18,5 @@ docker run --network host -it -d \
     172.16.1.99/spatial/arm64v8/build/postgresql:spacture-REL_10_TRANSWARP_STABLE-centos7\
     shell
 ```
+
+

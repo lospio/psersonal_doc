@@ -1,17 +1,9 @@
 {
-  "legacyEditor": false,
-  "livePreview": true,
-  "spellcheckLanguages": [
-    "zh-CN",
-    "en-GB"
-  ],
+  "readableLineLength": false,
   "pdfExportSettings": {
     "pageSize": "Letter",
     "landscape": false,
     "margin": "0",
     "downscalePercent": 100
-  },
-  "alwaysUpdateLinks": true,
-  "readableLineLength": false,
-  "promptDelete": false
+  }
 }

@@ -1,0 +1,11 @@
+---
+- name: analyze citus 
+  remote_user:  root
+  block:
+    # - name: copy python script
+    #   copy: 
+    #     src: "citus_analyze.py"
+    #     dest: "/root/tmp_ansible"
+    #     remote_src: no
+    - name: exec pyton script
+      script: "/root/autotune_ansible/script/citus_analyze.py" 

@@ -3,8 +3,7 @@
 - name: begin
   become: yes
   hosts: all 
-  any_error_fatal: true
+  any_errors_fatal: true
   roles:
-  - role: pg_bench_test
-  - role: flame_graph
-  - role: system_status
+    - role: flame_graph
+    - role: system_status

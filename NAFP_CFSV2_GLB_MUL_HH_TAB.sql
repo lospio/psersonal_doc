@@ -987,3 +987,5 @@ alter table NAFP_CFSV2_GLB_MUL_HH_TAB owner to postgres;
 set citus.shard_count = 3;
 
 select create_distributed_table('NAFP_CFSV2_GLB_MUL_HH_TAB', 'd_record_id');
+
+100000 60     40000

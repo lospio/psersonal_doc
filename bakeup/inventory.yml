@@ -1,0 +1,11 @@
+---
+all:
+  children:
+    cn_node:
+      hosts:
+        192.168.223.129: { ip_addr: 192.168.223.129}
+
+  vars:
+    ansible_dir: /root/autoTuner_tmp
+    flame_dir: /root/autoTuner_tmp/FlameGraph-master
+    slow_sql: select * from tt01;

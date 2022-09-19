@@ -1,0 +1,4 @@
+---
+dependencies:
+  - {role: pg_collector}
+  - {role: citus_collector}
