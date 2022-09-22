@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "29所测案测试结果.md",
+            "file": "堆内元组与仅索引扫描.md",
             "mode": "source",
             "source": false
           }
@@ -69,7 +69,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "29所测案测试结果.md",
+                "file": "堆内元组与仅索引扫描.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,15 +100,15 @@
   },
   "active": "aa5e6c1ef7cb6f30",
   "lastOpenFiles": [
-    "PostgreSQL Tuning Solution.md",
+    "基础备份与时间点恢复.md",
+    "堆内元组与仅索引扫描.md",
+    "「数据库内核」松鼠会第一期.md",
     "29所测案测试结果.md",
+    "PostgreSQL Tuning Solution.md",
     "Citus agg.md",
     "citus shard_count选择.md",
     "气象局常年值表大小优化方案.md",
     "常年值表sql.md",
-    "29所测案整理.md",
-    "「数据库内核」松鼠会第一期.md",
-    "常年值表sql与分析.md",
-    "Citus Query Tune.md"
+    "29所测案整理.md"
   ]
 }
