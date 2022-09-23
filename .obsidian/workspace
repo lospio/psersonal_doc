@@ -4,13 +4,13 @@
     "type": "split",
     "children": [
       {
-        "id": "aa5e6c1ef7cb6f30",
+        "id": "2d333da902429ab4",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "29所测案测试结果.md",
-            "mode": "source",
+            "file": "29所飞腾测试环境性能测试.md",
+            "mode": "preview",
             "source": false
           }
         }
@@ -27,14 +27,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "cb9d43ff6667e226",
-            "type": "leaf",
-            "state": {
-              "type": "file-explorer",
-              "state": {}
-            }
-          },
-          {
             "id": "4047dea2caaea2a3",
             "type": "leaf",
             "state": {
@@ -42,18 +34,37 @@
               "state": {
                 "query": "docker",
                 "matchingCase": true,
-                "explainSearch": false,
-                "collapseAll": false,
-                "extraContext": false,
+                "explainSearch": true,
+                "collapseAll": true,
+                "extraContext": true,
                 "sortOrder": "alphabetical"
               }
             }
+          },
+          {
+            "id": "6f1920733d98d7b6",
+            "type": "leaf",
+            "state": {
+              "type": "excalidraw",
+              "state": {
+                "file": "excalidraw/patroni选主.excalidraw.md"
+              }
+            }
+          },
+          {
+            "id": "accbca1890220019",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 330.5
   },
   "right": {
     "id": "85cd1fd95b807370",
@@ -69,7 +80,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "29所测案测试结果.md",
+                "file": "29所飞腾测试环境性能测试.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -81,7 +92,7 @@
             }
           },
           {
-            "id": "34fe7f61361329da",
+            "id": "2b69b530db715191",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -90,25 +101,34 @@
                 "useHierarchy": true
               }
             }
+          },
+          {
+            "id": "c515616fdadda8b9",
+            "type": "leaf",
+            "state": {
+              "type": "advanced-tables-toolbar",
+              "state": {}
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
     "width": 300,
     "collapsed": true
   },
-  "active": "aa5e6c1ef7cb6f30",
+  "active": "2d333da902429ab4",
   "lastOpenFiles": [
-    "PostgreSQL Tuning Solution.md",
     "29所测案测试结果.md",
-    "Citus agg.md",
-    "citus shard_count选择.md",
-    "气象局常年值表大小优化方案.md",
-    "常年值表sql.md",
+    "PostgreSQL Tuning Solution.md",
+    "docker.md",
     "29所测案整理.md",
-    "「数据库内核」松鼠会第一期.md",
-    "常年值表sql与分析.md",
-    "Citus Query Tune.md"
+    "基础备份与时间点恢复.md",
+    "常年值表存储空间优化方案.md",
+    "气象局常年值表大小优化方案.md",
+    "常年值表改造方案测试.md",
+    "pg bench良好实践.md",
+    "抓火焰图.md"
   ]
 }
