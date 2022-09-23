@@ -11,6 +11,8 @@
           "state": {
             "file": "29所飞腾测试环境性能测试.md",
             "mode": "preview",
+            "file": "堆内元组与仅索引扫描.md",
+            "mode": "source",
             "source": false
           }
         }
@@ -81,6 +83,7 @@
               "type": "backlink",
               "state": {
                 "file": "29所飞腾测试环境性能测试.md",
+                "file": "堆内元组与仅索引扫描.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -130,5 +133,15 @@
     "常年值表改造方案测试.md",
     "pg bench良好实践.md",
     "抓火焰图.md"
+    "基础备份与时间点恢复.md",
+    "堆内元组与仅索引扫描.md",
+    "「数据库内核」松鼠会第一期.md",
+    "29所测案测试结果.md",
+    "PostgreSQL Tuning Solution.md",
+    "Citus agg.md",
+    "citus shard_count选择.md",
+    "气象局常年值表大小优化方案.md",
+    "常年值表sql.md",
+    "29所测案整理.md"
   ]
 }
