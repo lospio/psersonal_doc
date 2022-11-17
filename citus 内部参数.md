@@ -1,0 +1,4 @@
+citus.local_shared_pool_size
+citus.max_adaptive_executor_pool_size
+citus.node_connection_timeout
+citus.max_shared_pool_size

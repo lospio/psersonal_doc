@@ -75,6 +75,43 @@ def call_nowait(self, cb_name):
 		pg_wal_lsn_diff(pg_catalog.pg_current_wal_lsn(), '0/0')::bigint
 		```
 
+```sql
+-- 获取wal_position的sql查询
+select
+    CASE
+        WHEN pg_catalog.pg_is_in_recovery() THEN 0
+        ELSE (
+            'x' || pg_catalog.substr(
+                pg_catalog.pg_walfile_name(pg_catalog.pg_current_wal_lsn()),
+                1,
+                8
+            )
+        ) :: bit(32) :: int
+    END as timeline_id,
+    CASE
+        WHEN pg_catalog.pg_is_in_recovery() THEN 0
+        ELSE pg_catalog.pg_wal_lsn_diff(pg_catalog.pg_current_wal_lsn(), '0/0') :: bigint
+    END as wal_position,
+    pg_catalog.pg_wal_lsn_diff(pg_catalog.pg_last_wal_replay_lsn(), '0/0') :: bigint as replayed_location,
+    pg_catalog.pg_wal_lsn_diff(
+        COALESCE(pg_catalog.pg_last_wal_receive_lsn(), '0/0'),
+        '0/0'
+    ) :: bigint as received_location,
+    pg_catalog.pg_is_in_recovery()
+    AND pg_catalog.pg_is_wal_replay_paused() as replay_paused,
+    timeline_id as pg_control_timeline,
+    CASE
+        WHEN latest_end_lsn IS NULL THEN NULL
+        ELSE received_tli
+    END as received_tli,
+    slot_name as slot_name,
+    conninfo as conninfo ,
+    NULL as slots
+FROM
+    pg_catalog.pg_stat_get_wal_receiver(),
+    pg_catalog.pg_control_checkpoint();
+```
+
 	>- `pg_wal_lsn_diff` ( _`lsn1`_ `pg_lsn`, _`lsn2`_ `pg_lsn` ) → `numeric`
 	>Calculates the difference in bytes (_`lsn1`_ - _`lsn2`_) between two write-ahead log locations. This can be used with `pg_stat_replication` or some of the functions shown in [Table 9.87](https://www.postgresql.org/docs/14/functions-admin.html#FUNCTIONS-ADMIN-BACKUP-TABLE "Table 9.87. Backup Control Functions") to get the replication lag.
 	>- `pg_current_wal_lsn` () → `pg_lsn`
@@ -104,4 +141,29 @@ ORDER BY sync_state DESC, flush_lsn DESC;
 ```
  2. 有更改，更新dcs sync值 包含leader和sync_standby
  3. 更新PG主机`synchronous_standby_names`
-# 6. 选主
+# 6. 存在data
+- 不存在
+	- 设置角色uninitialized
+	- shutdown -m immediate
+	- 关闭watchdog
+	- 如果leader 释放锁
+	- 如果pause 返回msg
+	- bootstrap
+- 存在
+	- sysid合法性校验
+		- sysid 从pg_controldata中获取database id
+	- cluster.initialize合法性校验
+		- 合法
+			- 判断与sysid是否想等
+				- 不等
+					- pause模式
+						- 打印warning信息
+						- 如果是leader释放锁
+					- 非pause
+						- 错误打印，错误退出
+		- 不合法 并且 没有leader，没有pause
+			- 如果没有callback被调用 并且 pg在运行 并且 不是leader（**No initialize key in DCS and PostgreSQL is running as replica**）
+				- 错误退出
+			- 初始化dcs，写入key value
+# [Database system identifier](https://pgpedia.info/d/database-system-identifier.html)
+![[Pasted image 20221020160432.png]]

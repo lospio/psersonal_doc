@@ -4,7 +4,7 @@ docker exec -it spacture_test1_worker2 bash
 #docker 本机往容器传递文件
 docker cp 本地文件路径 ID全称:容器路径
 
-docker run --cap-add=SYS_PTRACE --cap-add=SYS_ADMIN --security-opt seccomp=unconfined --privileged -d -t -P --name ptrace_test --rm --network host  172.16.1.99/transwarp/spacture:transwarp-8.1.0-rc2
+docker run --cap-add=SYS_PTRACE --cap-add=SYS_ADMIN --security-opt seccomp=unconfined --privileged -d -it -P --name ptrace_test --rm --network host  172.16.1.99/spatial/perf/postgresql:spacture-1.1.0-10.15 bash
 
 docker exec -it -e COLUMNS=$(tput cols) -e LINES=$(tput lines) ptrace_test bash
 ```

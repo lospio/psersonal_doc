@@ -1,4 +1,4 @@
-# query 1
+:q# query 1
 - ## A query
 	```sql
 	SELECT ST_grid_pixeltype_int(V_DATA) AS pixeltype  

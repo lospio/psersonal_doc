@@ -3,7 +3,7 @@
 ln -s /share/java/jdk1.8.0_321/jre/lib/amd64/libjava.so /usr/libjava.so
 ln -s /share/java/jdk1.8.0_321/jre/lib/amd64/libzip.so /usr/libzip.so
 # **将jdbc驱动jar包放入classpath环境变量下**
-
+# postgers用户需要jar包的访问权限
 ```
 ---
 ## 创建jdbc_fdw,server,user mapping,test_table
@@ -15,8 +15,8 @@ CREATE SERVER  gbase_server1 FOREIGN DATA WRAPPER jdbc_fdw OPTIONS(
 drivername 'com.gbase.jdbc.Driver',
 url 'jdbc:gbase://172.18.130.28:5258/test',
 querytimeout '100',
-jarfile '/share/lib/gbase-connector-java-8.3.81.53-build55.4.1-bin.jar',dr
-maxheapsize '6000'
+jarfile '/share/lib/gbase-connector-java-8.3.81.53-build55.4.1-bin.jar',
+maxheapsize '6000'  
 );
 
 ```
@@ -32,7 +32,7 @@ CREATE FOREIGN TABLE gf_tt02 (id int options(key 'true'),d_data date) SERVER gba
 CREATE SERVER  pg_server FOREIGN DATA WRAPPER jdbc_fdw OPTIONS(
 drivername 'org.postgresql.Driver',
 url 'jdbc:postgresql://172.26.2.41:5432/postgres',
-querytimeout '100',
+querytimeout '5000',
 jarfile '/usr/local/java/jdk1.8.0_341/lib/postgresql-42.2.25.jar',
 maxheapsize '600'
 );
@@ -311,8 +311,7 @@ CREATE TABLE test.SURF_WEA_CHN_MUL_HOR_TAB (
 	V_RETAIN6 NUMERIC(10,4),
 	V_RETAIN7 NUMERIC(10,4),
 	V_RETAIN8 NUMERIC(10,4),
-	V_RETAIN9 NUMERIC(10,4),
-	V_RETAIN10 NUMERIC(10,4)
+	V_RETAIN9 NUMERIC(10,4),ex
 );
 
 CREATE INDEX SURF_WEA_CHN_MUL_HOR_TAB_IDX1 ON test.SURF_WEA_CHN_MUL_HOR_TAB(D_RETAIN_ID);

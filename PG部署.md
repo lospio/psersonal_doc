@@ -37,7 +37,7 @@ vi ~/.bash_profile
 PATH=$PATH:$HOME/.local/bin:$HOME/bin:/usr/pgsql-13/bin
 #添加变量
 export LD_LIBRARY_PATH=/usr/pgsql-13/lib
-export PG_DATA=/var/lib/pgsql/13/data
+export PGDATA=/var/lib/pgsql/13/data
 
 #修改生效EX
 source ~/.bash_profile

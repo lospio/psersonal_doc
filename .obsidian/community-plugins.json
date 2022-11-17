@@ -3,5 +3,6 @@
   "obsidian-excalidraw-plugin",
   "cm-editor-syntax-highlight-obsidian",
   "obsidian-extract-pdf-highlights",
-  "table-editor-obsidian"
+  "table-editor-obsidian",
+  "url-into-selection"
 ]
