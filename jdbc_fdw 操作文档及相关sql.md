@@ -3,7 +3,8 @@
 ln -s /share/java/jdk1.8.0_321/jre/lib/amd64/libjava.so /usr/libjava.so
 ln -s /share/java/jdk1.8.0_321/jre/lib/amd64/libzip.so /usr/libzip.so
 # **将jdbc驱动jar包放入classpath环境变量下**
-# postgers用户需要jar包的访问权限
+
+# **postgers用户需要jar包的访问权限**
 ```
 ---
 ## 创建jdbc_fdw,server,user mapping,test_table
