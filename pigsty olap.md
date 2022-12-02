@@ -1,0 +1,3 @@
+- max_connection = 100
+- shared_buffers = `min(ceil(mem_mb/400))*100, 64000)`
+- maintenance_mem = shared_buffers/20*10
