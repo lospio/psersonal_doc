@@ -1,0 +1,1 @@
+# [SIGPIPE信号详解](https://www.cnblogs.com/lit10050528/p/5116566.html)

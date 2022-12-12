@@ -33,3 +33,11 @@ info sharedlibrary
 **参考**
 1. [手动添加符号表](https://stackoverflow.com/questions/30281766/need-to-load-debugging-symbols-for-shared-library-in-gdb)
 2. [sharedlibrary command](https://visualgdb.com/gdbreference/commands/sharedlibrary)
+#### gdb调试忽略信号
+```bash
+# 展示handle
+info handle
+
+#忽略SIGINT,gdb不停止，传递给进程处理
+handle SIGINT nostop pass
+```

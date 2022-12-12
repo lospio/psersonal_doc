@@ -32,7 +32,7 @@ CREATE FOREIGN TABLE gf_tt02 (id int options(key 'true'),d_data date) SERVER gba
 ```sql
 CREATE SERVER  pg_server FOREIGN DATA WRAPPER jdbc_fdw OPTIONS(
 drivername 'org.postgresql.Driver',
-url 'jdbc:postgresql://172.26.2.41:5432/postgres',
+url 'jdbc:postgresql://172.18.20.9:5432/postgres',
 querytimeout '5000',
 jarfile '/usr/local/java/jdk1.8.0_341/lib/postgresql-42.2.25.jar',
 maxheapsize '600'
@@ -336,7 +336,7 @@ CREATE TABLE mv_station_info (
 
  V_ACODE DECIMAL(6,0),
 
- V_TCODE DECIMAL(2,0)
+ V_TCODE DECIMAL(2,0),
 
  V06001 DECIMAL(15,4),
 
@@ -506,7 +506,7 @@ CREATE foreign table gf_tt (
 
  D_SOURCE_ID VARCHAR(100) NOT NULL
 
-) server gbase_server1 options(table_name 'SURF_WEA_CHN_MUL_HOR_TAB');
+) server pg_server options(table_name 'tt');
 
 ```
 ---
@@ -526,7 +526,7 @@ CREATE foreign table gf_tt (
 	```sql
 	select UpdateGeometrySRID('mv_station_info','point',4326);
 	
-	select * from gf_tt t1,MV_STATION_INFO t2 
+	select t1.* from gf_tt t1,MV_STATION_INFO t2 
 	where t1.v01301=t2.v01301 and t2.netcode= '1'
 	and t1.d_datetime> '2022-01-17'
 	and t1.d_datetime <= '2023-01-17 03:00:00'

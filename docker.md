@@ -4,7 +4,7 @@ docker exec -it spacture_test1_worker2 bash
 #docker 本机往容器传递文件
 docker cp 本地文件路径 ID全称:容器路径
 
-docker run --cap-add=SYS_PTRACE --cap-add=SYS_ADMIN --security-opt seccomp=unconfined --privileged -d -it -P --name ptrace_test --rm --network host  172.16.1.99/spatial/perf/postgresql:spacture-1.1.0-10.15 bash
+docker run --cap-add=SYS_PTRACE --cap-add=SYS_ADMIN --security-opt seccomp=unconfined --privileged=true -d -it -P --name ptrace_test --rm --network host --ulimit core=-1 172.16.1.99/spatial/perf/postgresql:spacture-1.1.0-10.15 bash
 
 docker exec -it -e COLUMNS=$(tput cols) -e LINES=$(tput lines) ptrace_test bash
 ```
@@ -19,4 +19,6 @@ docker run --network host -it -d \
     shell
 ```
 
-
+## 容器中生成core文件
+[允许在docker中生成core文件](https://tinylab.org/coredump-in-docker/)
+`echo "/tmp/cores/core.%e.%p" > /proc/sys/kernel/core_pattern`
