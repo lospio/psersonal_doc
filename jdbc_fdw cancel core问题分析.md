@@ -260,9 +260,98 @@
 	4082                    firstchar = ReadCommand(&input_message);
 	
 	```
+	
+```bash
+(gdb) bt
+#0  vm_exit (code=code@entry=130) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/runtime/java.cpp:577
+#1  0x00007fd12488a2b3 in JVM_Halt (code=130) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/prims/jvm.cpp:451
+#2  0x00007fd114aa7427 in ?? ()
+#3  0xfffffffe00000000 in ?? ()
+#4  0x00007fd114aa7142 in ?? ()
+#5  0x00007fd0f051f6d0 in ?? ()
+#6  0x00007fd111f98da8 in ?? ()
+#7  0x00007fd0f051f730 in ?? ()
+#8  0x00007fd111f990a0 in ?? ()
+#9  0x0000000000000000 in ?? ()
+(gdb) n
+578       if (thread == NULL) {
+(gdb) n
+577         ThreadLocalStorage::get_thread_slow() : NULL;
+(gdb) p thread
+$1 = <optimized out>
+(gdb) n
+578       if (thread == NULL) {
+(gdb) n
+583       if (VMThread::vm_thread() != NULL) {
+(gdb) n
+585         VM_Exit op(code);
+(gdb) n
+586         if (thread->is_Java_thread())
+(gdb) n
+585         VM_Exit op(code);
+(gdb) n
+586         if (thread->is_Java_thread())
+(gdb) n
+587           ((JavaThread*)thread)->set_thread_state(_thread_in_vm);
+(gdb) n
+588         VMThread::execute(&op);
+(gdb) p *op
+No symbol "operator*" in current context.
+(gdb) p op
+$2 = {<VM_Operation> = {<CHeapObj<(MemoryType)7>> = {<No data fields>}, _vptr.VM_Operation = 0x7fd12519e390 <vtable for VM_Exit+16>, _calling_thread = 0x0, _priority = 0, _timestamp = 4972924841421931520, _next = 0x0, _prev = 0x0, static _names = {
+      0x7fd124d5f39c "Dummy", 0x7fd124d5f3a2 "ThreadStop", 0x7fd124d5f3ad "ThreadDump", 0x7fd124d5f3b8 "PrintThreads", 0x7fd124d5f3c5 "FindDeadlocks", 0x7fd124d5f3d3 "ForceSafepoint", 0x7fd124d5f3e2 "ForceAsyncSafepoint", 0x7fd124d5f3f6 "Deoptimize",
+      0x7fd124d5f401 "DeoptimizeFrame", 0x7fd124d5f411 "DeoptimizeAll", 0x7fd124d5f41f "ZombieAll", 0x7fd124d5f429 "UnlinkSymbols", 0x7fd124d16038 "Verify", 0x7fd124d5f437 "PrintJNI", 0x7fd124d5f440 "HeapDumper", 0x7fd124d5f44b "DeoptimizeTheWorld",
+      0x7fd124d5f45e "CollectForMetadataAllocation", 0x7fd124d5f47b "GC_HeapInspectio
+```
+```bash
+
+(gdb) bt
+#0  pthread_cond_wait@@GLIBC_2.3.2 () at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_wait.S:185
+#1  0x00007f579e8fbf5b in os::PlatformEvent::park (this=this@entry=0x1372600) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/os/linux/vm/os_linux.cpp:6022
+#2  0x00007f579e8a8097 in ParkCommon (timo=0, ev=<optimized out>) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/runtime/mutex.cpp:414
+#3  Monitor::IWait (this=this@entry=0x136fea0, Self=Self@entry=0x1371000, timo=timo@entry=0) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/runtime/mutex.cpp:792
+#4  0x00007f579e8a8e0e in Monitor::wait (this=0x136fea0, no_safepoint_check=<optimized out>, timeout=timeout@entry=0, as_suspend_equivalent=as_suspend_equivalent@entry=false)
+    at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/runtime/mutex.cpp:1116
+#5  0x00007f579eb1fdac in VMThread::execute (op=op@entry=0x7ffd3c4b35c0) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/runtime/vmThread.cpp:653
+#6  0x00007f579e91d7e5 in ParallelScavengeHeap::mem_allocate (this=0x137f930, size=1026, gc_overhead_limit_was_exceeded=0x7ffd3c4b3690)
+    at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/gc_implementation/parallelScavenge/parallelScavengeHeap.cpp:324
+#7  0x00007f579eadf744 in common_mem_allocate_noinit (__the_thread__=0x1371000, size=<optimized out>, klass=...) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/gc_interface/collectedHeap.inline.hpp:146
+#8  common_mem_allocate_init (__the_thread__=0x1371000, size=<optimized out>, klass=...) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/gc_interface/collectedHeap.inline.hpp:184
+#9  array_allocate (__the_thread__=0x1371000, length=8192, size=<optimized out>, klass=...) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/gc_interface/collectedHeap.inline.hpp:225
+#10 TypeArrayKlass::allocate_common (this=0x7c00007a8, length=8192, length@entry=20385792, do_zero=do_zero@entry=true, __the_thread__=__the_thread__@entry=0x1371000)
+    at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/oops/typeArrayKlass.cpp:108
+#11 0x00007f579e8e2f10 in allocate (__the_thread__=__the_thread__@entry=0x1371000, length=length@entry=20385792, this=<optimized out>) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/oops/typeArrayKlass.hpp:67
+#12 oopFactory::new_typeArray (type=<optimized out>, length=<optimized out>, __the_thread__=__the_thread__@entry=0x1371000) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/memory/oopFactory.cpp:56
+#13 0x00007f579e3a930b in Runtime1::new_type_array (thread=0x1371000, klass=<optimized out>, length=<optimized out>) at /usr/src/debug/java-1.8.0-openjdk-1.8.0.352.b08-2.el7_9.x86_64/openjdk/hotspot/src/share/vm/c1/c1_Runtime1.cpp:338
+#14 0x00007f578ea6b88a in ?? ()
+#15 0x0000010000000000 in ?? ()
+#16 0x0000000000000000 in ?? ()
+
+```
+
+```bash
+#0  jq_exec_id (conn=0x12deec8, query=0x13012c8 "SELECT d_record_id, d_data_id, d_iymdhm, d_rymdhm, d_update_time, d_datetime, d_datetime_met, v_evn, d_foretime, d_foretime_met, v_level, v_latend, v_latstart, v_lonend, v_lonstart, v_ele_code, v_data"...,
+    resultSetID=resultSetID@entry=0x172c588) at jq.c:590
+#1  0x00007f579f06593a in jdbcBeginForeignScan (node=0x172ace8, eflags=<optimized out>) at jdbc_fdw.c:1118
+#2  0x000000000060b164 in ExecInitForeignScan (node=node@entry=0x1293228, estate=estate@entry=0x172aad8, eflags=eflags@entry=16) at nodeForeignscan.c:231
+#3  0x00000000005eb944 in ExecInitNode (node=node@entry=0x1293228, estate=estate@entry=0x172aad8, eflags=eflags@entry=16) at execProcnode.c:277
+#4  0x00000000005e830c in InitPlan (eflags=16, queryDesc=0x10) at execMain.c:1046
+#5  standard_ExecutorStart (queryDesc=queryDesc@entry=0x172a6c8, eflags=16, eflags@entry=0) at execMain.c:265
+#6  0x00007f57aa3b3baa in CitusExecutorStart (queryDesc=0x172a6c8, eflags=0) at executor/multi_executor.c:96
+#7  0x000000000070dcf2 in PortalStart (portal=portal@entry=0x11df0b8, params=params@entry=0x0, eflags=eflags@entry=0, snapshot=snapshot@entry=0x0) at pquery.c:520
+#8  0x000000000070a1f6 in exec_simple_query (query_string=0x1292078 "select * from f_tt03;") at postgres.c:1083
+#9  0x000000000070b526 in PostgresMain (argc=<optimized out>, argv=argv@entry=0x122e438, dbname=0x122e2e8 "postgres", username=<optimized out>) at postgres.c:4142
+#10 0x000000000047ad00 in BackendRun (port=0x1227ee0) at postmaster.c:4453
+#11 BackendStartup (port=0x1227ee0) at postmaster.c:4117
+#12 ServerLoop () at postmaster.c:1777
+#13 0x00000000006a4fb9 in PostmasterMain (argc=argc@entry=1, argv=argv@entry=0x11bfa70) at postmaster.c:1385
+#14 0x000000000047ba73 in main (argc=1, argv=0x11bfa70) at main.c:228
+
+```
 # 03: 解决方法
+jvm忽略SIGINT信号，完全从pg流程处理退出
 # 04: 根因分析 
-> 分析导致问题的根因
+jvm环境和c运行环境分别收到处理SIGINT，jvm直接退出调用exit方法，exit方法调用pg注册的函数导致pg退出
 # 05: 扩展
 1. jvm crash with SIGSEGV `SIGINT is an _asynchronous signal_; it can occur between any two machine instructions unless blocked.`
 	- [参考：](https://stackoverflow.com/questions/12433751/handling-signals-in-native-code-with-jvm-crash-with-sigsegv-in-terminal)
@@ -271,8 +360,15 @@
 	[[gdb]]
 3. linux中 jvm处理信号的办法
 >	The approach usually used for handling `SIGINT` is to have a loop somewhere which checks a flag variable (of type `sig_atomic_t`). When you get a `SIGINT`, set the flag and return. The loop will come around and execute the rest of the handler in a safe, synchronous fashion.
+4. atexit
+	- 注册在程序正常终止时调用的函数
+	- 可多次注册，分别调用
+	- 注册顺序和调用顺序相反
+	- 注册的函数中不可调用`exit(3)`，导致循环使用
 # 06: 总结
-
+- 使用`pqsignal`注册SIGINT处理函数，该函数需要与`PG_FUNCTION_INFO_V1`在同一个源文件当中
+- 初始化jvm时，添加`-Xrs`选项，使得JVM不处理 `SIGQUIT`, `SIGTERM`, `SIGINT`, or `SIGHUP`
+- 在耗时长的操作步骤里添加flag检查，如果收到信号标志，则走cancel
 #参考
 # 07: 操作步骤
 ```sql
