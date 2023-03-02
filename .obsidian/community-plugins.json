@@ -2,9 +2,11 @@
   "obsidian-minimal-settings",
   "obsidian-excalidraw-plugin",
   "cm-editor-syntax-highlight-obsidian",
-  "obsidian-extract-pdf-highlights",
   "table-editor-obsidian",
   "url-into-selection",
   "auto-note-mover",
-  "dataview"
+  "dataview",
+  "obsidian-extract-pdf-annotations",
+  "obsidian-readwise",
+  "readwise-official"
 ]
