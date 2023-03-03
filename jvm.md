@@ -248,7 +248,16 @@ void before_exit(JavaThread * thread) {
 
 }
 ```
+### 堆栈信息
+```bash
+# 总量 
+jhsdb jmap --heap --pid 5554
+# 分量
+jmap  -histo:live 4706|head -n 23
+```
+
 # 0. 参考
 - [JVM Internals](https://blog.jamesdbloom.com/JVMInternals.html)
 - [从JDK源码看System.exit](https://juejin.cn/post/6844903503811330055)
 - [JVM 内部运行线程介绍](https://developer.aliyun.com/article/89104)
+- [JVM Life Cycle](https://stackoverflow.com/questions/2129044/java-heap-terminology-young-old-and-permanent-generations)

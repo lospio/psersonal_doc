@@ -1,0 +1,17 @@
+- links-object( "type":"dashboards")-
+	- title
+	- tags
+- panels
+	- object（"type": "stat")
+		- title
+		- fieldConfig
+			- mappings-text
+			- noValue
+	- object（"type":  "row")-title
+	- object（"type":  "gauge")-title
+- panels-object(type:table)
+	- transformations-options-renameByName
+	- fieldConfig-overrides-matcher-object(id:byName)-options
+	- options-sortBy-displayName
+	- 原则上在同一个object出现的同一个value都需要保持同样的修改
+	- **上述翻译保持一致**

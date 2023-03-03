@@ -9,5 +9,7 @@
   "promptDelete": false,
   "showLineNumber": false,
   "rightToLeft": false,
-  "showIndentGuide": true
+  "showIndentGuide": true,
+  "alwaysUpdateLinks": true,
+  "showUnsupportedFiles": false
 }

@@ -1,7 +1,6 @@
 ## 堆栈
 ```bash
-#0  jq_exec_id (conn=0x12deec8, query=0x13012c8 "SELECT d_record_id, d_data_id, d_iymdhm, d_rymdhm, d_update_time, d_datetime, d_datetime_met, v_evn, d_foretime, d_foretime_met, v_level, v_latend, v_latstart, v_lonend, v_lonstart, v_ele_code, v_data"...,
-    resultSetID=resultSetID@entry=0x172c588) at jq.c:590
+#0  jq_exec_id (conn=0x12deec8, query=0x13012c8 "SELECT d_record_id, d_data_id, d_iymdhm, d_rymdhm, d_update_time, d_datetime, d_datetime_met, v_evn, d_foretime, d_foretime_met, v_level, v_latend, v_latstart, v_lonend, v_lonstart, v_ele_code, v_data"..., resultSetID=resultSetID@entry=0x172c588) at jq.c:590
 #1  0x00007f579f06593a in jdbcBeginForeignScan (node=0x172ace8, eflags=<optimized out>) at jdbc_fdw.c:1118
 #2  0x000000000060b164 in ExecInitForeignScan (node=node@entry=0x1293228, estate=estate@entry=0x172aad8, eflags=eflags@entry=16) at nodeForeignscan.c:231
 #3  0x00000000005eb944 in ExecInitNode (node=node@entry=0x1293228, estate=estate@entry=0x172aad8, eflags=eflags@entry=16) at execProcnode.c:277
@@ -39,7 +38,16 @@ DEBUG:  Get resultSetID successfully, ID: 1
 DEBUG:  In jdbcIterateForeignScan
 DEBUG:  In jq_iterate
 DEBUG:  In jq_transaction_status
+...
+...
+...
 
+DEBUG:  In jdbcEndForeignScan
+DEBUG:  In jq_release_resultset_id: 1
+DEBUG:  In jq_transaction_status
+DEBUG:  discarding connection 0x26340f8
+DEBUG:  In jq_finish for conn=0x26340f8
+DEBUG:  In jdbc_detach_jvm
 ```
 ## 流程
 1. `jdbcGetForeignRelSize`开始，传入查询计划。
@@ -57,5 +65,16 @@ DEBUG:  In jq_transaction_status
 3. `jdbcGetForeignPlan` 对join clause区分远端查询和本地查询语句
 	- `RELOPT_BASEREL`, `RELOPT_OTHER_MEMBER_REL`
 	- `RELOPT_JOINREL`,`RELOPT_UPPER_REL`
-	- 获取连接connection
-	- 解析并构建查询query 包括 `select ... from where limit` 
+	- 获取连接connection(创建)
+	- 创造一个foreign scan plan
+4. `jdbcBeginForeignScan` 
+	- 获取user，server，通过二者获取conn
+	- `jq_exec_id`
+		- 调用java方法执行query
+5. `jdbcIterateForeignScan`
+	- `jq_iterate` 获取单行数据 ，对每一列进行类型转换，将数据转变为pg类型
+6. `jdbcEndForeignScan` 
+	- 关闭cursor
+	- 移除resultSetInfoMap
+	- 释放connection
+7. 通过注册的回调函数`jdbcfdw_xact_callback`清理jvm资源
