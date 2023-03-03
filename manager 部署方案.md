@@ -75,5 +75,8 @@ bigboard监控效果由多个组件协同工作实现，对于操作系统的变
 grafana版本固定为7.5.6，从[Download Grafana | Grafana Labs](https://grafana.com/grafana/download/7.5.6?platform=linux) 链接中获取合适的rpm包，将rpm包改名成grafana.rpm ，用改名后的grafana.rpm替换掉bigboard/roles/grafana/files/ 下的同名文件
 
 
-
+# TODO
+1. 给定12个实例，部署在6个物理机上，pg一主一备，1cn5worker
+2. pg citus patrni bigboard etcd
+3. 拓扑 对象 物理机 节点 安装和配置 静态动态
 
