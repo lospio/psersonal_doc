@@ -46,10 +46,12 @@ The clock is a digital signal that drives all processor logic. Each CPU instruct
 - [Instructions Per Cycle](<_Instructions per cycle_ (IPC) is an important high-level metric for describing how a CPU is spending its clock cycles and for understanding the nature of CPU utilization. This metric may also be expressed as _cycles per instruction_ (CPI), the inverse of IPC ([View Highlight](https://read.readwise.io/read/01gtbapt5nzsf5ey7zm00fm7b9))>)
 - A low IPC indicates that CPUs are often stalled, typically for memory access. A high IPC indicates that CPUs are often not stalled and have a high instruction throughput. These metrics suggest where performance tuning efforts may be best spent. ([View Highlight](https://read.readwise.io/read/01gtbaswjrstcrs0kznh3fkatb))
 - It should be noted that IPC shows the efficiency of instruction _processing_, but not of the instructions themselves. Consider a software change that added an inefficient software loop, which operates mostly on CPU registers (no stall cycles): such a change may result in a higher overall IPC, but also higher CPU usage and utilization. ([View Highlight](https://read.readwise.io/read/01gtbb1098rdh62kk678v106g1))
+- todo_不通cpu比较 同一个cpu
 ## C. Utilization
 CPU utilization is measured by the time a CPU instance is busy performing work during an interval, expressed as a percentage. 百分比，一个时间间隔内CPU的使用率。
 - It can be measured as the time a CPU is not running the kernel idle thread but is instead running user-level application threads or other kernel threads, or processing interrupts. ([View Highlight](https://read.readwise.io/read/01gtbdjan70zxag4zkztc53x4z))
 - The measure of CPU utilization spans all clock cycles for eligible activities, including memory stall cycles. This can be misleading: a CPU may be highly utilized because it is often stalled waiting for memory I/O, not just executing instructions, as described in the previous section. ([View Highlight](https://read.readwise.io/read/01gtbdpsyhgqd9541qtvfw6rwx))
+- 用户态 内核态
 ## D. User Time/Kernel Time
 - The CPU time spent executing user-level software is called _user time.
 - The CPU time spent executing kernel-level software is _kernel time_.
@@ -137,3 +139,8 @@ The average shows the percent of time something was stalled on a resource (satur
 - [# 理解NUMA架构](https://izsk.me/2022/06/02/System-Understanding-NUMA-Architecture/)
 - [# TLB原理](https://zhuanlan.zhihu.com/p/108425561)
 - [# Central processing unit](https://en.wikipedia.org/wiki/Central_processing_unit)
+
+# TODO
+- [ ] 三级缓存 
+- [ ] ipc
+- [ ] 

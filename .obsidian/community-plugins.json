@@ -4,9 +4,12 @@
   "cm-editor-syntax-highlight-obsidian",
   "table-editor-obsidian",
   "url-into-selection",
-  "auto-note-mover",
   "dataview",
   "obsidian-extract-pdf-annotations",
   "obsidian-readwise",
-  "readwise-official"
+  "readwise-official",
+  "highlightr-plugin",
+  "obsidian-activity-history",
+  "code-block-copy",
+  "cmenu-plugin"
 ]

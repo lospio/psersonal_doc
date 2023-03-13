@@ -1,36 +1,45 @@
-# 0. Image
-1. 编译好的PostgreSQL，存放指定路径，以版本后缀区分.
-2. 编译好的Citus，存放指定路径，以版本后缀区分.
-3. Patroni源码，存放指定路径，以版本后缀区分.
-4. BigBoard可执行文件，存放指定路径 .
-# 1. 通用安装
-1. 安装PostgreSQL. 在对应版本路径下，执行`make install` 
-2. 安装Citus. 在对应版本路径下，执行`make install` 
-3. 安装Patroni. 在对应版本路径下，执行`pip3 install ./`  
-# 2. 启动
-## A 通用
-- 脚本执行，`create extension citus`
-- 每个节点配置groupID，用于区别所属高可用组.
-- bigboard配置.
-## B Master操作
-启动patroni,`patroni conf_file &`
-## C Slave操作
-启动patroni，`patroni conf_file &`
-## D 在CN那一组Pod上添加worker节点
-```sql
--- 需要手动更改脚本，或者考虑在生成时配置该sql文件。 语句根据citus版本作区分。
--- before 10
-select master_update_node();
--- over10
-select citus_add_node();
-```
-# 3. 配置
-### 通用
-- 在templates文件夹下面添加模板文件，使用FreeMarker解释渲染，生成配置文件.
-- 可以在metainfo中添加配置项，在控制台进行配置参数.
-- `configuration.yaml`中可以按照角色作区分配置项.
+# 0. 镜像
+#### A. ETCD
+- manager自带etcd
+	- etcdctl version: 3.0.4
+	- API version: 2
+#### B. Spacture
+- PostgreSQL
+- Citus
+- Patroni
+- pg_exporter
+#### C. Big Board
+- node_exporter
+- prometheus
+- grafana
+# 1. manager支持机制
+#### A. 执行流程
+![[Pasted image 20230307170936.png]]
+#### B. 模型
+![[Pasted image 20230307172230.png]]
+#### C. 服务
+- 服务是manager中处理的基本的单元，一个服务对应一个pod。
+- 服务以及角色的定义和行为都在metainfo.yaml中配置。
+- 服务层级的配置项全局通用
+#### D. 角色
+- 同一个服务可以划分为不同的角色
+- 自定义每个角色的属性
+- 角色在各个阶段可以有job 流，解析进行操作
+# 2. 架构
+[[Drawing 2023-03-07 15.30.45.excalidraw]]
+# 3. Spacture服务
+## A. Image
+1. PostgreSQL
+2. Citus
+3. Patroni
+4. pg_exporter
+## B. 配置
+### 配置方式
+- 在templates文件夹下面添加模板文件，生成配置文件，按照角色区分属性。
+- 在metainfo中添加配置项，在控制台进行配置参数。
+- Configurations以配置项为单位，给应用提供动态配置的能力。
 ### Postgresql
-利用模板渲染，可满足配置项。
+#### 静态参数
 ```ftl
 listen_addresses = ${service['listen_addresses']}
 log_destination = ${service['log_destination']}
@@ -39,44 +48,75 @@ log_rotation_size = ${service['log_rotation_size']}
 log_statement = ${service['log_statement']}
 shared_preload_libraries = ${service['shared_preload_libraries']}
 spacture.node_conninfo = ${service['spacture.node_conninfo']}
-shared_buffers = ${service['shared_buffers']}
 port=${service['coordinator.port']}
+...
+```
+#### 动态参数,可在控制台配置
+```yaml
+# 参考调优常用参数
+max_connections
+shared_buffers
+work_mem
+maintenance_work_mem
+max_wal_size
+min_wal_size
+checkpoint_timeout
+...
 ```
 ### Patroni
-利用GroupID，区分不同的高可用cluster
+#### 静态参数
+参考[[postgres0.yml]]
+#### 动态参数
 - scope
 	- 3.0版本以前 每个group独立名称
 	- 3.0版本以后，同一cluster集群一个名称
 - namespace 默认即可，etcd上的存储路径
 - name，同一scope内保持唯一
 - restapi 配置本地即可
-- etcd 同一配置
+- etcd 所有节点同一个配置（etcd使用v2版本的api，etcd3配置项使用v3的api）
 - PostgreSQL 根据自身ip，port配置
 - tags：根据角色配置
-### bigboard
-#### 需要适配的部分
-##### 采集、存储、可视化数据组件
-bigboard监控效果由多个组件协同工作实现，对于操作系统的变化或者cpu架构的改变，组件有可能不可用，需要进行适配
-##### 适配方法
-除grafana组件外均采用复制二进制可执行文件的方式进行安装，适配时仅需对各组件的二进制文件进行替换即可
-##### prometheus
-[Release 2.39.1 / 2022-10-07 · prometheus/prometheus · GitHub](https://github.com/prometheus/prometheus/releases/tag/v2.39.1)
-在此链接中获取编译好的prometheus，用其中的prometheus和promtool替换掉bigboard/roles/prometheus/files/prometheus/bin/ 下的同名文件
-##### alertmanager
-[Release 0.24.0 / 2022-03-24 · prometheus/alertmanager · GitHub](https://github.com/prometheus/alertmanager/releases/tag/v0.24.0)
-在此链接中获取编译好的alertmanager，用其中的alertmanager和amtool替换掉bigboard/roles/prometheus/files/alertmanager/bin/ 下的同名文件
-##### node_exporter
-[Release 1.4.0 / 2022-09-24 · prometheus/node_exporter · GitHub](https://github.com/prometheus/node_exporter/releases/tag/v1.4.0)
-在此链接中获取编译好的node_exporter，用其中的node_exporter替换掉bigboard/roles/monitor/files/ 下的同名文件
-##### pg_exporter
-[Release v0.5.0 Release · Vonng/pg_exporter · GitHub](https://github.com/Vonng/pg_exporter/releases/tag/v0.5.0)
-在此链接中获取编译好的pg_exporter，用其中的pg_exporter替换掉bigboard/roles/monitor/files/ 下的同名文件(该链接中没有arm版本的pg_exporter，如果需要适配arm平台需要下载源码自己编译)
-##### grafana
-grafana版本固定为7.5.6，从[Download Grafana | Grafana Labs](https://grafana.com/grafana/download/7.5.6?platform=linux) 链接中获取合适的rpm包，将rpm包改名成grafana.rpm ，用改名后的grafana.rpm替换掉bigboard/roles/grafana/files/ 下的同名文件
-
-
+## C. 启动
+### ⅰ 通用
+- Patroni：每个节点配置groupID，用于区别所属高可用组.（具体方法需要与manager相关人员讨论，groupid是个虚拟概念）
+### ⅱ Master操作
+启动patroni,`patroni conf_file &`
+### ⅲ Slave操作
+启动patroni，`patroni conf_file &`
+### ⅳ 创建citus
+- pg_exporter 启动
+- Citus： 创建extension。`create extension citus`
+### ⅴ 在CN那一组Pod上添加worker节点
+```sql
+-- 需要手动更改脚本，或者考虑在生成时配置该sql文件。 语句根据citus版本作区分。
+-- before 10
+select master_update_node();
+-- over10
+select citus_add_node();
+```
+# 4. Bigboard 服务
+## A. Image
+- node_exporter
+- prometheus
+- grafana
+## B. 配置
+#### 静态参数
+参考bigboard，使用本地配置
+#### 动态参数
+- prometheus 配置各个pg_exporter
+## C. 启动
+### ⅰ master 启动node_exporter
+### ⅱ slave 启动 prometheus grafana
+# 5. 参考
+- [Metainfo开发手册](https://wiki.transwarp.io/pages/viewpage.action?pageId=24576772)
+- [Spacture Metainfo](http://172.16.1.41/managability/application-metainfo/tree/dev/SPACTURE/spacture-1.1.0-final)
 # TODO
-1. 给定12个实例，部署在6个物理机上，pg一主一备，1cn5worker
-2. pg citus patrni bigboard etcd
-3. 拓扑 对象 物理机 节点 安装和配置 静态动态
+- [x] 给定12个实例，部署在6个物理机上，pg一主一备，1cn5worker
+- [x] pg citus patrni bigboard etcd
+- [x] 拓扑 对象 物理机 节点 安装和配置 静态动态
+- [ ] Spacture其他
+- [ ] 两个高版本的image:
+- [x] 拆开bigboard和spacture 主备分开设计
+- [ ] patroni配置文件实例 2 节点4实例
+- [x] bigboard启动 分开设计
 

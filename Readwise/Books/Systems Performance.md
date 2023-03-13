@@ -153,3 +153,562 @@ February 28, 2023
   Halts execution. Entered by a hardware signal. This is a deeper sleep state with higher wakeup latency.
   C3
   A deeper sleep state with improved power savings over C1 and C2. The caches may maintain state, but stop snooping (cache coherency), deferring it to the OS. ([View Highlight](https://read.readwise.io/read/01gtbfvrzp3rejpwzqcp15gr7z))
+## New highlights added March 7, 2023 at 9:52 AM
+- CPU Caches ([View Highlight](https://read.readwise.io/read/01gtbh57d9a95ys9agpm4hne5s))
+- Various hardware caches are usually included in the processor (where they are referred to as *on-chip*, *on-die*, *embedded*, or *integrated*) or with the processor (*external*). ([View Highlight](https://read.readwise.io/read/01gtbh9w8ryj1m6mxzj03wdzys))
+- ![](https://readwise-assets.s3.amazonaws.com/media/reader/parsed_document_assets/36998897/img_06fig06-06fig06.jpg) ([View Highlight](https://read.readwise.io/read/01gtbhakqrxwt2335bm2dtm39f))
+- They include: ([View Highlight](https://read.readwise.io/read/01gtbhb60p5gk91e3znrr08cxj))
+- **Level 1 instruction cache** (I$) ([View Highlight](https://read.readwise.io/read/01gtbhbp63mt1shpr2eafssm29))
+- **Level 1 data cache** (D$) ([View Highlight](https://read.readwise.io/read/01gtbhc55zj6p3q97yd4nn42gx))
+- **Translation lookaside buffer** (TLB) ([View Highlight](https://read.readwise.io/read/01gtbhcn10jn01rjhn3t0rer78))
+- • **Level 2 cache** (E$)
+  • **Level 3 cache** (optional) ([View Highlight](https://read.readwise.io/read/01gtbhd2zvgvd4xqhyrs1888g3))
+- Intel uses the term *last-level cache* (LLC) for this, also described as the *longest-latency cache*. ([View Highlight](https://read.readwise.io/read/01gtbhdran5gjn1c5fkrgxzt3s))
+- For multicore and multithreading processors, some caches may be shared between cores and threads. ([View Highlight](https://read.readwise.io/read/01gtbhevn8c2vfq8hmyrtxxdeg))
+- Multiple levels of cache are used to deliver the optimum configuration of size and latency. The access time for the Level 1 cache is typically a few CPU clock cycles, and for the larger Level 2 cache around a dozen clock cycles. Main memory access can take around 60 ns (around 240 cycles for a 4 GHz processor), and address translation by the MMU also adds latency. ([View Highlight](https://read.readwise.io/read/01gtbhhb5w4p53ck5mww716e2w))
+- The CPU cache latency characteristics for your processor can be determined experimentally using micro-benchmarking ([View Highlight](https://read.readwise.io/read/01gtbhnv4e1dygpd6k28prh9hf))
+- Associativity is a cache characteristic describing a constraint for locating new entries in the cache. Types are: ([View Highlight](https://read.readwise.io/read/01gtbhqmfaw1p1hzxn79tr2v34))
+- • **Fully associative**: The cache can locate new entries anywhere. For example, a least recently used (LRU) algorithm could be used for eviction across the entire cache.
+  • **Direct mapped**: Each entry has only one valid location in the cache, for example, a hash of the memory address, using a subset of the address bits to form an address in the cache.
+  • **Set associative**: A subset of the cache is identified by mapping (e.g., hashing) from within which another algorithm (e.g., LRU) may be performed. It is described in terms of the subset size; for example, *four-way set associative* maps an address to four possible locations, and then picks the best from those four (e.g., the least recently used location). ([View Highlight](https://read.readwise.io/read/01gtbhrzaqc9q9szate9gw4x1r))
+- Cache Line ([View Highlight](https://read.readwise.io/read/01gtbj4s1t1avfrr8wkasvy91c))
+- Another characteristic of CPU caches is their *cache line* size. This is a range of bytes that are stored and transferred as a unit, improving memory throughput. A typical cache line size for x86 processors is 64 bytes ([View Highlight](https://read.readwise.io/read/01gtbj5txcmgt95g87knxhefs6))
+- Cache Coherency
+  Memory may be cached in multiple CPU caches on different processors at the same time. When one CPU modifies memory, all caches need to be aware that their cached copy is now *stale* and should be discarded, so that any future reads will retrieve the newly modified copy. This process, called *cache coherency*, ensures that CPUs are always accessing the correct state of memory. ([View Highlight](https://read.readwise.io/read/01gtbj7618em06j2gfzg3sdpb0))
+- One of the effects of cache coherency is LLC access penalties. The following examples are provided as a rough guide (these are from [[Levinthal 09]](#ch06ref12)):
+  • LLC hit, line unshared: ~40 CPU cycles
+  • LLC hit, line shared in another core: ~65 CPU cycles
+  • LLC hit, line modified in another core: ~75 CPU cycles ([View Highlight](https://read.readwise.io/read/01gtbjethjs1kxtwvrdkx6ph5t))
+- F ([View Highlight](https://read.readwise.io/read/01gtbka361a9fr24s3760sfb0q))
+- or multiprocessor architectures, processors are connected using either a shared system bus or a dedicated interconnect ([View Highlight](https://read.readwise.io/read/01gtbk0azqparea4cpksv0c77n))
+- A shared system bus, called the *front-side bus*, used by earlier Intel processors is illustrated by the four-processor example in [Figure 6.9](#ch06fig09). ([View Highlight](https://read.readwise.io/read/01gtbkc0620ck201cj4wvdtd9x))
+- ![](https://readwise-assets.s3.amazonaws.com/media/reader/parsed_document_assets/36998897/img_06fig09-06fig09.jpg) ([View Highlight](https://read.readwise.io/read/01gtbkfava9pxxdnfbrtw2t5cy))
+- The use of a system bus has scalability problems when the processor count is increased, due to contention for the shared bus resource. Modern servers are typically multiprocessor, NUMA, and use a CPU interconnect instead. ([View Highlight](https://read.readwise.io/read/01gtbkj52zfz2ppdy9w8zh6bq9))
+- Interconnects can connect components other than processors, such as I/O controllers. Example interconnects include Intel’s Quick Path Interconnect (QPI), Intel’s Ultra Path Interconnect (UPI), AMD’s HyperTransport (HT), ARM’s CoreLink Interconnects (there are three different types), and IBM’s Coherent Accelerator Processor Interface (CAPI). An example Intel QPI architecture for a four-processor system is shown in [Figure 6.10](#ch06fig10). ([View Highlight](https://read.readwise.io/read/01gtbkhxyks8c5jqpy7x4kxcqr))
+- ![](https://readwise-assets.s3.amazonaws.com/media/reader/parsed_document_assets/36998897/img_06fig10-06fig10.jpg) ([View Highlight](https://read.readwise.io/read/01gtbkjddqb7677t561vmvrbj0))
+- Table 6.4 **Intel CPU interconnect example bandwidths**
+  **Intel**
+  **Transfer Rate**
+  **Width**
+  **[Bandwidth](#glo_017)**
+  FSB (2007)
+  1.6 GT/s
+  8 bytes
+  12.8 Gbytes/s
+  QPI (2008)
+  6.4 GT/s
+  2 bytes
+  25.6 Gbytes/s
+  UPI (2017)
+  10.4 GT/s
+  2 bytes
+  41.6 Gbytes/s ([View Highlight](https://read.readwise.io/read/01gtbkk422nacmkt27bwfgpyd1))
+- To explain how transfer rates can relate to bandwidth, I will explain the QPI example, which is for a 3.2 GHz clock. QPI is *double-pumped*, performing a data transfer on both rising and falling edges of the clock.[4](#ch06fn4) This doubles the transfer rate (3.2 GHz × 2 = 6.4 GT/s). The final bandwidth of 25.6 Gbytes/s is for both send and receive directions (6.4 GT/s × 2 byte width × 2 directions = 25.6 Gbytes/s). ([View Highlight](https://read.readwise.io/read/01gtbkkdhe843n8hgydqwvetvp))
+- [4](#ch06fn4a)There is also *quad-pumped*, where data is transferred on the rising edge, peak, falling edge, and trough of the clock cycle. Quad pumping is used by the Intel FSB. ([View Highlight](https://read.readwise.io/read/01gtbkknyb67qbvgb10zjdmtbb))
+- An interesting detail of QPI is that its cache coherency mode could be tuned in the BIOS, with options including Home Snoop to optimize for memory bandwidth, Early Snoop to optimize for memory latency, and Directory Snoop to improve scalability (it involves tracking what is shared). UPI, which is replacing QPI, only supports Directory Snoop. ([View Highlight](https://read.readwise.io/read/01gtbknbm1vbgfs7p019vxwrjh))
+- Interconnects are typically designed for high bandwidth, so that they do not become a systemic bottleneck. If they do, performance will degrade as CPU instructions encounter stall cycles for operations that involve the interconnect, such as remote memory I/O. A key indicator for this is a drop in IPC. CPU instructions, cycles, IPC, stall cycles, and memory I/O can be analyzed using CPU performance counters. ([View Highlight](https://read.readwise.io/read/01gtbkp12883t0rxz1kz2wennh))
+- Hardware Counters (PMCs) ([View Highlight](https://read.readwise.io/read/01gtbkpctrdke7k2q5r4df9amt))
+- Performance monitoring counters (PMCs) were summarized as a source of observability statistics in [Chapter 4](#ch04), [Observability Tools](#ch04), [Section 4.3.9](#ch04lev3sec9), [Hardware Counters (PMCs)](#ch04lev3sec9). This section describes their CPU implementation in more detail, and provides additional examples. ([View Highlight](https://read.readwise.io/read/01gtbkq25k9keeemjatvwa1c3n))
+- PMCs are processor registers implemented in hardware that can be programmed to count low-level CPU activity. They typically include counters for the following: ([View Highlight](https://read.readwise.io/read/01gtbkqgrq6s74t1vren68b9tq))
+- **CPU cycles**: Including stall cycles and types of stall cycles ([View Highlight](https://read.readwise.io/read/01gtbkqsy8s1v85kyfnedtjpap))
+- • **CPU instructions**: Retired (executed)
+  • **Level 1, 2, 3 cache accesses**: Hits, misses
+  • **Floating-point unit**: Operations
+  • **Memory I/O**: Reads, writes, stall cycles
+  • **Resource I/O**: Reads, writes, stall cycles ([View Highlight](https://read.readwise.io/read/01gtbkr25xnvgcy3j2hv5gj8mn))
+- As a relatively simple example, the Intel P6 family of processors provide performance counters via four model-specific registers (MSRs). Two MSRs are the counters and are read-only. The other two MSRs, called *event-select* MSRs, are used to program the counters and are read-write. The performance counters are 40-bit registers, and the event-select MSRs are 32-bit. The format of the event-select MSRs is shown in [Figure 6.11](#ch06fig11). ([View Highlight](https://read.readwise.io/read/01gtbktv48m38vybx5jqehswba))
+- ![](https://readwise-assets.s3.amazonaws.com/media/reader/parsed_document_assets/36998897/img_06fig11-06fig11.jpg) ([View Highlight](https://read.readwise.io/read/01gtbkva69k9d7wx0yedz3nx7m))
+- The counter is identified by the event select and the UMASK. The event select identifies the type of event to count, and the UMASK identifies subtypes or groups of subtypes. The OS and USR bits can be set so that the counter is incremented only while in kernel mode (OS) or user mode (USR), based on the processor protection rings. The CMASK can be set to a threshold of events that must be reached before the counter is incremented. ([View Highlight](https://read.readwise.io/read/01gtbkw3farngrmf6hydrqx0rt))
+- Table 6.5 **Selected examples of Intel CPU performance counters**
+  **Event Select**
+  **UMASK**
+  **Unit**
+  **Name**
+  **Description**
+  0x43
+  0x00
+  Data cache
+  DATA_MEM_REFS
+  All loads from any memory type. All stores to any memory type. Each part of a split is counted separately. ... Does not include I/O accesses or other non-memory accesses.
+  0x48
+  0x00
+  Data cache
+  DCU_MISS_ OUTSTANDING
+  Weighted number of cycles while a DCU miss is outstanding, incremented by the number of outstanding cache misses at any particular time. Cacheable read requests only are considered. ...
+  0x80
+  0x00
+  Instruction fetch unit
+  IFU_IFETCH
+  Number of instruction fetches, both cacheable and noncacheable, including UC (uncacheable) fetches.
+  0x28
+  0x0F
+  L2 cache
+  L2_IFETCH
+  Number of L2 instruction fetches. ...
+  0xC1
+  0x00
+  Floating- point unit
+  FLOPS
+  Number of computational floating-point operations retired. ...
+  0x7E
+  0x00
+  External bus logic
+  BUS_SNOOP_ STALL
+  Number of clock cycles during which the bus is snoop stalled.
+  0xC0
+  0x00
+  Instruction decoding and retirement
+  INST_RETIRED
+  Number of instructions retired.
+  0xC8
+  0x00
+  Interrupts
+  HW_INT_RX
+  Number of hardware interrupts received.
+  0xC5
+  0x00
+  Branches
+  BR_MISS_PRED_ RETIRED
+  Number of mis-predicted branches retired.
+  0xA2
+  0x00
+  Stalls
+  RESOURCE_ STALLS
+  Incremented by one during every cycle for which there is a resource-related stall. ...
+  0x79
+  0x00
+  Clocks
+  CPU_CLK_UNHALTED
+  Number of cycles during which the processor is not halted. ([View Highlight](https://read.readwise.io/read/01gtbkxhh1dswd0h2nc8zqan8h))
+- GPUs ([View Highlight](https://read.readwise.io/read/01gtbkyd4vthvewsf932enrhbk))
+- Graphics processing units (GPUs) were created to support graphical displays, and are now finding use in other workloads including artificial intelligence, machine learning, analytics, image processing, and cryptocurrency mining. For servers and cloud instances, a GPU is a processor-like resource that can execute a portion of a workload, called the *compute kernel*, that is suited to highly parallel data processing such as matrix transformations. General-purpose GPUs from Nvidia using its Compute Unified Device Architecture (CUDA) have seen widespread adoption. CUDA provides APIs and software libraries for using Nvidia GPUs. ([View Highlight](https://read.readwise.io/read/01gtbkz3g02fkm54tpab29s6es))
+- While a processor (CPU) may contain a dozen cores, a GPU may contain hundreds or thousands of smaller cores called *streaming processors* (SPs),[5](#ch06fn5) which each can execute a thread*.* Since GPU workloads are highly parallel, threads that can execute in parallel are grouped into *thread blocks,* where they may cooperate among themselves. These thread blocks may be executed by groups of SPs called *streaming multiprocessors* (SMs) that also provide other resources including a memory cache. [Table 6.6](#ch06tab06) further compares processors (CPUs) with GPUs [[Ather 19]](#ch06ref24). ([View Highlight](https://read.readwise.io/read/01gtbkzztehahg7xjw9381ngzy))
+- Table 6.6 **CPUs versus GPUs**
+  **Attribute**
+  **CPU**
+  **[GPU](#glo_069)**
+  Package
+  A processor package plugs into a socket on the system board, connected directly to the system bus or CPU interconnect.
+  A GPU is typically provided as an expansion card and connected via an expansion bus (e.g., PCIe). They may also be embedded on a system board or in a processor package (on-chip).
+  Package scalability
+  Multi-socket configurations, connected via a CPU interconnect (e.g., Intel UPI).
+  Multi-GPU configurations are possible, connected via a GPU-to-GPU interconnect (e.g., NVIDIA's NVLink).
+  Cores
+  A typical processor of today contains 2 to 64 cores.
+  A GPU may have a similar number of streaming multiprocessors (SMs).
+  Threads
+  A typical core may execute two hardware threads (or more, depending on the processor).
+  An SM may contain dozens or hundreds of streaming processors (SPs). Each SP can only execute one thread.
+  Caches
+  Each core has L2 and L2 caches, and may share an L3 cache.
+  Each SM has a cache, and may share an L2 cache between them.
+  Clock
+  High (e.g., 3.4 GHz).
+  Relatively lower (e.g., 1.0 GHz). ([View Highlight](https://read.readwise.io/read/01gtbm0exaxt41328f2ykhcegc))
+- Other Accelerators ([View Highlight](https://read.readwise.io/read/01gtbm14d3879scsb1abjk31y4))
+- Apart from GPUs, be aware that other accelerators may exist for offloading CPU work to faster application-specific integrated circuits. These include field-programmable gate arrays (FPGAs) and tensor processing units (TPUs). ([View Highlight](https://read.readwise.io/read/01gtbm1ft6azbx2tzg2070ngrw))
+- GPUs and FPGAs are used to improve the performance of cryptocurrency mining. ([View Highlight](https://read.readwise.io/read/01gtbm1zz5ra8b1vzap8a04vt5))
+- 6.4.2 Software ([View Highlight](https://read.readwise.io/read/01gtbmbx8jsa31gf1tmv6tve8t))
+- Kernel software to support CPUs includes the scheduler, scheduling classes, and the idle thread. ([View Highlight](https://read.readwise.io/read/01gtbmd0zhn7v3ekvb9wecm95e))
+- Scheduler ([View Highlight](https://read.readwise.io/read/01gtbmdk46vrvbk4nsrjtmcft7))
+- ![](https://readwise-assets.s3.amazonaws.com/media/reader/parsed_document_assets/36998897/img_06fig12-06fig12.jpg) ([View Highlight](https://read.readwise.io/read/01gtbme8yrfm3gwg6vw5kq45yx))
+- **Time sharing**: Multitasking between runnable threads, executing those with the highest priority first. ([View Highlight](https://read.readwise.io/read/01gtbmzezbdv1vrd3v4gvn12hv))
+- **Preemption**: For threads that have become runnable at a high priority, the scheduler can preempt the currently running thread, so that execution of the higher-priority thread can begin immediately. ([View Highlight](https://read.readwise.io/read/01gtbn4nqvnbe68hjzs3s221j7))
+- **Load balancing**: Moving runnable threads to the run queues of idle or less-busy CPUs. ([View Highlight](https://read.readwise.io/read/01gtbn7mf5bb67b7jc1w2jht84))
+- [Figure 6.12](#ch06fig12) shows run queues, which is how scheduling was originally implemented. The term and mental model are still used to describe waiting tasks. However, the Linux CFS scheduler actually uses a red/black tree of future task execution. ([View Highlight](https://read.readwise.io/read/01gtbn9aksrjbmq0a9tbapk3ch))
+- In Linux, time sharing is driven by the system timer interrupt by calling scheduler_tick(), which calls scheduler class functions to manage priorities and the expiration of units of CPU time called *time slices*. Preemption is triggered when threads become runnable and the scheduler class check_preempt_curr() function is called. Thread switching is managed by __schedule(), which selects the highest-priority thread via pick_next_task() for running. Load balancing is performed by the load_balance() function. ([View Highlight](https://read.readwise.io/read/01gtbnckgr8ztwsjzke2svef5p))
+- The Linux scheduler also uses logic to avoid migrations when the cost is expected to exceed the benefit, preferring to leave busy threads running on the same CPU where the CPU caches should still be warm (CPU affinity). ([View Highlight](https://read.readwise.io/read/01gtbndj9rty3xg0j7wa1rmknh))
+- Scheduling Classes ([View Highlight](https://read.readwise.io/read/01gtbnez29ffy85njq6sr5k8fg))
+- Scheduling classes manage the behavior of runnable threads, specifically their priorities, whether their on-CPU time is *time-sliced*, and the duration of those *time slices* (also known as *time quanta*). ([View Highlight](https://read.readwise.io/read/01gtbnf9v1z83rthffz1dmf12e))
+- ![](https://readwise-assets.s3.amazonaws.com/media/reader/parsed_document_assets/36998897/img_06fig13-06fig13.jpg) ([View Highlight](https://read.readwise.io/read/01gtbngfv9np8skvwn3gn9cd3h))
+- For Linux kernels, the scheduling classes are: ([View Highlight](https://read.readwise.io/read/01gtbntwfzbmtpp4nnq5gqrfrp))
+- **RT**: Provides fixed and high priorities for real-time workloads. The kernel supports both user- and kernel-level preemption, allowing RT tasks to be dispatched with low latency. The priority range is 0–99 (MAX_RT_PRIO-1). ([View Highlight](https://read.readwise.io/read/01gtbnxsn45t84yh2qn573yzvr))
+- • **O(1)**: The O(1) scheduler was introduced in Linux 2.6 as the default time-sharing scheduler for user processes. The name comes from the algorithm complexity of O(1) (see [Chapter 5](#ch05), [Applications](#ch05), for a summary of big O notation). The prior scheduler contained routines that iterated over all tasks, making it O(n), which became a scalability issue. The O(1) scheduler dynamically improved the priority of I/O-bound over CPU-bound workloads, to reduce the latency of interactive and I/O workloads.
+  • **CFS**: Completely fair scheduling was added to the Linux 2.6.23 kernel as the default time-sharing scheduler for user processes. The scheduler manages tasks on a red-black tree keyed from the task CPU time, instead of traditional run queues. This allows low CPU consumers to be easily found and executed in preference to CPU-bound workloads, improving the performance of interactive and I/O-bound workloads.
+  • **Idle**: Runs threads with the lowest possible priority.
+  • **Deadline**: Added to Linux 3.14, applies earliest deadline first (EDF) scheduling using three parameters: *runtime*, *period*, and *deadline*. A task should receive runtime microseconds of CPU time every period microseconds, and do so within the deadline. ([View Highlight](https://read.readwise.io/read/01gtbp1578898hr3bwy5d2gqjn))
+- Scheduler policies are:
+  • **RR**: SCHED_RR is round-robin scheduling. Once a thread has used its time quantum, it is moved to the end of the run queue for that priority level, allowing others of the same priority to run. Uses the RT scheduling class.
+  • **FIFO**: SCHED_FIFO is first-in, first-out scheduling, which continues running the thread at the head of the run queue until it voluntarily leaves, or until a higher-priority thread arrives. The thread continues to run, even if other threads of the same priority are on the run queue. Uses the RT class.
+  • **NORMAL**: SCHED_NORMAL (previously known as SCHED_OTHER) is time-sharing scheduling and is the default for user processes. The scheduler dynamically adjusts priority based on the scheduling class. For O(1), the time slice duration is set based on the static priority: longer durations for higher-priority work. For CFS, the time slice is dynamic. Uses the CFS scheduling class.
+  • **BATCH**: SCHED_BATCH is similar to SCHED_NORMAL, but with the expectation that the thread will be CPU-bound and should not be scheduled to interrupt other I/O-bound interactive work. Uses the CFS scheduling class.
+  • **IDLE**: SCHED_IDLE uses the Idle scheduling class.
+  • **DEADLINE**: SCHED_DEADLINE uses the Deadline scheduling class ([View Highlight](https://read.readwise.io/read/01gtbp1grbek0zxn7aa7hpndxs))
+- Idle Thread ([View Highlight](https://read.readwise.io/read/01gtbp3ftwh5cxa0fy21mpea4h))
+- the kernel “idle” thread (or *idle task*) runs on-CPU when there is no other runnable thread and has the lowest possible priority. It is usually programmed to inform the processor that CPU execution may either be halted (halt instruction) or throttled down to conserve power. The CPU will wake up on the next hardware interrupt. ([View Highlight](https://read.readwise.io/read/01gtbp9k9rw5vzb3x0x3x67ek0))
+- NUMA Grouping
+  Performance on NUMA systems can be significantly improved by making the kernel *NUMA-aware*, so that it can make better scheduling and memory placement decisions. This can automatically detect and create groups of localized CPU and memory resources and organize them in a topology to reflect the NUMA architecture. This topology allows the cost of any memory access to be estimated.
+  On Linux systems, these are called *scheduling domains*, which are in a topology beginning with the *root domain*.
+  A manual form of grouping can be performed by the system administrator, either by binding processes to run on one or more CPUs only, or by creating an exclusive set of CPUs for processes to run on. See [Section 6.5.10](#ch06lev5sec10), [CPU Binding](#ch06lev5sec10). ([View Highlight](https://read.readwise.io/read/01gtbpav0vfcjynv9rxjg4s3rz))
+- Processor Resource-Aware ([View Highlight](https://read.readwise.io/read/01gtbpyh990h33weh40xgwznry))
+- 6.5 Methodology ([View Highlight](https://read.readwise.io/read/01gtbq0vwa8s13cg5kpqx4d78r))
+- Table 6.7 **CPU performance methodologies**
+  **Section**
+  **Methodology**
+  **Types**
+  [6.5.1](#ch06lev5sec1)
+  Tools method
+  Observational analysis
+  [6.5.2](#ch06lev5sec2)
+  USE method
+  Observational analysis
+  [6.5.3](#ch06lev5sec3)
+  Workload characterization
+  Observational analysis, capacity planning
+  [6.5.4](#ch06lev5sec4)
+  Profiling
+  Observational analysis
+  [6.5.5](#ch06lev5sec5)
+  Cycle analysis
+  Observational analysis
+  [6.5.6](#ch06lev5sec6)
+  Performance monitoring
+  Observational analysis, capacity planning
+  [6.5.7](#ch06lev5sec7)
+  Static performance tuning
+  Observational analysis, capacity planning
+  [6.5.8](#ch06lev5sec8)
+  Priority tuning
+  Tuning
+  [6.5.9](#ch06lev5sec9)
+  Resource controls
+  Tuning
+  [6.5.10](#ch06lev5sec10)
+  CPU binding
+  Tuning
+  [6.5.11](#ch06lev5sec11)
+  Micro-benchmarking
+  Experimental analysis ([View Highlight](https://read.readwise.io/read/01gtbq29247we2c2p7800790vb))
+- 6.5.1 Tools Method ([View Highlight](https://read.readwise.io/read/01gtbq9he9kjgjfht27t067mzn))
+- For CPUs, the tools method can involve checking the following (Linux):
+  • **`uptime/top`**: Check the load averages to see if load is increasing or decreasing over time. Bear this in mind when using the following tools, as load may be changing during your analysis.
+  • **`vmstat`**: Run vmstat(1) with a one-second interval and check the system-wide CPU utilization (“us” + “sy”). Utilization approaching 100% increases the likelihood of scheduler latency.
+  • **`mpstat`**: Examine statistics per-CPU and check for individual hot (busy) CPUs, identifying a possible thread scalability problem.
+  • **`top`**: See which processes and users are the top CPU consumers.
+  • **`pidstat`**: Break down the top CPU consumers into user- and system-time.
+  • **`perf/profile`**: Profile CPU usage stack traces for both user- or kernel-time, to identify why the CPUs are in use.
+  • **`perf`**: Measure IPC as an indicator of cycle-based inefficiencies.
+  • **`showboost/turboboost`**: Check the current CPU clock rates, in case they are unusually low.
+  • **`dmesg`**: Check for CPU temperature stall messages (“cpu clock throttled”). ([View Highlight](https://read.readwise.io/read/01gtbqcrz96hh38rwv483cnytt))
+- 6.5.2 USE Method ([View Highlight](https://read.readwise.io/read/01gtbqhr3fjh03ckbcmb3mefnq))
+- The USE method can be used to identify bottlenecks and errors across all components early in a performance investigation, before trying deeper and more time-consuming strategies. ([View Highlight](https://read.readwise.io/read/01gtbqj9wtgw0jfq63zr279rv8))
+- For each CPU, check for: ([View Highlight](https://read.readwise.io/read/01gtbqj2f4e3ya5tpzepvs5271))
+- • **Utilization**: The time the CPU was busy (not in the idle thread)
+  • **Saturation**: The degree to which runnable threads are queued waiting their turn on-CPU
+  • **Errors**: CPU errors, including correctable errors ([View Highlight](https://read.readwise.io/read/01gtbqjjmbp99z8hp1p5nr2ks3))
+- You can check errors first since they are typically quick to check and the easiest to interpret. Some processors and operating systems will sense an increase in correctable errors (error-correction code, ECC) and will offline a CPU as a precaution, before an uncorrectable error causes a CPU failure. Checking for these errors can be a matter of checking that all CPUs are still online. ([View Highlight](https://read.readwise.io/read/01gtbqkdern1cxa3b5ess56p8k))
+- Utilization is usually readily available from operating system tools as *percent busy*. This metric should be examined per CPU, to check for scalability issues. High CPU and core utilization can be understood by using profiling and cycle analysis. ([View Highlight](https://read.readwise.io/read/01gtbqqw3c8f5795da84jh8hte))
+- For environments that implement CPU limits or quotas (resource controls; e.g., Linux tasksets and cgroups), as is common in cloud computing environments, CPU utilization should be measured in terms of the imposed limit, in addition to the physical limit ([View Highlight](https://read.readwise.io/read/01gtbqrre1smhxa7gsc5yqjg79))
+- Saturation metrics are commonly provided system-wide, including as part of load averages. This metric quantifies the degree to which the CPUs are overloaded, or a CPU quota, if present, is used up. ([View Highlight](https://read.readwise.io/read/01gtbqsd1rzpxsfz7gwgx0zhzs))
+- 6.5.3 Workload Characterization ([View Highlight](https://read.readwise.io/read/01gtg79023aw115hncsn0119g2))
+- Basic attributes for characterizing CPU workload are:
+  • CPU load averages (utilization + saturation)
+  • User-time to system-time ratio
+  • Syscall rate ([View Highlight](https://read.readwise.io/read/01gtg7a2p3vy2gyg02ds76dxwq))
+- • Voluntary context switch rate
+  • Interrupt rate ([View Highlight](https://read.readwise.io/read/01gtg7wcp2b2hrbre7mrnbvfx4))
+- The user-time to system-time ratio shows the type of load applied ([View Highlight](https://read.readwise.io/read/01gtg7ygxh9amsrb2pjkax6gbd))
+- High user time rates are due to applications spending time performing their own compute. High system time shows time spent in the kernel instead, which may be further understood by the syscall and interrupt rate. I/O-bound workloads have higher system time, syscalls, and higher voluntary context switches than CPU-bound workloads as threads block waiting for I/O. ([View Highlight](https://read.readwise.io/read/01gtg7yytwcs6d6mphrvp410jf))
+- Here is an example workload description, designed to show how these attributes can be expressed together:
+  On an average 48-CPU application server, the load average varies between 30 and 40 during the day. The user/system ratio is 95/5, as this is a CPU-intensive workload. There are around 325 K syscalls/s, and around 80 K voluntary context switches/s. ([View Highlight](https://read.readwise.io/read/01gtg81pca8ffym5bh0hj98pnh))
+- Advanced Workload Characterization/Checklist ([View Highlight](https://read.readwise.io/read/01gtg83e799zj36phqxyek91jy))
+- Additional details may be included to characterize the workload. These are listed here as questions for consideration, which may also serve as a checklist when studying CPU issues thoroughly:
+  • What is the CPU utilization system-wide? Per CPU? Per core?
+  • How parallel is the CPU load? Is it single-threaded? How many threads?
+  • Which applications or users are using the CPUs? How much?
+  • Which kernel threads are using the CPUs? How much?
+  • What is the CPU usage of interrupts?
+  • What is the CPU interconnect utilization?
+  • Why are the CPUs being used (user- and kernel-level call paths)?
+  • What types of stall cycles are encountered? ([View Highlight](https://read.readwise.io/read/01gtg84c28yxgq73wg9s8fpdp9))
+- See [Chapter 2](#ch02), [Methodologies](#ch02), for a higher-level summary of this methodology and the characteristics to measure (who, why, what, how). ([View Highlight](https://read.readwise.io/read/01gtg850ytyza7p1hcxdznag64))
+- 6.5.4 Profiling ([View Highlight](https://read.readwise.io/read/01gtg862ne0gkrfzvn1jqhnptd))
+- • **Timer-based sampling**: Collecting timer-based samples of the currently running function or stack trace. A typical rate used is 99 Hertz (samples per second) per CPU. This provides a coarse view of CPU usage, with enough detail for large and small issues. 99 is used to avoid lock-step sampling that may occur at 100 Hertz, which would produce a skewed profile. If needed, the timer rate can be lowered and the time span enlarged until the overhead is negligible and suitable for production use.
+  • **Function tracing**: Instrumenting all or some function calls to measure their duration. This provides a fine-level view, but the overhead can be prohibitive for production use, often 10% or more, because function tracing adds instrumentation to every function call. ([View Highlight](https://read.readwise.io/read/01gtg86tvhc8kk05v47t2a6y3m))
+- ![](https://readwise-assets.s3.amazonaws.com/media/reader/parsed_document_assets/36998897/img_06fig14-06fig14.jpg) ([View Highlight](https://read.readwise.io/read/01gtg8a0v9y9h4fw4ctd7ph5x8))
+- [Figure 6.14](#ch06fig14) shows how samples are only collected when the process is on-CPU: two samples show function A() on-CPU, and two samples show function B() on-CPU called by A(). The time off-CPU during a syscall was not sampled. Also, the short-lived function C() was entirely missed by sampling. ([View Highlight](https://read.readwise.io/read/01gtg8b8h2h6m04v40z04rpknw))
+- Kernels typically maintain two stack traces for processes: a user-level stack and a kernel stack when in kernel context (e.g., syscalls). For a complete CPU profile, the profiler must record both stacks when available. ([View Highlight](https://read.readwise.io/read/01gtg8dbdch3npf3bxgmfdv4hh))
+- Sample Processing ([View Highlight](https://read.readwise.io/read/01gtg8e6jewt9r6t3483w1pdz4))
+- • **Storage I/O**: Profilers typically write samples to a profile file, which can then be read and examined in different ways. However, writing so many samples to the file system can generate storage I/O that perturbs the performance of the production application. The BPF-based profile(8) tool solves the storage I/O problem by summarizing the samples in kernel memory, and only emitting the summary. No intermediate profile file is used.
+  • **Comprehension**: It is impractical to read 47,040 multi-line stack traces one by one: summaries and visualizations must be used to make sense of the profile. A commonly used stack trace visualization is *flame graphs*, some examples of which are shown in earlier chapters ([1](#ch01) and [5](#ch05)); and there are more examples in this chapter. ([View Highlight](https://read.readwise.io/read/01gtg8hyxz6kff9gd3h299bd40))
+- [Figure 6.15](#ch06fig15) shows the overall steps to generate CPU flame graphs from perf(1) and profile, solving the comprehension problem. It also shows how the storage I/O problem is solved: profile(8) does not use an intermediate file, saving overhead. The exact commands used are listed in [Section 6.6.13](#ch06lev6sec13), [perf](#ch13). ([View Highlight](https://read.readwise.io/read/01gtg8g5eg1nn37gtdrn98d9t9))
+- ![](https://readwise-assets.s3.amazonaws.com/media/reader/parsed_document_assets/36998897/img_06fig15-06fig15.jpg) ([View Highlight](https://read.readwise.io/read/01gtg8ha3n5543twht41m30rt6))
+- While the BPF-based approach has lower overhead, the perf(1) approach saves the raw samples (with timestamps), which can be reprocessed using different tools, including FlameScope ([Section 6.7.4](#ch06lev7sec4)). ([View Highlight](https://read.readwise.io/read/01gtg8jyg39vyvz41rnjkc5959))
+- ![](https://readwise-assets.s3.amazonaws.com/media/reader/parsed_document_assets/36998897/img_06fig16-06fig16.jpg) ([View Highlight](https://read.readwise.io/read/01gtg8mzy5wxtcd9f5ga3057x6))
+- My method for finding performance wins in a CPU flame graphs is as follows:
+  1. Look top-down (leaf to root) for large “plateaus.” These show that a single function is on-CPU during many samples, and can lead to some quick wins. In [Figure 6.16](#ch06fig16), there are two plateaus on the right, in unmap_page_range() and page_remove_rmap(), both related to memory pages. Perhaps a quick win is to switch the application to use large pages.
+  2. Look bottom-up to understand the code hierarchy. In this example, the bash(1) shell was calling the execve(2) syscall, which eventually called the page functions. Perhaps an even bigger win is to avoid execve(2) somehow, such as by using bash builtins instead of external processes, or switching to another language.
+  3. Look more carefully top-down for scattered but common CPU usage. Perhaps there are many small frames related to the same problem, such as lock contention. Inverting the merge order of flame graphs so that they are merged from leaf to root and become *icicle graphs* can help reveal these cases. ([View Highlight](https://read.readwise.io/read/01gtg8ndzrr3b55jrapma5kmn7))
+- 6.5.5 Cycle Analysis ([View Highlight](https://read.readwise.io/read/01gtg8pxbrbbcv7bhb8mmetz29))
+- You can use Performance Monitoring Counters (PMCs) to understand CPU utilization at the cycle level. This may reveal that cycles are spent stalled on Level 1, 2, or 3 cache misses, memory or resource I/O, or spent on floating-point operations or other activity. This information may show performance wins you can achieve by adjusting compiler options or changing the code. ([View Highlight](https://read.readwise.io/read/01gtgevz63a3qayhn3smx77b85))
+- egin cycle analysis by measuring IPC (inverse of CPI). If IPC is low, continue to investigate types of stall cycles. If IPC is high, look for ways in the code to reduce instructions performed. The values for “high” or “low” IPC depend on your processor: low could be less than 0.2, and high could be greater than 1. ([View Highlight](https://read.readwise.io/read/01gtgtxtbhfyt8qrbhcjyrxa3e))
+- You can get a sense of these values by performing known workloads that are either memory I/O-intensive or instruction-intensive, and measuring the resulting IPC for each. ([View Highlight](https://read.readwise.io/read/01gtgty2wy8edw6adw318xm0zq))
+- Apart from measuring counter values, PMCs can be configured to interrupt the kernel on the overflow of a given value. For example, at every 10,000 Level 3 cache misses, the kernel could be interrupted to gather a stack backtrace. Over time, the kernel builds a profile of the code paths that are causing Level 3 cache misses, without the prohibitive overhead of measuring every single miss. This is typically used by integrated developer environment (IDE) software, to annotate code with the locations that are causing memory I/O and stall cycles. ([View Highlight](https://read.readwise.io/read/01gtgtzqy2vpz3t7zyqmy755me))
+- 6.5.6 Performance Monitoring ([View Highlight](https://read.readwise.io/read/01gtgv2b9dj011tgh2d5737qjw))
+- Performance monitoring can identify active issues and patterns of behavior over time. Key metrics for CPUs are:
+  • **Utilization**: Percent busy
+  • **Saturation**: Either run-queue length or scheduler latency ([View Highlight](https://read.readwise.io/read/01gtgv302th1gann0w8h9reb5m))
+- Utilization should be monitored on a per-CPU basis to identify thread scalability issues. ([View Highlight](https://read.readwise.io/read/01gtgv6g739thzf2eb2s9heg3x))
+- Choosing the right interval to measure and archive is a challenge in monitoring CPU usage. Some monitoring tools use five-minute intervals, which can hide the existence of shorter bursts of CPU utilization. Per-second measurements are preferable, but you should be aware that there can be bursts even within one second. These can be identified from saturation, and examined using FlameScope ([Section 6.7.4](#ch06lev7sec4)), which was created for subsecond analysis. ([View Highlight](https://read.readwise.io/read/01gtgv7jsxb08sqdn73385kq8b))
+- 6.5.7 Static Performance Tuning ([View Highlight](https://read.readwise.io/read/01gtgv93yk3q39h4051fazy9x5))
+- Static performance tuning focuses on issues of the configured environment. For CPU performance, examine the following aspects of the static configuration ([View Highlight](https://read.readwise.io/read/01gtgvanxy6tbrph3fh5b3e7ms))
+- • How many CPUs are available for use? Are they cores? Hardware threads?
+  • Are GPUs or other accelerators available and in use?
+  • Is the CPU architecture single- or multiprocessor?
+  • What is the size of the CPU caches? Are they shared?
+  • What is the CPU clock speed? Is it dynamic (e.g., Intel Turbo Boost and SpeedStep)? Are those dynamic features enabled in the BIOS?
+  • What other CPU-related features are enabled or disabled in the BIOS? E.g., turboboost, bus settings, power saving settings?
+  • Are there performance issues (bugs) with this processor model? Are they listed in the processor errata sheet?
+  • What is the microcode version? Does it include performance-impacting mitigations for security vulnerabilities (e.g., Spectre/Meltdown)?
+  • Are there performance issues (bugs) with this BIOS firmware version?
+  • Are there software-imposed CPU usage limits (resource controls) present? What are they? ([View Highlight](https://read.readwise.io/read/01gtgvbeqv7vpna7qvewzsezhf))
+- 6.5.8 Priority Tuning ([View Highlight](https://read.readwise.io/read/01gtgvejvwwy8tmdhj0mdet071))
+- Unix has always provided a nice(2) system call for adjusting process priority, which sets a nice-ness value. Positive nice values result in lower process priority (nicer), and negative values—which can be set only by the superuser (root)[7](#ch06fn7)—result in higher priority. A nice(1) command became available to launch programs with nice values, and a renice(1M) command was later added (in BSD) to adjust the nice value of already running processes ([View Highlight](https://read.readwise.io/read/01gtgvgycmqct4vwafyf08p528))
+- [7](#ch06fn7a)Since Linux 2.6.12, a “nice ceiling” can be modified per process, allowing non-root processes to have lower nice values. E.g., using: prlimit `--nice=-19 -p PID.` ([View Highlight](https://read.readwise.io/read/01gtgvhsd6fff0szkanaep0rg2))
+- The value of 16 is recommended to users who wish to execute long-running programs without flak from the administration. ([View Highlight](https://read.readwise.io/read/01gtgvkqaktcn2bh40qsjpnt26))
+- The nice value is still useful today for adjusting process priority. This is most effective when there is contention for CPUs, causing scheduler latency for high-priority work. Your task is to identify low-priority work, which may include monitoring agents and scheduled backups, that can be modified to start with a nice valu ([View Highlight](https://read.readwise.io/read/01gtgvmwvx9rgw64vf7t1q7edy))
+- e. Analysis may also be performed to check that the tuning is effective, and tha ([View Highlight](https://read.readwise.io/read/01gtgvned90s4a9rghrzs3xv5x))
+- t the scheduler latency remains low for high-priority work. ([View Highlight](https://read.readwise.io/read/01gtgvnqzwaekpsb6pkdhfjk7e))
+- Linux includes a *real-time scheduling class*, which can allow processes to preempt all other work. While this can eliminate scheduler latency (other than for other real-time processes and interrupts), make sure that you understand the consequences. If the real-time application encounters a bug where multiple threads enter an infinite loop, it can cause all CPUs to become unavailable for all other work—including the administrative shell required to manually fix the problem.[8](#ch06fn8) ([View Highlight](https://read.readwise.io/read/01gtgvprghfx88twvbnhrqq749))
+- 6.5.9 Resource Controls
+  The operating system may provide fine-grained controls for allocating CPU cycles to processes or groups of processes. ([View Highlight](https://read.readwise.io/read/01gtgvrmajztc5sk0aawy8tzct))
+- 6.5.10 CPU Binding ([View Highlight](https://read.readwise.io/read/01gtgw03h2dqrxy7b2prhxksr3))
+- Another way to tune CPU performance involves binding processes and threads to individual CPUs, or collections of CPUs. This can increase CPU cache warmth for the process, improving its memory I/O performance. For NUMA systems it also improves memory locality, further improving performance. ([View Highlight](https://read.readwise.io/read/01gtgw0vbm6q8azv65fdjwdkj1))
+- There are generally two ways this is performed:
+  • **CPU binding**: Configuring a process to run only on a single CPU, or only on one CPU from a defined set.
+  • **Exclusive CPU sets**: Partitioning a set of CPUs that can be used only by the process(es) assigned to them. This can further improve CPU cache warmth, as when the process is idle other processes cannot use those CPUs. ([View Highlight](https://read.readwise.io/read/01gtgw1580hxn5jvzd3r4j7zsm))
+- 6.5.11 Micro-Benchmarking ([View Highlight](https://read.readwise.io/read/01gtgwnbbxj32c5mh0c5ndd9zd))
+- Tools for CPU micro-benchmarking typically measure the time taken to perform a simple operation many times. The operation may be based on:
+  • **CPU instructions**: Integer arithmetic, floating-point operations, memory loads and stores, branch and other instructions
+  • **Memory access**: To investigate latency of different CPU caches and main memory throughput
+  • **Higher-level languages**: Similar to CPU instruction testing, but written in a higher-level interpreted or compiled language
+  • **Operating system operations**: Testing system library and system call functions that are CPU-bound, such as getpid(2) and process creation ([View Highlight](https://read.readwise.io/read/01gtgwpgp3bknqwy2sckepsr11))
+- 6.6 Observability Tools ([View Highlight](https://read.readwise.io/read/01gtgwwpmya28089g0t5954der))
+- Table 6.8 **Linux CPU observability tools**
+  **Section**
+  **Tool**
+  **Description**
+  [6.6.1](#ch06lev6sec1)
+  uptime
+  Load averages
+  [6.6.2](#ch06lev6sec2)
+  vmstat
+  Includes system-wide CPU averages
+  [6.6.3](#ch06lev6sec3)
+  mpstat
+  Per-CPU statistics
+  [6.6.4](#ch06lev6sec4)
+  sar
+  Historical statistics
+  [6.6.5](#ch06lev6sec5)
+  ps
+  Process status
+  [6.6.6](#ch06lev6sec6)
+  top
+  Monitor per-process/thread CPU usage
+  [6.6.7](#ch06lev6sec7)
+  pidstat
+  Per-process/thread CPU breakdowns
+  [6.6.8](#ch06lev6sec8)
+  time, ptime
+  Time a command, with CPU breakdowns
+  [6.6.9](#ch06lev6sec9)
+  turboboost
+  Show CPU clock rate and other states
+  [6.6.10](#ch06lev6sec10)
+  showboost
+  Show CPU clock rate and turbo boost
+  [6.6.11](#ch06lev6sec11)
+  pmcarch
+  Show high-level CPU cycle usage
+  [6.6.12](#ch06lev6sec12)
+  tlbstat
+  Summarize TLB cycles
+  6.6.13
+  perf
+  CPU profiling and PMC analysis
+  [6.6.14](#ch06lev6sec14)
+  profile
+  Sample CPU stack traces
+  [6.6.15](#ch06lev6sec15)
+  cpudist
+  Summarize on-CPU time
+  [6.6.16](#ch06lev6sec16)
+  runqlat
+  Summarize CPU run queue latency
+  [6.6.17](#ch06lev6sec17)
+  runqlen
+  Summarize CPU run queue length
+  [6.6.18](#ch06lev6sec18)
+  softirqs
+  Summarize soft interrupt time
+  [6.6.19](#ch06lev6sec19)
+  hardirqs
+  Summarize hard interrupt time
+  [6.6.20](#ch06lev6sec20)
+  bpftrace
+  Tracing programs for CPU analysis ([View Highlight](https://read.readwise.io/read/01gtgwyyt9xsshkwcjdz4zcqvs))
+- 6.6.1 uptime ([View Highlight](https://read.readwise.io/read/01gtgx1m2qa5kydwc1fc4ax0zg))
+- $ **uptime** 9:04pm up 268 day(s), 10:16, 2 users, **load average: 7.76, 8.32, 8.60** ([View Highlight](https://read.readwise.io/read/01gtgx3tt13p8z1y8jym71x1p6))
+- The last three numbers are the 1-, 5-, and 15-minute load averages. By comparing the three numbers, you can determine if the load is increasing, decreasing, or steady during the last 15 minutes (or so). T ([View Highlight](https://read.readwise.io/read/01gtgx4py53bwmhwazzmazv54c))
+- Load Averages ([View Highlight](https://read.readwise.io/read/01gtgx7ay8fs9wq4p3x7eq0scn))
+- The load averages indicate the demand for system resources: higher means more demand. ([View Highlight](https://read.readwise.io/read/01gtkc2xtv8wfkk0ezb2z69vdw))
+- The *load* is measured as the current resource usage (utilization) plus queued requests (saturation). Imagine a car toll plaza: you could measure the load at various points during the day by counting how many cars were being serviced (utilization) plus how many cars were queued (saturation). ([View Highlight](https://read.readwise.io/read/01gtgx9173qs4bnwh2vh9pj7s3))
+- The *average* is an exponentially damped moving average, which reflects load beyond the 1-, 5-, and 15-minute times (the times are actually constants used in the exponential moving sum [[Myer 73]](#ch06ref3)) ([View Highlight](https://read.readwise.io/read/01gtgxaza5bafmw7mq7pqjxfqf))
+- ![](https://readwise-assets.s3.amazonaws.com/media/reader/parsed_document_assets/36998897/img_06fig17-06fig17.jpg) ([View Highlight](https://read.readwise.io/read/01gtgxdehvmza33d5nfmm7nmxh))
+- As a modern example, consider a 64-CPU system with a load average of 128. If the load was CPU only, it would mean that on average there is always one thread running on each CPU, and one thread waiting for each CPU. ([View Highlight](https://read.readwise.io/read/01gtkc8r56t3rcta8b4zzqexcv))
+- The same system with a CPU load average of 20 would indicate significant headroom, as it could run another 44 CPU-bound threads before all CPUs are busy. ([View Highlight](https://read.readwise.io/read/01gtkc94vr9fxgvypjks03qwb3))
+- An interface has now been added in Linux 4.20 that provides such a breakdown: pressure stall information (PSI), which gives averages for CPU, memory, and I/O. The average shows the percent of time something was stalled on a resource (saturation only). ([View Highlight](https://read.readwise.io/read/01gtkcaacbpze95r86gmvrt08t))
+- Table 6.9 **Linux load averages versus pressure stall information**
+  **Attribute**
+  **Load Averages**
+  **Pressure Stall Information**
+  Resources
+  System-wide
+  cpu, memory, io (each individually)
+  Metric
+  Number of busy and queued tasks
+  Percent of time stalled (waiting)
+  Times
+  1 min, 5 min, 15 min
+  10 s, 60 s, 300 s
+  Average
+  Exponentially damped moving sum
+  Exponentially damped moving sum ([View Highlight](https://read.readwise.io/read/01gtkcanxxwang12cs4hd4f3te))
+- Table 6.10 **Linux load average examples versus pressure stall information**
+  **Example Scenario**
+  **Load Averages**
+  **Pressure Stall Information**
+  2 CPUs, 1 busy thread
+  1.0
+  0.0
+  2 CPUs, 2 busy threads
+  2.0
+  0.0
+  2 CPUs, 3 busy threads
+  3.0
+  50.0
+  2 CPUs, 4 busy threads
+  4.0
+  100.0
+  2 CPUs, 5 busy threads
+  5.0
+  100.0 ([View Highlight](https://read.readwise.io/read/01gtkcc2yq4vnj00yrqh7y9gnt))
+- T ([View Highlight](https://read.readwise.io/read/01gtkchcwp50rhnqv80jst0h7g))
+- his 50.0 value means a thread (“some”) has stalled 50% of the time. The io and memory metrics include a second line for when all non-idle threads have stalled (“full”). PSI best answers the question: how likely is it that a task will have to wait on the resources? ([View Highlight](https://read.readwise.io/read/01gtkcfvwcvs9d2641f20hw0c8))
+- 6.6.2 vmstat ([View Highlight](https://read.readwise.io/read/01gtkcj09gbb46c0jtpzt1jn2w))
+- The virtual memory statistics command, vmstat(8), prints system-wide CPU averages in the last few columns, and a count of runnable threads in the first column. Here is example output from the Linux version: ([View Highlight](https://read.readwise.io/read/01gtkcjdvw5hqftt0by9703zef))
+- $ **vmstat 1** procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu----- r b swpd free buff cache si so bi bo in cs us sy id wa st 15 0 0 451732 70588 866628 0 0 1 10 43 38 2 1 97 0 0 15 0 0 450968 70588 866628 0 0 0 612 1064 2969 72 28 0 0 0 15 0 0 450660 70588 866632 0 0 0 0 961 2932 72 28 0 0 0 15 0 0 450952 70588 866632 0 0 0 0 1015 3238 74 26 0 0 0 [...] ([View Highlight](https://read.readwise.io/read/01gtkcjx3zrw334xe87apmt6wm))
+- • **`r`**: Run-queue length—the total number of runnable threads
+  • **`us`**: User-time percent
+  • **`sy`**: System-time (kernel) percent
+  • **`id`**: Idle percent
+  • **`wa`**: Wait I/O percent, which measures CPU idle when threads are blocked on disk I/O
+  • **`st`**: Stolen percent, which for virtualized environments shows CPU time spent servicing other tenants ([View Highlight](https://read.readwise.io/read/01gtkckac5cr23zkwm9ecf64hk))
+- On Linux, the `r` column is the total number of tasks waiting *plus* those running. ([View Highlight](https://read.readwise.io/read/01gtkcm23pr2ttxs6xsfpk5yc9))
+- 6.6.3 mpstat
+  The multiprocessor statistics tool, mpstat(1), can report statistics per CPU. ([View Highlight](https://read.readwise.io/read/01gtkcn7xez9xb96v0t9fytfyh))
+- $ **mpstat -P ALL 1** Linux 5.3.0-1009-aws (ip-10-0-239-218) 02/01/20 _x86_64_ (2 CPU) 18:00:32 CPU %usr %nice %sys %iowait %irq %soft %steal %guest %gnice %idle 18:00:33 all 32.16 0.00 61.81 0.00 0.00 0.00 0.00 0.00 0.00 6.03 18:00:33 0 32.00 0.00 64.00 0.00 0.00 0.00 0.00 0.00 0.00 4.00 18:00:33 1 32.32 0.00 59.60 0.00 0.00 0.00 0.00 0.00 0.00 8.08 18:00:33 CPU %usr %nice %sys %iowait %irq %soft %steal %guest %gnice %idle 18:00:34 all 33.83 0.00 61.19 0.00 0.00 0.00 0.00 0.00 0.00 4.98 18:00:34 0 34.00 0.00 62.00 0.00 0.00 0.00 0.00 0.00 0.00 4.00 18:00:34 1 33.66 0.00 60.40 0.00 0.00 0.00 0.00 0.00 0.00 5.94 [...] ([View Highlight](https://read.readwise.io/read/01gtkcnxe3hxg4x3kg8tc28q67))
+- The `-P ALL` option was used to print the per-CPU report. By default, mpstat(1) prints only the system-wide summary line (`all`). The columns are:
+  • **`CPU`**: Logical CPU ID, or `all` for summary
+  • **`%usr`**: User-time, excluding `%nice`
+  • **`%nice`**: User-time for processes with a nice’d priority
+  • **`%sys`**: System-time (kernel)
+  • **`%iowait`**: I/O wait
+  • **`%irq`**: Hardware interrupt CPU usage
+  • **`%soft`**: Software interrupt CPU usage
+  • **`%steal`**: Time spent servicing other tenants
+  • **`%guest`**: CPU time spent in guest virtual machines
+  • **`%gnice`**: CPU time to run a niced guest
+  • **`%idle`**: Idle ([View Highlight](https://read.readwise.io/read/01gtkcp88x0ckfsyj8drpa0acc))
+- 6.6.4 sar ([View Highlight](https://read.readwise.io/read/01gtkcrs6eq8m63fzftj3723mr))
+- The system activity reporter, sar(1), can be used to observe current activity and can be configured to archive and report historical statistics. ([View Highlight](https://read.readwise.io/read/01gtkcr36xyexv1brgmndwh7e0))
+- The Linux version provides the following options for CPU analysis:
+  • **`-P ALL`**: Same as `mpstat -P ALL`
+  • **`-u`**: Same as mpstat(1)’s default output: system-wide average only
+  • **`-q`**: Includes run-queue size as `runq-sz` (waiting plus running, the same as vmstat(1)’s `r`) and load averages ([View Highlight](https://read.readwise.io/read/01gtkdz5x8am39e0qkyhztsz3v))
+- 6.6.5 ps ([View Highlight](https://read.readwise.io/read/01gtke000d5w7avzv8a9mwpagx))
+- The process status command, ps(1), can list details on all processes, including CPU usage statistics. For example: ([View Highlight](https://read.readwise.io/read/01gtke0ygzn7k2edct5exwj1q0))
+- This lists every process (`-e`) with full details (`-f`). Various other options are available for ps(1) including `-o` to customize the output and columns shown. ([View Highlight](https://read.readwise.io/read/01gtke5zdxbb6qsq32sxr46q5z))
+- Key columns for CPU usage are `TIME` and `%CPU` (earlier example). ([View Highlight](https://read.readwise.io/read/01gtke6dcr59med3qpasrcqmk1))
+- The `TIME` column shows the total CPU time consumed by the process (user + system) since it was created, in hours:minutes:seconds. ([View Highlight](https://read.readwise.io/read/01gtke762n072d3aq2a75rezmb))
+- On Linux, the `%CPU` column from the first example shows the average CPU utilization over the lifetime of the process, summed across all CPUs. ([View Highlight](https://read.readwise.io/read/01gtke9tseny9mt6tkwem4mj25))
+- 6.6.6 top ([View Highlight](https://read.readwise.io/read/01gtkec8jdbkshypfdmkh507kd))
+- $ **top** top - 01:38:11 up 63 days, 1:17, 2 users, load average: 1.57, 1.81, 1.77 Tasks: 256 total, 2 running, 254 sleeping, 0 stopped, 0 zombie Cpu(s): 2.0%us, 3.6%sy, 0.0%ni, 94.2%id, 0.0%wa, 0.0%hi, 0.2%si, 0.0%st Mem: 49548744k total, 16746572k used, 32802172k free, 182900k buffers Swap: 100663292k total, 0k used, 100663292k free, 14925240k cached PID USER PR NI VIRT RES SHR S %CPU %MEM TIME+ COMMAND 11721 web 20 0 623m 50m 4984 R 93 0.1 0:59.50 node 11715 web 20 0 619m 20m 4916 S 25 0.0 0:07.52 node 10 root 20 0 0 0 0 S 1 0.0 248:52.56 ksoftirqd/2 51 root 20 0 0 0 0 S 0 0.0 0:35.66 events/0 11724 admin 20 0 19412 1444 960 R 0 0.0 0:00.07 top 1 root 20 0 23772 1948 1296 S 0 0.0 0:04.35 init ([View Highlight](https://read.readwise.io/read/01gtkedvt2vzrdg49qxbd6xtpn))
+- A system-wide summary is at the top and a process/task listing at the bottom, sorted by the top CPU consumer by default. The system-wide summary includes the load averages and CPU states: `%us`, `%sy`, `%ni`, `%id`, `%wa`, `%hi`, `%si`, `%st`. ([View Highlight](https://read.readwise.io/read/01gtkeegtmtx58kp4jj6a3fgty))
+- The `%CPU` column shows the total CPU utilization for the current screen update interval. ([View Highlight](https://read.readwise.io/read/01gtkegxd3xe3xz4sks4f28nmj))
+- This can be switched to “Solaris mode” (by pressing `I` to toggle the modes), which divides the CPU usage by the CPU count ([View Highlight](https://read.readwise.io/read/01gtkej0a3sh53ht6evyscptzc))
+- Though top(1) is often a tool for beginning performance analysts, you should be aware that the CPU usage of top(1) itself can become significant and place top(1) as the top CPU-consuming process! ([View Highlight](https://read.readwise.io/read/01gtkejkhd57p1xex87791471n))
+- Since top(1) takes snapshots of /proc, it can miss short-lived processes that exit before a snapshot is taken. This commonly happens during software builds, where the CPUs can be heavily loaded by many short-lived tools from the build process. ([View Highlight](https://read.readwise.io/read/01gtkekjv7a4fxgfzd7b9zbq1k))
+- 6.6.7 pidstat ([View Highlight](https://read.readwise.io/read/01gtken5zn8ggsz1qy0fpryn8k))
+- The Linux pidstat(1) tool prints CPU usage by process or thread, including user- and system-time breakdowns ([View Highlight](https://read.readwise.io/read/01gtkenkq1t01e844ykgzn03fj))
+- $ **pidstat 1** Linux 2.6.35-32-server (dev7) 11/12/12 _x86_64_ (16 CPU) 22:24:42 PID %usr %system %guest %CPU CPU Command 22:24:43 7814 0.00 1.98 0.00 1.98 3 tar 22:24:43 7815 97.03 2.97 0.00 100.00 11 gzip 22:24:43 PID %usr %system %guest %CPU CPU Command 22:24:44 448 0.00 1.00 0.00 1.00 0 kjournald 22:24:44 7814 0.00 2.00 0.00 2.00 3 tar 22:24:44 7815 97.00 3.00 0.00 100.00 11 gzip 22:24:44 7816 0.00 2.00 0.00 2.00 2 pidstat [...] ([View Highlight](https://read.readwise.io/read/01gtkeqc57daaansknphr1ve0s))
+- The `-p ALL` option can be used to print all processes, including those that are idle. `-t` prints per-thread statistics. Other pidstat(1) options are included in other chapters of this book. ([View Highlight](https://read.readwise.io/read/01gtket803nd6x01axwx2m6w5d))
+- 6.6.8 time, ptime ([View Highlight](https://read.readwise.io/read/01gtkew6qpvwxx5bmzs817e3xm))
+- The time(1) command can be used to run programs and report CPU usage. It is provided in the operating system under /usr/bin, and as a shell built-in. ([View Highlight](https://read.readwise.io/read/01gtkf0s27cxmvht8b2gvfngdr))
+- $ **time cksum ubuntu-19.10-live-server-amd64.iso** 1044945083 883949568 ubuntu-19.10-live-server-amd64.iso real 0m5.590s user 0m2.776s sys 0m0.359s $ **time cksum ubuntu-19.10-live-server-amd64.iso** 1044945083 883949568 ubuntu-19.10-live-server-amd64.iso real 0m2.857s user 0m2.733s sys 0m0.114s ([View Highlight](https://read.readwise.io/read/01gtkf2x67wwh40ryhtexq0n9z))
+- The first run took 5.6 seconds, of which 2.8 seconds was in user mode, calculating the checksum. There was 0.4 seconds in system-time, spanning the system calls required to read the file. There is a missing 2.4 seconds (5.6 – 2.8 – 0.4), which is likely time spent blocked on disk I/O reads as this file was only partially cached. The second run completed more quickly, in 2.9 seconds, with almost no blocked time. This is expected, as the file may be fully cached in main memory for the second run. ([View Highlight](https://read.readwise.io/read/01gtkf3g7zjcg30ese8amjcnhw))
+- On Linux, the /usr/bin/time version supports verbose details. For example: ([View Highlight](https://read.readwise.io/read/01gtkf5fx3ram5hqtw7h88qe5b))
+- $ **/usr/bin/time -v cp fileA fileB** Command being timed: "cp fileA fileB" User time (seconds): 0.00 System time (seconds): 0.26 Percent of CPU this job got: 24% Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.08 Average shared text size (kbytes): 0 Average unshared data size (kbytes): 0 Average stack size (kbytes): 0 Average total size (kbytes): 0 Maximum resident set size (kbytes): 3792 Average resident set size (kbytes): 0 Major (requiring I/O) page faults: 0 Minor (reclaiming a frame) page faults: 294 Voluntary context switches: 1082 Involuntary context switches: 1 Swaps: 0 File system inputs: 275432 File system outputs: 275432 Socket messages sent: 0 Socket messages received: 0 Signals delivered: 0 Page size (bytes): 4096 Exit status: 0 ([View Highlight](https://read.readwise.io/read/01gtkf7e17bnhv542x3pcpk7qj))
+- 6.6.9 turbostat ([View Highlight](https://read.readwise.io/read/01gtkg4d4942ccs9bebckwkq94))
+- turbostat(1) is a model-specific register (MSR)–based tool that shows the state of the CPUs, and is often available in a linux-tools-common package. ([View Highlight](https://read.readwise.io/read/01gtkga52jjw7tqwt2ybpwtxqk))
+- 6.6.10 showboost ([View Highlight](https://read.readwise.io/read/01gtkg9gd4684d0emy5mcya7a9))
+## New highlights added March 11, 2023 at 3:43 PM
+- 6.6.11 pmcarch
+  pmcarch(8) shows a high-level view of CPU cycle performance. It is a PMC-based tool based on the Intel “architectural set” of PMCs, hence the name ([View Highlight](https://read.readwise.io/read/01gv256y1p8355wx1ja82a8bfa))
+- # **pmcarch** K_CYCLES K_INSTR IPC BR_RETIRED BR_MISPRED BMR% LLCREF LLCMISS LLC% 96163187 87166313 0.91 19730994925 679187299 3.44 656597454 174313799 73.45 93988372 87205023 0.93 19669256586 724072315 3.68 666041693 169603955 74.54 93863787 86981089 0.93 19548779510 669172769 3.42 649844207 176100680 72.90 93739565 86349653 0.92 19339320671 634063527 3.28 642506778 181385553 71.77 [...] ([View Highlight](https://read.readwise.io/read/01gv257z9ca51ysyx1cyh28spk))
+- 6.6.12 tlbstat
+  tlbstat(8) is another tool from pmc-cloud-tools, which shows the TLB cache statistics. ([View Highlight](https://read.readwise.io/read/01gv257f1wyjae9gtny5k81h87))
+- 6.6.13 perf ([View Highlight](https://read.readwise.io/read/01gv259cqkn0cj161cm7z43g8g))
+- Sample on-CPU functions for the specified command, at 99 Hertz:
+  perf record -F 99 *[command](#glo_032)*
+  Sample CPU stack traces (via frame pointers) system-wide for 10 seconds:
+  [Click here to view code image](#pg267-1a)
+  perf record -F 99 -a -g -- sleep 10
+  Sample CPU stack traces for the PID, using dwarf (dbg info) to unwind stacks:
+  [Click here to view code image](#pg267-2a)
+  perf record -F 99 -p PID --call-graph dwarf -- sleep 10
+  Record new process events via exec:
+  [Click here to view code image](#pg267-3a)
+  perf record -e sched:sched_process_exec -a
+  Record context switch events for 10 seconds with stack traces:
+  [Click here to view code image](#pg267-4a)
+  perf record -e sched:sched_switch -a -g -- sleep 10
+  Sample CPU migrations for 10 seconds:
+  [Click here to view code image](#pg267-5a)
+  perf record -e migrations -a -- sleep 10
+  Record all CPU migrations for 10 seconds:
+  [Click here to view code image](#pg267-6a)
+  perf record -e migrations -a -c 1 -- sleep 10
+  Show perf.data as a text report, with data coalesced and counts and percentages:
+  perf report -n --stdio
+  List all perf.data events, with data header (recommended):
+  perf script --header
+  Show PMC statistics for the entire system, for 5 seconds:
+  perf stat -a -- sleep 5
+  Show CPU last level cache (LLC) statistics for the command:
+  [Click here to view code image](#pg268-1a)
+  perf stat -e LLC-loads,LLC-load-misses,LLC-stores,LLC-prefetches command
+  Show memory bus throughput system-wide every second:
+  [Click here to view code image](#pg268-2a)
+  perf stat -e uncore_imc/data_reads/,uncore_imc/data_writes/ -a -I 1000
+  Show the rate of context switches per-second:
+  [Click here to view code image](#pg268-3a)
+  perf stat -e sched:sched_switch -a -I 1000
+  Show the rate of involuntary context switches per-second (previous state was TASK_RUNNING):
+  [Click here to view code image](#pg268-4a)
+  perf stat -e sched:sched_switch --filter 'prev_state == 0' -a -I 1000
+  Show the rate of mode switches and context switches per second:
+  [Click here to view code image](#pg268-5a)
+  perf stat -e cpu_clk_unhalted.ring0_trans,cs -a -I 1000
+  Record a scheduler profile for 10 seconds:
+  perf sched record -- sleep 10
+  Show per-process scheduler latency from a scheduler profile:
+  perf sched latency
+  List per-event scheduler latency from a scheduler profile:
+  perf sched timehist ([View Highlight](https://read.readwise.io/read/01gv25am88sqwyjtgyyqkzg6am))
+- System-Wide CPU Profiling ([View Highlight](https://read.readwise.io/read/01gv25f2yjknsp3q7qewfwjzwx))
+- perf(1) can be used to profile CPU call paths, summarizing where CPU time is spent in both kernel- and user-space. This is performed by the `record` command, which captures sample to a perf.data file. ([View Highlight](https://read.readwise.io/read/01gv25ft4ntwxd4zpbdh27g3c7))
+- A `report` command can then be used to view the contents of the file. It works by using the most accurate timer available: CPU-cycle-based if available, otherwise software based (the cpu-clock event). ([View Highlight](https://read.readwise.io/read/01gv25gxpw4rpsn55hnjp1nj29))
+- In the following example, all CPUs (`-a`[10](#ch06fn10)) are sampled with call stacks (`-g`) at 99 Hz (`-F 99`) for 10 seconds (`sleep 10`). The `--stdio` option for `report` is used to print all the output, instead of operating in interactive mode. ([View Highlight](https://read.readwise.io/read/01gv25j78j8p8287fpwj6kgnzy))
+- # **perf record -a -g -F 99 -- sleep 10** [ perf record: Woken up 20 times to write data ] [ perf record: Captured and wrote 5.155 MB perf.data (1980 samples) ] # **perf report --stdio** [...] # Children Self Command Shared Object Symbol # ........ ........ ............... ......................... ................... ................................................................... # 29.49% 0.00% mysqld libpthread-2.30.so [.] start_thread | ---start_thread 0x55dadd7b473a 0x55dadc140fe0 | --29.44%--do_command | |--26.82%--dispatch_command | | | --25.51%--mysqld_stmt_execute | | | --25.05%-- Prepared_statement::execute_loop | | | --24.90%-- Prepared_statement::execute | | | --24.34%-- mysql_execute_command | | [...] ([View Highlight](https://read.readwise.io/read/01gv25kaw8164s97rf7d2gtjzj))
