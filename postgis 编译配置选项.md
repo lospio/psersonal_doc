@@ -1,6 +1,6 @@
 
 ```shell
-./configure --prefix=/home/postgres --with-gdalconfig=/usr/gdal34/bin/gdal-config --with-pgconfig=/usr/pgsql/10_debug_o2/bin/pg_config --with-geosconfig=/usr/local/bin/geos-config --with-projdir=/usr/proj80 --with-xml2config=/usr/local/bin/xml2-config --with-protobufdir=/usr/local/protobuf-3.19.4 --without-protobuf
+./configure --prefix=/home/postgres --with-gdalconfig=/usr/gdal34/bin/gdal-config --with-pgconfig=/usr/pgsql/9.2.24/bin/pg_config --with-geosconfig=/usr/local/bin/geos-config --with-projdir=/usr/proj80 --with-xml2config=/usr/local/bin/xml2-config --with-protobufdir=/usr/local/protobuf-3.19.4 --without-protobuf
 
 ```
 

@@ -46,7 +46,7 @@ git checkout --orphan branch_name
 #不要忽略 '.'
 git rm -rf .
 #添加remote
-git add remote remote_name remote_url
+git remote add remote_name remote_url
 git fetch remote_name remote_barnch_name
 git pull remote_name remote_branch_name
 #此处要往origin推送本地分支，可根据需要修改名字
@@ -54,6 +54,16 @@ git push origin local_branch_name:remote_banch_name
 ```
 切换tag
 ```bash
+git checkout tagname
+git checkout -b branchname tagname
+git push -u remote local_branch_name:remote_local_branch_name
+# 报错error: src refspec REL_14_6 matches more than one
+# 表示tag和branch重名
+```
+新增某个tag
+```bash
+git remote add remote_name
+git fetch remote_name
 git checkout tagname
 git checkout -b branchname tagname
 git push -u remote local_branch_name:remote_local_branch_name

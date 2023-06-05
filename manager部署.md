@@ -41,7 +41,7 @@ shared_preload_libraries = ${service['shared_preload_libraries']}
 spacture.node_conninfo = ${service['spacture.node_conninfo']}
 shared_buffers = ${service['shared_buffers']}
 port=${service['coordinator.port']}
-...
+...![[010BE2AC.png]]
 ```
 #### 动态参数,可在控制台配置
 ```yaml
