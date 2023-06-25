@@ -11,6 +11,12 @@ alias:
 	- 172.18.128.47 tw-node47
 	- 172.18.128.48 tw-node48
 - image：`tw-node45:5000/transwarp/spacture-1.2.0:v1`
+- 编译docker
+	```bash
+	docker build -t transwarp/spacture-1.2.0:v1 . --network=host
+	docker tag transwarp/spacture-1.2.0:v1 tw-node45:5000/transwarp/spacture-1.2.0:v1
+	docker push tw-node45:5000/transwarp/spacture-1.2.0:v1
+	```
 # 02：规格
 #### 组件
 - PostgreSQL 10.23 (Transwarp)

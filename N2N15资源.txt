@@ -1,0 +1,36 @@
+==========================================N15  20台
+/dev/sdb1                       11T  2.2T  8.2T   21% /mnt/disk1
+/dev/sdc1                       11T  2.4T  7.9T   24% /mnt/disk2
+
+
+
+[postgres@0i jianju_vec_data_bak_0612]$ lscpu
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                64
+
+
+[postgres@0i jianju_vec_data_bak_0612]$ free -h
+              total        used        free      shared  buff/cache   available
+Mem:           376G        8.7G         76G         33G        290G        332G
+Swap:          127G        2.9G        125G
+
+
+
+======================================N2   12台
+[postgres@n2-gsdb11 jianju_vec_data_bak_0612]$ lscpu
+Architecture:                    x86_64
+CPU op-mode(s):                  32-bit, 64-bit
+Byte Order:                      Little Endian
+Address sizes:                   43 bits physical, 48 bits virtual
+CPU(s):                          128
+
+
+/dev/mapper/Data_VG-LV_data1     37T  1.1G   35T   1% /mnt/disk1
+/dev/mapper/Data_VG-LV_data2     37T   36K   35T   1% /mnt/disk2
+
+[postgres@n2-gsdb11 jianju_vec_data_bak_0612]$ free -h
+              total        used        free      shared  buff/cache   available
+Mem:          376Gi       6.5Gi       352Gi       5.4Gi        17Gi       361Gi
+Swap:          15Gi          0B        15Gi
