@@ -11,5 +11,6 @@
   "rightToLeft": false,
   "showIndentGuide": true,
   "alwaysUpdateLinks": true,
-  "showUnsupportedFiles": false
+  "showUnsupportedFiles": true,
+  "attachmentFolderPath": "attachment"
 }
