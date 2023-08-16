@@ -64,7 +64,8 @@ Citus的分布式计划是在PG计划器的基础上构建的，首先调用PG�
 	- Logical join order planner determines the optimal execution order for join trees involving non-co-located joins.
 		![[Pasted image 20230816173233.png]]
 
-
+#### 流程
+![[Drawing 2023-08-16 16.29.48.excalidraw]]
 # 代码
 - `PrunableExpressions`
 	- 对 or进行拆分 ``A AND (B OR C) AND D) into (A AND B AND D), (A AND C AND D)`
