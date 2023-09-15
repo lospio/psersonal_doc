@@ -1,11 +1,13 @@
 # Citus概述
+Citus是基于PostgreSQL插件实现的一款开源分布式数据库，是Azure在分布式PG上的商业化实践，是一款以OLTP为主，提供部分OLAP能力的数据库
 1. CItus是PostgreSQL的一个开源拓展，可以将PostgreSQL转换为分布式数据库
-2. Citus是作为一个shared library，在每次PG Server启动前加载
+2. Citus是作为一个shared library，在每次PG Server启动前加载;通过PG内核的hook实现，0代码侵入，复用PG能力。
 3. Citus使用`distributed table` `reference table` 和 `distributed SQL query engine`==水平拓展==PostgreSQL
 	- Distributed table. Distributed tables are hash-partitioned along a distribution column into multiple logical shards with each shard containing a contiguous range of hash values.
+		- Co-location. Citus ensures that the same range of (hash) values is always on the same worker node among distributed tables that are co-located.
 	- Reference tables. Reference tables are replicated to all nodes in a Citus cluster, including the coordinator.
-	- Co-location. Citus ensures that the same range of (hash) values is always on the same worker node among distributed tables that are co-located.
 # 简单查询过程
+![[citus adaptive executor专题 2023-08-16 .excalidraw]]
 ```sql
 create table tt01(id int, name char);
 set citus.shard_count to 4;
@@ -48,10 +50,9 @@ postgres=# explain analyze verbose select * from tt01;
  Execution time: 9.169 ms
 (30 rows)
 ```
-![[citus adaptive executor专题 2023-08-16 .excalidraw]]
 # 分布式计划器
 
-Citus的分布式计划是在PG计划器的基础上构建的，首先调用PG的standard planner，生成一个基础计划，然后处理分布式表，例如为分布式表的每个shard添加一个worker job，worker job上层添加CustomerScan node用于汇集各个子任务查询的数据，替换表名等等。
+Citus的分布式计划是在PG计划器的基础上构建的，首先调用PG的standard planner，生成一个基础计划，然后处理分布式表，例如为分布式表的每个shard添加一个worker task，所有task集合称为worker job；worker job上层添加CustomerScan node用于汇集各个子任务查询的数据，替换表名等等。
 > The distributed query planner produces a PostgreSQL query plan that contains a CustomScan node, which contains the distributed query plan. A distributed query plan consists of a set of tasks (queries on shards) to run on the workers, and optionally a set of subplans whose results need to be broadcast or re-partitioned, such that their results can be read by subsequent tasks.
 #### 种类
 - A. Fast path planner handles simple CRUD queries on a single table with a single distribution column value.
@@ -66,10 +67,39 @@ Citus的分布式计划是在PG计划器的基础上构建的，首先调用PG�
 
 #### 流程
 ![[Drawing 2023-08-16 16.29.48.excalidraw]]
-# 代码
-- `PrunableExpressions`
-	- 对 or进行拆分 ``A AND (B OR C) AND D) into (A AND B AND D), (A AND C AND D)`
-	- 对一个表达式，一个var和一个const进行操作，如果var是分布列，
+#### 结果
+- 对于fast path planner 和 Router planner，计划的top node是一个CustomScan，所有的查询委托给单个worker执行
+	![[Pasted image 20230817105246.png]]
+- 对于logical planner，计划中包含一个customScan node，该节点上层可能含有一个merge 操作，subplan
+	![[Pasted image 20230817105446.png]]
+	![[Pasted image 20230817110051.png]]
+# 分布式执行器
+PostgreSQL查询计划是一个执行节点树，每个节点都有一个返回元组的函数。Citus分布式执行器叫做Adaptive executor，可以针对多个场景执行query plan。
+#### 过程
+![[excalidraw/Drawing 2023-08-17 11.03.42.excalidraw|Drawing 2023-08-17 11.03.42.excalidraw]]
+
+# PXF设计
+#### 方案一
+延用当前计划器，做部分修改；
+- 优势：
+	- 不需要从头写计划器
+- 缺点：
+	- 需要修改prune shard部分，我们的诉求是对每个shard都要发起连接
+	 - 需要修改`create distributed table`相关处理
+		 - foreign server
+		 - user mapping
+#### 方案2
+重写query plan，
+- 优势：
+	- 不影响citus代码
+- 缺点：
+	- 无法和citus版本做绑定
 # 参考
 - [How the Citus distributed query executor adapts to your Postgres workload](https://www.citusdata.com/blog/2020/04/27/how-citus-distributed-query-executor-adapts-to-postgres-workload/)
-- 
+- ！[[Citus Distributed PostgreSQL for Data-Intensive Applications.pdf]]
+# TODO
+citus全扫描 和 单个tuple返回 原因 优点
+## 代码
+- `PrunableExpressions`
+	- 对 or进行拆分 ``A AND (B OR C) AND D) into (A AND B AND D), (A AND C AND D)`
+	- 对一个表达式，一个var和一个const进行操作
