@@ -70,3 +70,7 @@ git push -u remote local_branch_name:remote_local_branch_name
 # 报错error: src refspec REL_14_6 matches more than one
 # 表示tag和branch重名
 ```
+ 关联远端分支
+```sql
+git branch --set-upstream-to=origin/8.0.30-oraclelike-sysdate
+```

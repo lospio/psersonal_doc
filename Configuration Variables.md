@@ -156,7 +156,7 @@ static void kill_old_mysqld(void)
 # Configuration
 | 参数                           | 解释                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |     |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
-| big-tables                     | 每当创建一个表时候，会首先考虑使用in-memory temporary table，当该表的空间超过 `tmp_table_size`时，会把临时表转变为disk-based table；开启这个选项以后，当创建一个表的时候，直接创建为disk-based table 、                                                                                                                                                                                                                                                                 |     |
+| big-tables                     | 每当创建一个表时候，会首先考虑使用in-memory temporary table，当该表的空间超过 `tmp_table_size`时，会把临时表转变为disk-based table；开启这个选项以后，当创建一个表的时候，直接创建为disk-based table                                                                                                                                                                                                                                                                  |     |
 | concurrent-insert              | 当一条记录插入表中时，MyISAM存储引擎首先尝试查找之前删除的记录，该记录的空间足够大以容纳新记录，并用新记录覆盖该空间 ；如果不存在，就写入到最后。                                                                                                                                                                                                                                                                                                                       |     |
 | core-file                      | 如果不幸发生崩溃，此选项将充分发挥被称为 MySQL 的巫毒黑魔法的全部力量，以诱使不合作的内核写出核心文件                                                                                                                                                                                                                                                                                                                                                                   |     |
 | default-storage-engine         | 设置默认的存储引擎                                                                                                                                                                                                                                                                                                                                                                                                                                                      |     |
@@ -192,3 +192,32 @@ static void kill_old_mysqld(void)
 | table_cache                    | 该选项控制可以同时缓存多少个表描述符（不是表！）。                                                                                                                                                                                                                                                                                                                                                                                                                      |     |
 | temp-pool                      | 此选项专门用于解决 Linux 内核中的设计缺陷（至少在版本 2.4 中）。当进程重复创建和删除具有唯一名称的文件时，内核最终会分配大量从未释放的内存。MySQL 有时可能需要创建临时文件来解决查询。在具有大量流量和各种查询的大型站点上，这种情况可能会频繁发生，从而导致严重的问题。对于大多数用户来说，直到 MySQL 在一个负载非常大且包含大量频繁执行的复杂查询的站点上使用时，情况才发生变化。MySQL 开发人员通过添加一个选项来将临时表名称的可能性限制为较小的名称集来解决此问题。 |     |
 | transaction-isolation          |  该选项允许为整个服务器设置全局事务隔离级别。                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |     |
+
+#? 
+sql 层级更改变量的流程
+
+两个地方定义的参数
+mysqld.cc sys_var.cc
+二者的主要差别存在于加载的时机,部分变量需要作为基础变量提前加载,此类变量都会在 mysqld.cc 中.
+`Sys_var_plugin`,`Sys_var_struct`,`Sys_var_tz`,需要在命令行中指定的此类变量需要手动添加到 mysqld.cc 中
+```text
+//mysqld.cc
+Process command line options flagged as 'early'.  
+Some components needs to be initialized as early as possible,  
+because the rest of the server initialization depends on them.  
+Options that needs to be parsed early includes:  
+- the performance schema, when compiled in,  
+- options related to the help,  
+- options related to the bootstrap  
+The performance schema needs to be initialized as early as possible,  
+before to-be-instrumented objects of the server are initialized.
+```
+
+```text
+// sql层级添加变量
+/**  
+  @file  Definitions of all server's session or global variables.  
+  How to add new variables:  
+  1. copy one of the existing variables, and edit the declaration.  2. if you need special behavior on assignment or additional checks     use ON_CHECK and ON_UPDATE callbacks.  3. *Don't* add new Sys_var classes or uncle Occam will come     with his razor to haunt you at nights  
+  Note - all storage engine variables (for example myisam_whatever)  should go into the corresponding storage engine sources  (for example in storage/myisam/ha_myisam.cc) !*/
+```

@@ -108,7 +108,7 @@ random scramble 在 4.1 之前的版本中是 8 字节整数，在 4.1 以及后
 3. 服务端作如下计算，比对 SHA1(stage1_hash) 和 mysql.user.password 是否相同。
     stage1_hash = token XOR SHA1(scramble + mysql.user.password)
 这里实际用到了异或的自反性： `A XOR B XOR B = A` ，对于给定的数 A，用同样的运算因子 B 作两次异或运算后仍得到 A 本身。对于当前情况的话，实际的计算过程如下。
-```text
+
 token = SHA1(scramble + SHA1(SHA1(password))) XOR SHA1(password)         // 客户端返回的值
       = PASSWORD XOR SHA1(password)
 
@@ -298,7 +298,7 @@ COM_END /**< Not a real command. Refused. */
 
 };
 ```
-为了保证旧客户端的向后·兼容性，新添加的命令必须在COM_END之前。
+为了保证旧客户端的向后兼容性，新添加的命令必须在COM_END之前。
 ### 服务器端响应
 服务器收到命令，就会对其进行处理并发送一个或多个响应数据包。
 #### 数据段
@@ -333,11 +333,12 @@ net_store_length(char *pkg, ulonglong length)
 ```
 
 ```text
+packet 存 code 值,后面的 1-8 位存 length
 1. if (0, 251)                 then 1 bytes
 2. if == 251                   then null
-3. if [252, 2 bytes)           then 使用252编码，存入2bytes
-4. if [2 bytes, 4 btyes)       then 使用253编码，存入4bytes
-5. if [4 bytes,  )             then 使用254编码，存入8bytes
+3. if [252, 2 bytes)           then 2bytes
+4. if [2 bytes, 4 btyes)       then 4bytes
+5. if [4 bytes,  )             then 8bytes
 ```
 数据包数量巨大，在这种情况下，即使每个字段浪费一个字节也会增加很大的开销
 #### OK Packet
@@ -381,6 +382,51 @@ net_store_length(char *pkg, ulonglong length)
 | 3                  | 2      | Server status bit mask    |
 
 #### Result Set Packet
+#? 空结果的返回
+```cpp
+frame #0: 0x00000001054d29e4 mysqld`THD::send_result_metadata(this=0x000000013a809600, list=0x00000001409b1ff8, flags=5) at sql_class.cc:2834:13
+    frame #1: 0x000000010538f780 mysqld`Query_result_send::send_result_set_metadata(this=0x00000001409b3988, thd=0x000000013a809600, list=0x00000001409b1ff8, flags=5) at query_result.cc:70:20
+    frame #2: 0x0000000105789e00 mysqld`Query_expression::ExecuteIteratorQuery(this=0x00000001409b1850, thd=0x000000013a809600) at sql_union.cc:1207:21
+    frame #3: 0x000000010578a790 mysqld`Query_expression::execute(this=0x00000001409b1850, thd=0x000000013a809600) at sql_union.cc:1343:10
+    frame #4: 0x00000001056a5b28 mysqld`Sql_cmd_dml::execute_inner(this=0x00000001409b3950, thd=0x000000013a809600) at sql_select.cc:786:15
+    frame #5: 0x00000001056a4d84 mysqld`Sql_cmd_dml::execute(this=0x00000001409b3950, thd=0x000000013a809600) at sql_select.cc:586:7
+    frame #6: 0x00000001055f957c mysqld`mysql_execute_command(thd=0x000000013a809600, first_level=true) at sql_parse.cc:4604:29
+    frame #7: 0x00000001055f1258 mysqld`dispatch_sql_command(thd=0x000000013a809600, parser_state=0x000000016cb1d7a8) at sql_parse.cc:5239:19
+    frame #8: 0x00000001055ed234 mysqld`dispatch_command(thd=0x000000013a809600, com_data=0x000000016cb1ee40, command=COM_QUERY) at sql_parse.cc:1959:7
+    frame #9: 0x00000001055ef814 mysqld`do_command(thd=0x000000013a809600) at sql_parse.cc:1362:18
+    frame #10: 0x00000001058d329c mysqld`handle_connection(arg=0x00006000032dc000) at connection_handler_per_thread.cc:302:13
+    frame #11: 0x000000010755caa0 mysqld`pfs_spawn_thread(arg=0x00000001138041f0) at pfs.cc:2942:3
+    frame #12: 0x0000000182d97034
+
+
+(lldb) bt
+* thread #41, name = 'connection', stop reason = breakpoint 3.1
+  * frame #0: 0x0000000102e0b87c mysqld`Query_result_send::send_data(this=0x000000013a4edd40, thd=0x000000011500ca00, items=0x000000013a4f6d80) at query_result.cc:97:3
+    frame #1: 0x0000000103206314 mysqld`Query_expression::ExecuteIteratorQuery(this=0x000000014300d050, thd=0x000000011500ca00) at sql_union.cc:1305:25
+    frame #2: 0x0000000103206790 mysqld`Query_expression::execute(this=0x000000014300d050, thd=0x000000011500ca00) at sql_union.cc:1343:10
+    frame #3: 0x0000000103121b28 mysqld`Sql_cmd_dml::execute_inner(this=0x000000014300dba0, thd=0x000000011500ca00) at sql_select.cc:786:15
+    frame #4: 0x0000000103120d84 mysqld`Sql_cmd_dml::execute(this=0x000000014300dba0, thd=0x000000011500ca00) at sql_select.cc:586:7
+    frame #5: 0x000000010313fdfc mysqld`Sql_cmd_show::execute(this=0x000000014300dba0, thd=0x000000011500ca00) at sql_show.cc:207:26
+    frame #6: 0x000000010307557c mysqld`mysql_execute_command(thd=0x000000011500ca00, first_level=true) at sql_parse.cc:4604:29
+    frame #7: 0x000000010306d258 mysqld`dispatch_sql_command(thd=0x000000011500ca00, parser_state=0x000000016f0a17a8) at sql_parse.cc:5239:19
+    frame #8: 0x0000000103069234 mysqld`dispatch_command(thd=0x000000011500ca00, com_data=0x000000016f0a2e40, command=COM_QUERY) at sql_parse.cc:1959:7
+    frame #9: 0x000000010306b814 mysqld`do_command(thd=0x000000011500ca00) at sql_parse.cc:1362:18
+    frame #10: 0x000000010334f29c mysqld`handle_connection(arg=0x00006000029d0000) at connection_handler_per_thread.cc:302:13
+    frame #11: 0x0000000104fd8aa0 mysqld`pfs_spawn_thread(arg=0x0000000114e04f10) at pfs.cc:2942:3
+    frame #12: 0x0000000182d97034
+
+
+
+* thread #41, name = 'connection', stop reason = breakpoint 1.1
+  * frame #0: 0x00000001015fe9e4 mysqld`THD::send_result_metadata(this=0x000000011a809600, list=0x00000001709f0658, flags=2) at sql_class.cc:2834:13
+    frame #1: 0x00000001017f8e48 mysqld`mysqld_list_fields(thd=0x000000011a809600, table_list=0x00000001709f1be8, wild="") at sql_show.cc:1404:12
+    frame #2: 0x0000000101719ef0 mysqld`dispatch_command(thd=0x000000011a809600, com_data=0x00000001709f2e40, command=COM_FIELD_LIST) at sql_parse.cc:2136:7
+    frame #3: 0x000000010171b814 mysqld`do_command(thd=0x000000011a809600) at sql_parse.cc:1362:18
+    frame #4: 0x00000001019ff29c mysqld`handle_connection(arg=0x0000600003694000) at connection_handler_per_thread.cc:302:13
+    frame #5: 0x0000000103688aa0 mysqld`pfs_spawn_thread(arg=0x000000011d704370) at pfs.cc:2942:3
+    frame #6: 0x0000000182d97034
+```
+
 结果集由一系列数据包组成
 - 说明字段个数的数据包，它表示结果集中的字段数。
 - 一组字段描述数据包

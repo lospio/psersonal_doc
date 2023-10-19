@@ -1,7 +1,9 @@
 {
-  "baseFontSize": 22,
+  "baseFontSize": 18,
   "theme": "moonstone",
   "accentColor": "",
-  "cssTheme": "Obsidian Nord",
-  "textFontFamily": "Nanum Pen Script"
+  "cssTheme": "",
+  "textFontFamily": "Comic Sans MS",
+  "interfaceFontFamily": "AkayaKanadaka",
+  "monospaceFontFamily": "AkayaKanadaka"
 }

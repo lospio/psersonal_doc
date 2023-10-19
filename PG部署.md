@@ -1,4 +1,4 @@
-## PostgreSQL打包
+1## PostgreSQL打包
 ```shell
 # 在exec目录下打包
 cd /usr/pgsql-13

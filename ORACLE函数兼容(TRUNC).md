@@ -691,3 +691,14 @@ mysql> select truncate(5555.5555,-2) ;
 1 row in set (0.00 sec)
 
 ```
+#  问题
+### trunc(number)
+1. 对于 trunc(decimal,decimal),oracle 会对第二个参数截断处理,mysql 会做 round
+2. 
+	```sql
+	-1.235E+10	  123	-1.235E+10
+	-1.235E+10	   -9	-1.200E+10 数据被截断
+	```
+3. 0000 0001  支持
+4. 不支持的月数 天数报错
+5. 不支持的 format 报错

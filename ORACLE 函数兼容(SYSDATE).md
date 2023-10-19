@@ -33,6 +33,26 @@ SQL> select   to_char (SYSDATE, 'MM-DD-YYYY HH24:MI:SS') "NOW" from dual;
 NOW
 -------------------
 08-30-2023 15:32:24
+
+
+Elapsed: 00:00:01.31
+SQL> select to_char (SYSDATE, 'MM-DD-YYYY HH24:MI:SS') "NOW", count(*),to_char (SYSDATE, 'MM-DD-YYYY HH24:MI:SS') "NOW" from testtable where random_string like '%dfsfsadf%' or random_string like '%dfhahfkadhkjahkfd%';
+
+NOW                   COUNT(*) NOW
+------------------- ---------- -------------------
+09-19-2023 19:04:49          0 09-19-2023 19:04:49
+
+Elapsed: 00:00:01.56
+
+insert into TestTable
+  (ID, INC_DATETIME,RANDOM_ID,RANDOM_STRING)
+  select rownum as id,
+         to_char(sysdate + rownum / 24 / 3600, 'yyyy-mm-dd hh24:mi:ss') as inc_datetime,
+         trunc(dbms_random.value(0, 100)) as random_id,
+         dbms_random.string('x', 20) random_string
+    from dual
+  connect by level <= 4000000;
+
 ```
 
 ### MySQL 8.0 中的`SYSDATE([fsp])` 函数
