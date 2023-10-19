@@ -196,16 +196,112 @@ enum thr_lock_type {
   TL_WRITE_ONLY  
 };
 
-
+struct THR_LOCK {
+  LIST list{nullptr, nullptr, nullptr};
+  mysql_mutex_t mutex;
+  struct st_lock_list read_wait;
+  struct st_lock_list read;
+  struct st_lock_list write_wait;
+  struct st_lock_list write;
+  /* write_lock_count is incremented for write locks and reset on read locks */
+  ulong write_lock_count{0};
+  uint read_no_write_count{0};
+  void (*get_status)(void *, int){nullptr}; /* When one gets a lock */
+  void (*copy_status)(void *, void *){nullptr};
+  void (*update_status)(void *){nullptr};  /* Before release of write */
+  void (*restore_status)(void *){nullptr}; /* Before release of read */
+  bool (*check_status)(void *){nullptr};
+};
 ```
-| held \\ request             | TL_READ_DEFAULT | TL_READ | TL_READ_WITH_SHARED_LOCKS | TL_READ_HIGH_PRIORITY | TL_READ_NO_INSERT |
-| --------------------------- | --------------- | ------- | ------------------------- | --------------------- | ----------------- |
-| TL_WRITE_ALLOW_WRITE        |                 |         |                           |                       |                   |
-| TL_WRITE_CONCURRENT_DEFAULT |                 |         |                           |                       |                   |
-| TL_WRITE_CONCURRENT_INSERT  |                 |         |                           |                       |                   |
-| TL_WRITE_DEFAULT            |                 |         |                           |                       |                   |
-| TL_WRITE_LOW_PRIORITY       |                 |         |                           |                       |                   |
-| TL_WRITE                    |                 |         |                           |                       |                   |
-|        TL_WRITE_ONLY                     |                 |         |                           |                       |                   |
+### Read Lock Request
+```text
+1. 一个线程拥有写锁并在同一张表上申请读锁时，获得读锁
+2. 表上没有写锁，且挂起的写锁队列中没有更高优先级的写锁，该线程获得读锁
+3. 表上没有写锁，且挂起的写锁队列中有更高优先级的写锁，同时该表上有之前该申请线程持有的读锁，该线程可以获得读锁
+4. 表上有写锁，且类型为TL_WRITE_ONLY，不进入等待队列，会UNLOCK
+5. 否则线程加入读锁等待队列，线程挂起
+```
+```cpp
+ /*
+        We can allow a read lock even if there is already a
+        write lock on the table if they are owned by the same
+        thread or if they satisfy the following lock
+        compatibility matrix:
 
+           Request
+          /-------
+         H|++++  WRITE_ALLOW_WRITE
+         e|+++-  WRITE_CONCURRENT_INSERT
+         l ||||
+         d ||||
+           |||\= READ_NO_INSERT
+           ||\ = READ_HIGH_PRIORITY
+           |\  = READ_WITH_SHARED_LOCKS
+           \   = READ
 
+        + = Request can be satisfied.
+        - = Request cannot be satisfied.
+
+        READ_NO_INSERT and WRITE_ALLOW_WRITE should in principle
+        be incompatible. Before this could have caused starvation of
+        LOCK TABLE READ in InnoDB under high write load. However
+        now READ_NO_INSERT is only used for LOCK TABLES READ and this
+        statement is handled by the MDL subsystem.
+        See Bug#42147 for more information.
+      */
+```
+| held \\ request             | TL_READ_DEFAULT | TL_READ | TL_READ_WITH_SHARED_LOCKS | TL_READ_HIGH_PRIORITY | TL_READ_NO_INSERT |   
+| --------------------------- | --------------- | ------- | ------------------------- | --------------------- | ----------------- | 
+| TL_WRITE_ALLOW_WRITE        | +               | +       | +                         | +                     | +                 |    
+| TL_WRITE_CONCURRENT_DEFAULT | +               | +       | +                         | +                     | +                 |    
+| TL_WRITE_CONCURRENT_INSERT  | +               | +       | +                         | +                     | -                 |    
+| TL_WRITE_DEFAULT            | ++              | ++      | ++                        | ++                    | ++                |    
+| TL_WRITE_LOW_PRIORITY       | ++              | ++      | ++                        | ++                   | ++                |    
+| TL_WRITE                    | -             | -       | -                         | ++                    |--              |
+| TL_WRITE_ONLY               |（unlock）/ --              |（unlock）/ --    |（unlock）/ --                        |（unlock）/ ++                   |（unlock）/ --                | 
+```text
+当前写锁的存在会导致请求线程挂起自身并等待锁可用，但以下情况除外：
+1. 在存储引擎的批准下，通过THR_LOCK描述符中的check_statas（）函数指针调用完成，除TL_READ_NO_INSERT外的所有读锁都允许一个TL_WRITE_CONCURRENT_INSERT锁。
+2. TL_WRITE_ALLOW_WRITE允许除TL_WRITE_ONLY外的所有读取锁和写锁。
+3. TL_WRITE_CONCURRENT_INSERT允许除TL_READ_NO_INSERT外的所有读取锁。
+4. 发生冲突的写锁属于被请求的线程。
+```
+
+```text
+请求的读取和挂起队列中的写锁按照以下规则进行优先排序：
+1. 挂起的写锁队列中的TL_WRITE锁优先于除TL_READ_HIGH_PRIORITY之外的所有读锁。
+2. 对TL_READ_HIGH_PRIORITY的请求要优先于任何挂起的写锁。
+3. 非TL_WRITE的挂起写锁队列中的所有写锁的优先级都低于读锁。
+```
+### Write Lock Request
+```text
+1. 拥有TL_WRITE_ONLY写锁,除了是相同线程尝试获取写锁，其余全部TL_UNLOCK
+2. 拥有TL_WRITE_ALLOW_WRITE写锁，挂起的等待写锁队列为空，尝试获取TL_WRITE_ALLOW_WRITE类型写锁，或者该表上有之前该申请线程持有的写锁，该线程可以获得写锁
+3. 没有写锁，写锁等待队列为空，则下述情况都可成功获得写锁
+	1. 没有读锁
+	2. 申请类型小于TL_WRITE_CONCURRENT_INSERT，且（（不为TL_WRITE_CONCURRENT_INSERT并且不为TL_WRITE_ALLOW_WRITE） 或者不存在TL_READ_NO_INSERT）等价于 
+	申请类型为TL_WRITE_CONCURRENT_INSERT 或者 TL_WRITE_ALLOW_WRITE 同时不存在TL_READ_NO_INSERT
+```
+
+| held \\ request           | TL_WRITE_ALLOW_WRITE | TL_WRITE_CONCURRENT_DEFAULT | TL_WRITE_CONCURRENT_INSERT | TL_WRITE_DEFAULT | TL_WRITE_LOW_PRIORITY | TL_WRITE | TL_WRITE_ONLY |
+| ------------------------- | -------------------- | --------------------------- | -------------------------- | ---------------- | --------------------- | -------- | ------------- |
+| TL_READ_DEFAULT           |                     |             +               |                           |                 |                      |          |               |
+| TL_READ                   |                     |                            |                           |                |                      |          |               |
+| TL_READ_WITH_SHARED_LOCKS |                     |                            |                          |                 |                       |          |               |
+| TL_READ_HIGH_PRIORITY     |                    |                           |                         |                |                     |          |               |
+| TL_READ_NO_INSERT         |                   |                           |                          |                 |                    |          |               |
+| TL_WRITE_ONLY             | —                    | —                           | —                          | —                | —                     | —        | —             |
+|                           |                      |                             |                            |                  |                       |          |               |
+
+### Storage engine interaction with the table lock manager
+
+#### MyISAM。
+MyISAM主要依赖于表锁管理器来确保正确的并发访问。但是，有一个例外：并发插入。如果插入操作导致在数据文件的末尾写入记录，则读取可以无需锁定。在这种情况下，表锁管理器允许一个并发插入锁和多个读锁。存储引擎通过在并发插入开始之前记住文件的旧端，并不允许读取在并发插入完成之前读取超过文件的旧端，来确保一致性。
+#### InnoDB。
+InnoDB要求表锁管理器通过将写锁的锁类型更改为TL_WRITE_ALLOW_WRITE来延迟到存储引擎的锁定。在内部，它实现了一个复杂的行级锁定系统，其中包括死锁检测。
+#### NDB。
+NDB是一个分布式存储引擎，它还支持行级锁。它以一种类似于InnoDB的方式来处理表锁。
+#### Berkey DB。
+Berkey DB内部支持页面级锁，因此需要写锁成为TL_WRITE_ALLOW_WRITE，就像NDB和InnoDB一样。
+
+#### InnoDB Dealing with deadlocks
