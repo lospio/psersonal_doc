@@ -1,8 +1,8 @@
 # 1. MySQL锁
-三中层级的锁`Table-level locks` `Page-level locks` `row_level locks`
+三种层级的锁`Table-level locks` `Page-level locks` `row_level locks`
 粒度依次递减,复杂度提升
 对于 table-level locks, 实现逻辑简单,更少的 bug,获取锁的时候更高效,死锁检验也会变得简单;同时,大量并发读写的效率会降低
-对于 row-level locks,复杂的逻辑和实现机制带来了更细粒度的锁,提高了并发读写效率;同时,获取锁,避免死锁更加繁琐,更易出错,内存占用更多
+对于 row-level locks,复杂的逻辑和实现机制带来了更细粒度的锁,提高了并发读写效率;同时,获取锁,避免死锁更加繁琐,更易出错,资源消耗更多
 
 | 锁类型            | 存储引擎         | 
 | ----------------- | ---------------- | 
@@ -25,9 +25,24 @@
 ```
 #### 表锁
 ```text
-读锁（read lock），也叫共享锁（shared lock） 针对同一份数据，多个读操作可以同时进行而不会互相影响（select）
+读锁（read lock），也叫共享锁（shared lock） 针对同一份数据，多个读操作可以同时进行而不会互相影响（select）, 会阻塞读锁
 
 写锁（write lock），也叫排他锁（exclusive lock） 当前操作没完成之前，会阻塞其它读和写操作（update、insert、delete）
+```
+```sql
+-- client A
+mysql> lock tables t read;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> unlock tables;
+Query OK, 0 rows affected (0.00 sec)
+
+-- client B
+mysql> lock tables t write;
+Query OK, 0 rows affected (50.07 sec)
+
+mysql> unlock tables;
+Query OK, 0 rows affected (0.00 sec)
 ```
 ####  元数据锁
 ```text
@@ -49,10 +64,21 @@ MDL 在事务提交后才会释放,在事务执行期间,一直被持有 ;如果
 ```text 
 - 在使用 InnoDB 引擎的表里对某些记录加上「共享锁」之前，需要先在表级别加上一个「意向共享锁」；
 - 在使用 InnoDB 引擎的表里对某些纪录加上「独占锁」之前，需要先在表级别加上一个「意向独占锁」；
-
+- 
 也就是，当执行插入、更新、删除操作，需要先对表加上「意向独占锁」，然后对该记录加独占锁
 
+意向锁不会阻止除全表请求之外的任何内容（例如，LOCK TABLES ... WRITE）。意向锁的主要目的是表明有人正在锁定一行，或者将要锁定表中的一行
+
 有了意向锁,在加独占表锁时,只需要检查该表是否有意向独占锁,可以加快判断表里是否有记录被加锁 。
+```
+```sql
+
+-- 先在表上加上意向共享锁，然后对读取的记录加共享锁
+select ... lock in share mode;
+
+-- 先表上加上意向独占锁，然后对读取的记录加独占锁
+select ... for update;
+
 ```
 #### AUTO-INC 锁
 ```text
@@ -305,3 +331,17 @@ NDB是一个分布式存储引擎，它还支持行级锁。它以一种类似�
 Berkey DB内部支持页面级锁，因此需要写锁成为TL_WRITE_ALLOW_WRITE，就像NDB和InnoDB一样。
 
 #### InnoDB Dealing with deadlocks
+```text
+当启用死锁检测（默认）时，InnoDB会自动检测事务死锁并回滚一个或多个事务以打破死锁。 
+
+InnoDB 尝试选择小事务进行回滚，其中事务的大小由插入、更新或删除的行数决定。
+
+可以使用innodb_lock_wait_timeout
+```
+# 3.参考
+- [开发手册](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html#innodb-next-key-locks)
+- Understanding MySQL Internals_ Discovering and Improving a Great Database-O'Reilly Media (2007)
+- [MySQL-锁篇](https://xiaolincoding.com/mysql/lock/mysql_lock.html#auto-inc-锁)
+- [一张图彻底搞懂 MySQL 锁机制](https://learnku.com/articles/39212?order_by=vote_count&)
+	![[Pasted image 20231020113752.png]]
+- [MySQL Deep Dive - Implementation and Acquisition Mechanism of Metadata Locking](https://www.alibabacloud.com/blog/mysql-deep-dive---implementation-and-acquisition-mechanism-of-metadata-locking_599191)

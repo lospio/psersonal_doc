@@ -194,7 +194,7 @@ static void kill_old_mysqld(void)
 | transaction-isolation          |  该选项允许为整个服务器设置全局事务隔离级别。                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |     |
 
 #? 
-sql 层级更改变量的流程
+sql 层级更改变量的流程,set 过程中函数调栈
 
 两个地方定义的参数
 mysqld.cc sys_var.cc

@@ -382,7 +382,7 @@ packet 存 code 值,后面的 1-8 位存 length
 | 3                  | 2      | Server status bit mask    |
 
 #### Result Set Packet
-#? 空结果的返回
+#? 空结果的返回 ;client是否判断空结果集;分析协议
 ```cpp
 frame #0: 0x00000001054d29e4 mysqld`THD::send_result_metadata(this=0x000000013a809600, list=0x00000001409b1ff8, flags=5) at sql_class.cc:2834:13
     frame #1: 0x000000010538f780 mysqld`Query_result_send::send_result_set_metadata(this=0x00000001409b3988, thd=0x000000013a809600, list=0x00000001409b1ff8, flags=5) at query_result.cc:70:20

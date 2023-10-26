@@ -71,6 +71,24 @@ git push -u remote local_branch_name:remote_local_branch_name
 # 表示tag和branch重名
 ```
  关联远端分支
-```sql
+```bash
 git branch --set-upstream-to=origin/8.0.30-oraclelike-sysdate
+```
+查找某段代码是哪个提交加入的
+```bash
+git log -s "relKind = RELKIND_GLOBAL_INDEX;"
+```
+查找 log 信息
+```bash
+git log --grep " abcd" --author
+
+git show commit_id 显式提交的具体代码信息
+
+git log -p file
+
+git log file
+
+git log master..master1 查看 master1 比 master 多的提交
+
+git diff master..master1 
 ```

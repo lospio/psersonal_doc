@@ -1,9 +1,9 @@
 {
-  "baseFontSize": 18,
+  "baseFontSize": 14,
   "theme": "moonstone",
   "accentColor": "",
   "cssTheme": "",
-  "textFontFamily": "Bradley Hand ITC",
-  "interfaceFontFamily": "Bradley Hand ITC",
+  "textFontFamily": "Chalkboard SE",
+  "interfaceFontFamily": "Chalkboard SE",
   "monospaceFontFamily": "AkayaKanadaka"
 }
