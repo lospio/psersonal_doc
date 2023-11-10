@@ -1,4 +1,3 @@
-# case 1 
 ![[Pasted image 20231025165659.png]]
 ### insert
 1. update global index

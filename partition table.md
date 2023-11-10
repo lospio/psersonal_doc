@@ -168,6 +168,89 @@ insert
     frame #13: 0x00000001052e729c mysqld`handle_connection(arg=0x0000600001470000) at connection_handler_per_thread.cc:302:13
     frame #14: 0x0000000106f70aa0 mysqld`pfs_spawn_thread(arg=0x00000001131042a0) at pfs.cc:2942:3
     frame #15: 0x0000000188e27034
+
+
+
+* thread #40, name = 'connection', stop reason = breakpoint 1.1
+  * frame #0: 0x0000000101627580 mysqld`partition_info::partition_info(this=0x0000000144b78888) at partition_info.h:464:16
+    frame #1: 0x0000000101625da0 mysqld`partition_info::partition_info(this=0x0000000144b78888) at partition_info.h:463:37
+    frame #2: 0x0000000100c26c78 mysqld`PT_partition::PT_partition(this=0x0000000144b78838, part_type_def=0x0000000144b784b0, opt_num_parts=0, opt_sub_part=0x0000000000000000, part_defs_pos=0x00000001791e6a50, part_defs=0x0000000144b78778) at parse_tree_partitions.h:606:3
+    frame #3: 0x0000000100c19a0c mysqld`PT_partition::PT_partition(this=0x0000000144b78838, part_type_def=0x0000000144b784b0, opt_num_parts=0, opt_sub_part=0x0000000000000000, part_defs_pos=0x00000001791e6a50, part_defs=0x0000000144b78778) at parse_tree_partitions.h:613:30
+    frame #4: 0x0000000100bc8670 mysqld`MYSQLparse(YYTHD=0x0000000117013800, parse_tree=0x00000001791e8288) at sql_yacc.yy:6256:47
+    frame #5: 0x00000001013bbc94 mysqld`THD::sql_parser(this=0x0000000117013800) at sql_class.cc:3037:7
+    frame #6: 0x00000001014e513c mysqld`parse_sql(thd=0x0000000117013800, parser_state=0x00000001791e97a8, creation_ctx=0x0000000000000000) at sql_parse.cc:7057:34
+    frame #7: 0x00000001014d8aa8 mysqld`dispatch_sql_command(thd=0x0000000117013800, parser_state=0x00000001791e97a8) at sql_parse.cc:5136:11
+    frame #8: 0x00000001014d52a0 mysqld`dispatch_command(thd=0x0000000117013800, com_data=0x00000001791eae40, command=COM_QUERY) at sql_parse.cc:1960:7
+    frame #9: 0x00000001014d7880 mysqld`do_command(thd=0x0000000117013800) at sql_parse.cc:1363:7
+    frame #10: 0x00000001017bb29c mysqld`handle_connection(arg=0x0000600000ffc1a0) at connection_handler_per_thread.cc:302:13
+    frame #11: 0x0000000103444aa0 mysqld`pfs_spawn_thread(arg=0x0000000113904a50) at pfs.cc:2942:3
+    frame #12: 0x0000000188f73034
+
+
+* thread #42, name = 'connection', stop reason = breakpoint 2.1
+  * frame #0: 0x0000000100a0d8a0 mysqld`PT_partition::contextualize(this=0x0000000138185918, pc=0x0000000171431c20) at parse_tree_partitions.cc:474:35
+    frame #1: 0x00000001003ae654 mysqld`MYSQLparse(YYTHD=0x0000000113832000, parse_tree=0x0000000171433a58) at sql_yacc.yy:2196:13
+    frame #2: 0x0000000100bb3c94 mysqld`THD::sql_parser(this=0x0000000113832000) at sql_class.cc:3037:7
+    frame #3: 0x0000000100cdd13c mysqld`parse_sql(thd=0x0000000113832000, parser_state=0x0000000171433c58, creation_ctx=0x0000000000000000) at sql_parse.cc:7057:34
+    frame #4: 0x0000000100ceca14 mysqld`mysql_unpack_partition(thd=0x0000000113832000, part_buf=" PARTITION BY RANGE (`id`)\n(PARTITION p1 VALUES LESS THAN (100) ENGINE = InnoDB,\n PARTITION p2 VALUES LESS THAN MAXVALUE ENGINE = InnoDB)", part_info_len=137, table=0x0000000171435988, is_create_table_ind=true, default_db_type=0x0000000137f06e90, work_part_info_used=0x00000001714352ba) at sql_partition.cc:3912:7
+    frame #5: 0x0000000100ecdf5c mysqld`unpack_partition_info(thd=0x0000000113832000, outparam=0x0000000171435988, share=0x0000000171436318, engine_type=0x0000000137f06e90, is_create_table=true) at table.cc:2716:9
+    frame #6: 0x0000000100eceef0 mysqld`open_table_from_share(thd=0x0000000113832000, share=0x0000000171436318, alias="", db_stat=0, prgflag=1, ha_open_flags=0, outparam=0x0000000171435988, is_create_table=true, table_def_param=0x0000000000000000) at table.cc:2979:7
+    frame #7: 0x00000001005fda5c mysqld`ha_create_table(thd=0x0000000113832000, path="./pat/t", db="pat", table_name="t", create_info=0x0000000171439878, update_create_info=false, is_temp_table=false, table_def=0x0000000137f616e0) at handler.cc:5107:7
+    frame #8: 0x0000000100e1f12c mysqld`rea_create_base_table(thd=0x0000000113832000, path="./pat/t", sch_obj=0x000060000226c7a0, db="pat", table_name="t", create_info=0x0000000171439878, create_fields=0x00000001714397f0, keys=0, key_info=0x000000011482acf0, keys_onoff=ENABLE, fk_keys=0, fk_key_info=0x000000011482acf0, check_cons_spec=0x00000001714397d0, file=0x0000000114829ee0, no_ha_table=false, do_not_store_in_dd=false, part_info=0x0000000114829a00, binlog_to_trx_cache=0x0000000171438b0e, table_def_ptr=0x00000001714384c8, post_ddl_ht=0x0000000171438b00) at sql_table.cc:1173:7
+    frame #9: 0x0000000100de21a0 mysqld`create_table_impl(thd=0x0000000113832000, schema=0x000060000226c7a0, db="pat", table_name="t", error_table_name="t", path="./pat/t", create_info=0x0000000171439878, alter_info=0x0000000171439710, internal_tmp_table=false, select_field_count=0, find_parent_keys=true, no_ha_table=false, do_not_store_in_dd=false, is_trans=0x0000000171438b0e, key_info=0x00000001714384e8, key_count=0x00000001714384e4, keys_onoff=ENABLE, fk_key_info=0x00000001714384d8, fk_key_count=0x00000001714384d4, existing_fk_info=0x0000000000000000, existing_fk_count=0, existing_fk_table=0x0000000000000000, fk_max_generated_name_number=0, table_def=0x00000001714384c8, post_ddl_ht=0x0000000171438b00) at sql_table.cc:8935:9
+    frame #10: 0x0000000100de00b0 mysqld`mysql_create_table_no_lock(thd=0x0000000113832000, db="pat", table_name="t", create_info=0x0000000171439878, alter_info=0x0000000171439710, select_field_count=0, find_parent_keys=true, is_trans=0x0000000171438b0e, post_ddl_ht=0x0000000171438b00) at sql_table.cc:9176:10
+    frame #11: 0x0000000100de55b0 mysqld`mysql_create_table(thd=0x0000000113832000, create_table=0x0000000114828c30, create_info=0x0000000171439878, alter_info=0x0000000171439710) at sql_table.cc:10108:12
+    frame #12: 0x0000000100c0b29c mysqld`Sql_cmd_create_table::execute(this=0x00000001148297e0, thd=0x0000000113832000) at sql_cmd_ddl_table.cc:433:13
+    frame #13: 0x0000000100cd5ab4 mysqld`mysql_execute_command(thd=0x0000000113832000, first_level=true) at sql_parse.cc:3578:29
+    frame #14: 0x0000000100cd12c4 mysqld`dispatch_sql_command(thd=0x0000000113832000, parser_state=0x000000017143d7a8) at sql_parse.cc:5240:19
+    frame #15: 0x0000000100ccd2a0 mysqld`dispatch_command(thd=0x0000000113832000, com_data=0x000000017143ee40, command=COM_QUERY) at sql_parse.cc:1960:7
+    frame #16: 0x0000000100ccf880 mysqld`do_command(thd=0x0000000113832000) at sql_parse.cc:1363:7
+    frame #17: 0x0000000100fb329c mysqld`handle_connection(arg=0x0000600001d58360) at connection_handler_per_thread.cc:302:13
+    frame #18: 0x0000000102c3caa0 mysqld`pfs_spawn_thread(arg=0x000000010ff0bac0) at pfs.cc:2942:3
+    frame #19: 0x0000000185997034
+* thread #42, name = 'connection', stop reason = step over
+  * frame #0: 0x0000000103465924 mysqld`PT_partition::contextualize(this=0x00000001428ed518, pc=0x000000016e9d9c20) at parse_tree_partitions.cc:482:7
+    frame #1: 0x0000000102e06654 mysqld`MYSQLparse(YYTHD=0x0000000142148000, parse_tree=0x000000016e9dba58) at sql_yacc.yy:2196:13
+    frame #2: 0x000000010360bc94 mysqld`THD::sql_parser(this=0x0000000142148000) at sql_class.cc:3037:7
+    frame #3: 0x000000010373513c mysqld`parse_sql(thd=0x0000000142148000, parser_state=0x000000016e9dbc58, creation_ctx=0x0000000000000000) at sql_parse.cc:7057:34
+    frame #4: 0x0000000103744a14 mysqld`mysql_unpack_partition(thd=0x0000000142148000, part_buf=" PARTITION BY RANGE (`id`)\n(PARTITION p1 VALUES LESS THAN (100) ENGINE = InnoDB,\n PARTITION p2 VALUES LESS THAN MAXVALUE ENGINE = InnoDB)", part_info_len=137, table=0x000000016e9dd988, is_create_table_ind=true, default_db_type=0x0000000141e05be0, work_part_info_used=0x000000016e9dd2ba) at sql_partition.cc:3912:7
+    frame #5: 0x0000000103925f5c mysqld`unpack_partition_info(thd=0x0000000142148000, outparam=0x000000016e9dd988, share=0x000000016e9de318, engine_type=0x0000000141e05be0, is_create_table=true) at table.cc:2716:9
+    frame #6: 0x0000000103926ef0 mysqld`open_table_from_share(thd=0x0000000142148000, share=0x000000016e9de318, alias="", db_stat=0, prgflag=1, ha_open_flags=0, outparam=0x000000016e9dd988, is_create_table=true, table_def_param=0x0000000000000000) at table.cc:2979:7
+    frame #7: 0x0000000103055a5c mysqld`ha_create_table(thd=0x0000000142148000, path="./pat/t", db="pat", table_name="t", create_info=0x000000016e9e1878, update_create_info=false, is_temp_table=false, table_def=0x0000000141f5d960) at handler.cc:5107:7
+    frame #8: 0x000000010387712c mysqld`rea_create_base_table(thd=0x0000000142148000, path="./pat/t", sch_obj=0x0000600001a18b60, db="pat", table_name="t", create_info=0x000000016e9e1878, create_fields=0x000000016e9e17f0, keys=0, key_info=0x00000001428d8ef0, keys_onoff=ENABLE, fk_keys=0, fk_key_info=0x00000001428d8ef0, check_cons_spec=0x000000016e9e17d0, file=0x00000001428d80e0, no_ha_table=false, do_not_store_in_dd=false, part_info=0x00000001428d7c00, binlog_to_trx_cache=0x000000016e9e0b0e, table_def_ptr=0x000000016e9e04c8, post_ddl_ht=0x000000016e9e0b00) at sql_table.cc:1173:7
+    frame #9: 0x000000010383a1a0 mysqld`create_table_impl(thd=0x0000000142148000, schema=0x0000600001a18b60, db="pat", table_name="t", error_table_name="t", path="./pat/t", create_info=0x000000016e9e1878, alter_info=0x000000016e9e1710, internal_tmp_table=false, select_field_count=0, find_parent_keys=true, no_ha_table=false, do_not_store_in_dd=false, is_trans=0x000000016e9e0b0e, key_info=0x000000016e9e04e8, key_count=0x000000016e9e04e4, keys_onoff=ENABLE, fk_key_info=0x000000016e9e04d8, fk_key_count=0x000000016e9e04d4, existing_fk_info=0x0000000000000000, existing_fk_count=0, existing_fk_table=0x0000000000000000, fk_max_generated_name_number=0, table_def=0x000000016e9e04c8, post_ddl_ht=0x000000016e9e0b00) at sql_table.cc:8935:9
+    frame #10: 0x00000001038380b0 mysqld`mysql_create_table_no_lock(thd=0x0000000142148000, db="pat", table_name="t", create_info=0x000000016e9e1878, alter_info=0x000000016e9e1710, select_field_count=0, find_parent_keys=true, is_trans=0x000000016e9e0b0e, post_ddl_ht=0x000000016e9e0b00) at sql_table.cc:9176:10
+    frame #11: 0x000000010383d5b0 mysqld`mysql_create_table(thd=0x0000000142148000, create_table=0x00000001428d6e30, create_info=0x000000016e9e1878, alter_info=0x000000016e9e1710) at sql_table.cc:10108:12
+    frame #12: 0x000000010366329c mysqld`Sql_cmd_create_table::execute(this=0x00000001428d79e0, thd=0x0000000142148000) at sql_cmd_ddl_table.cc:433:13
+    frame #13: 0x000000010372dab4 mysqld`mysql_execute_command(thd=0x0000000142148000, first_level=true) at sql_parse.cc:3578:29
+    frame #14: 0x00000001037292c4 mysqld`dispatch_sql_command(thd=0x0000000142148000, parser_state=0x000000016e9e57a8) at sql_parse.cc:5240:19
+    frame #15: 0x00000001037252a0 mysqld`dispatch_command(thd=0x0000000142148000, com_data=0x000000016e9e6e40, command=COM_QUERY) at sql_parse.cc:1960:7
+    frame #16: 0x0000000103727880 mysqld`do_command(thd=0x0000000142148000) at sql_parse.cc:1363:7
+    frame #17: 0x0000000103a0b29c mysqld`handle_connection(arg=0x0000600002515800) at connection_handler_per_thread.cc:302:13
+    frame #18: 0x0000000105694aa0 mysqld`pfs_spawn_thread(arg=0x0000000115556e20) at pfs.cc:2942:3
+    frame #19: 0x0000000185997034
+
+* thread #42, name = 'connection', stop reason = breakpoint 14.1
+  * frame #0: 0x0000000106d22c68 mysqld`my_error(nr=1054, MyFlags=0) at my_error.cc:218:3
+    frame #1: 0x00000001057a6698 mysqld`find_field_in_tables(thd=0x000000011e00a200, item=0x00000001561b3b88, first_table=0x00000001561b5960, last_table=0x0000000000000000, ref=0x000000016c814868, report_error=REPORT_ALL_ERRORS, want_privilege=0, register_tree_change=true) at sql_base.cc:8078:9
+    frame #2: 0x000000010529e984 mysqld`Item_field::fix_fields(this=0x00000001561b3b88, thd=0x000000011e00a200, reference=0x000000016c814868) at item.cc:5654:18
+    frame #3: 0x00000001059074a8 mysqld`fix_fields_part_func(thd=0x000000011e00a200, func_expr=0x00000001561b3b88, table=0x000000016c815988, is_sub_part=false, is_create_table_ind=true) at sql_partition.cc:950:27
+    frame #4: 0x000000010590677c mysqld`fix_partition_func(thd=0x000000011e00a200, table=0x000000016c815988, is_create_table_ind=true) at sql_partition.cc:1540:20
+    frame #5: 0x0000000105aee0f0 mysqld`unpack_partition_info(thd=0x000000011e00a200, outparam=0x000000016c815988, share=0x000000016c816318, engine_type=0x0000000154e07de0, is_create_table=true) at table.cc:2736:13
+    frame #6: 0x0000000105aeeef0 mysqld`open_table_from_share(thd=0x000000011e00a200, share=0x000000016c816318, alias="", db_stat=0, prgflag=1, ha_open_flags=0, outparam=0x000000016c815988, is_create_table=true, table_def_param=0x0000000000000000) at table.cc:2979:7
+    frame #7: 0x000000010521da5c mysqld`ha_create_table(thd=0x000000011e00a200, path="./pat/t2", db="pat", table_name="t2", create_info=0x000000016c819878, update_create_info=false, is_temp_table=false, table_def=0x0000000147bc0a00) at handler.cc:5107:7
+    frame #8: 0x0000000105a3f12c mysqld`rea_create_base_table(thd=0x000000011e00a200, path="./pat/t2", sch_obj=0x00006000009d3ef0, db="pat", table_name="t2", create_info=0x000000016c819878, create_fields=0x000000016c8197f0, keys=0, key_info=0x00000001561b53a8, keys_onoff=ENABLE, fk_keys=0, fk_key_info=0x00000001561b53a8, check_cons_spec=0x000000016c8197d0, file=0x00000001561b4598, no_ha_table=false, do_not_store_in_dd=false, part_info=0x00000001561b40b8, binlog_to_trx_cache=0x000000016c818b0e, table_def_ptr=0x000000016c8184c8, post_ddl_ht=0x000000016c818b00) at sql_table.cc:1173:7
+    frame #9: 0x0000000105a021a0 mysqld`create_table_impl(thd=0x000000011e00a200, schema=0x00006000009d3ef0, db="pat", table_name="t2", error_table_name="t2", path="./pat/t2", create_info=0x000000016c819878, alter_info=0x000000016c819710, internal_tmp_table=false, select_field_count=0, find_parent_keys=true, no_ha_table=false, do_not_store_in_dd=false, is_trans=0x000000016c818b0e, key_info=0x000000016c8184e8, key_count=0x000000016c8184e4, keys_onoff=ENABLE, fk_key_info=0x000000016c8184d8, fk_key_count=0x000000016c8184d4, existing_fk_info=0x0000000000000000, existing_fk_count=0, existing_fk_table=0x0000000000000000, fk_max_generated_name_number=0, table_def=0x000000016c8184c8, post_ddl_ht=0x000000016c818b00) at sql_table.cc:8935:9
+    frame #10: 0x0000000105a000b0 mysqld`mysql_create_table_no_lock(thd=0x000000011e00a200, db="pat", table_name="t2", create_info=0x000000016c819878, alter_info=0x000000016c819710, select_field_count=0, find_parent_keys=true, is_trans=0x000000016c818b0e, post_ddl_ht=0x000000016c818b00) at sql_table.cc:9176:10
+    frame #11: 0x0000000105a055b0 mysqld`mysql_create_table(thd=0x000000011e00a200, create_table=0x00000001561b32e8, create_info=0x000000016c819878, alter_info=0x000000016c819710) at sql_table.cc:10108:12
+    frame #12: 0x000000010582b29c mysqld`Sql_cmd_create_table::execute(this=0x00000001561b3e98, thd=0x000000011e00a200) at sql_cmd_ddl_table.cc:433:13
+    frame #13: 0x00000001058f5ab4 mysqld`mysql_execute_command(thd=0x000000011e00a200, first_level=true) at sql_parse.cc:3578:29
+    frame #14: 0x00000001058f12c4 mysqld`dispatch_sql_command(thd=0x000000011e00a200, parser_state=0x000000016c81d7a8) at sql_parse.cc:5240:19
+    frame #15: 0x00000001058ed2a0 mysqld`dispatch_command(thd=0x000000011e00a200, com_data=0x000000016c81ee40, command=COM_QUERY) at sql_parse.cc:1960:7
+    frame #16: 0x00000001058ef880 mysqld`do_command(thd=0x000000011e00a200) at sql_parse.cc:1363:7
+    frame #17: 0x0000000105bd329c mysqld`handle_connection(arg=0x00006000036f4000) at connection_handler_per_thread.cc:302:13
+    frame #18: 0x000000010785caa0 mysqld`pfs_spawn_thread(arg=0x0000000113a040a0) at pfs.cc:2942:3
+    frame #19: 0x0000000185997034
 ```
 
 # todo

@@ -6,6 +6,8 @@ docker cp 本地文件路径 ID全称:容器路径
 
 docker run --cap-add=SYS_PTRACE --cap-add=SYS_ADMIN --security-opt seccomp=unconfined --privileged=true -d -it -P --name ptrace_test --rm --network host --ulimit core=-1 172.16.1.99/spatial/perf/postgresql:spacture-1.1.0-10.15 bash(/usr/sbin/init)
 
+docker run -it -d --cap-add=SYS_PTRACE --cap-add=SYS_ADMIN --security-opt seccomp=unconfined --privileged=true -v /sys/kernel/debug:/sys/kernel/debug:rw  -v /lib/modules:/lib/modules:ro  -v /usr/src:/usr/src:ro  -v /etc/localtime:/etc/localtime:ro --name=bcc  --pid=host --network host bcc:v1 bash
+
 docker exec -it -e COLUMNS=$(tput cols) -e LINES=$(tput lines) ptrace_test bash
 ```
 
