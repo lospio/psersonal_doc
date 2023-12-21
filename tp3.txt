@@ -1,0 +1,29 @@
+["ibd2sdi"
+,
+{
+	"type": 2,
+	"id": 27,
+	"object":
+		{
+    "mysqld_version_id": 80030,
+    "dd_version": 80023,
+    "sdi_version": 80019,
+    "dd_object_type": "Tablespace",
+    "dd_object": {
+        "name": "pat/t1#p#p3",
+        "comment": "",
+        "options": "autoextend_size=0;encryption=N;",
+        "se_private_data": "flags=16417;id=22;server_version=80030;space_version=1;state=normal;",
+        "engine": "InnoDB",
+        "engine_attribute": "",
+        "files": [
+            {
+                "ordinal_position": 1,
+                "filename": "./pat/t1#p#p3.ibd",
+                "se_private_data": "id=22;"
+            }
+        ]
+    }
+}
+}
+]

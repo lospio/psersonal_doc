@@ -1,4 +1,4 @@
-# 1. 需求
+ # 1. 需求
 ## 1.1 需求描述
 MySQL 分区功能对齐 Oracle
 - 优先解决各分区功能支持多种数据类型(string, datetime, number)
@@ -61,13 +61,30 @@ MySQL 分区功能对齐 Oracle
 ### Oracle与MySQL RANGE分区差异
 |                | Oracle range | MySQL range        | MySQL range columns |
 | -------------- | ------------ | ------------------ | ------------------- |
-| integer        | 是           | 是                 | 是                  |
 | string, date   | 是           | 不支持             | 是                  |
-| number         | 是           | 不支持             | 不支持              |
+| number(float, double,decimal )        | 是           | 不支持             | 不支持              |
 | 表达式(加, 减, 乘) | 不支持       | 是                 | 不支持              |
 | 表达式(除)     | 不支持       | 不支持             | 不支持              |
 | 表达式(函数)   | 不支持       | 支持(返回值为整型) | 不支持              |
 | 多列           | 最多 16 列   | 不支持             | 最多 16 列          |
+### Oracle与MySQL LIST分区差异
+|                       | Oracle List | MySQL List | MySQL List Columns |
+| --------------------- | ----------- | ---------- | ------------------ |
+| date, string          | 是          | 不支持     | 是                 |
+| float, double,decimal | 是          | 不支持     | 是                 |
+| 表达式                | 不支持      | 是         | 不支持             |
+| 多列                  | 不支持      | 不支持     | 不支持                   |
+### Oracle与MySQL HSAH分区差异
+|                       | Oracle Hash | MySQL Hash | MySQL KEY |
+| --------------------- | ----------- | ---------- | --------- |
+| date,string           | 是          | 不支持     | 是        |
+| float, double,decimal | 是          | 不支持     | 是        |
+| 表达式                | 不支持      | 是         | 不支持    |
+| 多列                  | 支持        | 不支持     | 支持      |
+| 空列                  | 不支持      | 不支持     | 支持      |
+| lob                   | 不支持      | 不支持     | 不支持          |
+
+
 # 2. 友商方案
 # 3. 设计实现
 ## 3.1 Range
@@ -140,6 +157,10 @@ create table t (id int , name varchar(20)) partition by range(id)
 - set_up_field_array
 	- 二次检查 field 是否在表中
 	- 将 table->field 的值存入 partition_info 的 part_field_array 中
+##### check_range_constants 修改
+- fix_column_value_functions
+	- 逐一设置每个 filed 的值,存入内存
+- 设置 range_value 检查重复区间
 
 - create_table_impl
 	- check_partition_info at sql_table.cc:8833
@@ -159,7 +180,12 @@ create table t (id int , name varchar(20)) partition by range(id)
 						- handle_list_of_fields
 						- fix_fields_part_func
 							- set_up_field_array
-						- fix_fields_part_func
+						- check_range_constants
+							- fix_column_value_functions
+						- check_part_func_fields
+						- check_primary_key
+					- set_up_partition_func_pointers
+							
 
 ```plantuml
 class PT_partition{  
@@ -275,6 +301,8 @@ partition_info::fix_partition_values
 1. 修改基础Class,添加对 Item 的适配支持,包括`PT_part_type_def` `partition_info`
 2. 修改'get_partition_id_range'函数,  查找分区 id 的函数
 3. 修改过程中对于类型的校验
+#### B.  沿用现有的 range columns
+修改parser
 # 3. 关联模块
 # 4. 概要设计
 # 参考 

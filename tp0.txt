@@ -1,0 +1,432 @@
+["ibd2sdi"
+,
+{
+	"type": 1,
+	"id": 439,
+	"object":
+		{
+    "mysqld_version_id": 80030,
+    "dd_version": 80023,
+    "sdi_version": 80019,
+    "dd_object_type": "Table",
+    "dd_object": {
+        "name": "t",
+        "mysql_version_id": 80030,
+        "created": 20231218024935,
+        "last_altered": 20231218024935,
+        "hidden": 1,
+        "options": "avg_row_length=0;encrypt_type=N;key_block_size=0;keys_disabled=0;pack_record=0;stats_auto_recalc=0;stats_sample_pages=0;",
+        "columns": [
+            {
+                "name": "id",
+                "type": 4,
+                "is_nullable": true,
+                "is_zerofill": false,
+                "is_unsigned": false,
+                "is_auto_increment": false,
+                "is_virtual": false,
+                "hidden": 1,
+                "ordinal_position": 1,
+                "char_length": 11,
+                "numeric_precision": 10,
+                "numeric_scale": 0,
+                "numeric_scale_null": false,
+                "datetime_precision": 0,
+                "datetime_precision_null": 1,
+                "has_no_default": false,
+                "default_value_null": true,
+                "srs_id_null": true,
+                "srs_id": 0,
+                "default_value": "",
+                "default_value_utf8_null": true,
+                "default_value_utf8": "",
+                "default_option": "",
+                "update_option": "",
+                "comment": "",
+                "generation_expression": "",
+                "generation_expression_utf8": "",
+                "options": "interval_count=0;",
+                "se_private_data": "table_id=1091;",
+                "engine_attribute": "",
+                "secondary_engine_attribute": "",
+                "column_key": 1,
+                "column_type_utf8": "int",
+                "elements": [],
+                "collation_id": 255,
+                "is_explicit_collation": false
+            },
+            {
+                "name": "name",
+                "type": 29,
+                "is_nullable": true,
+                "is_zerofill": false,
+                "is_unsigned": false,
+                "is_auto_increment": false,
+                "is_virtual": false,
+                "hidden": 1,
+                "ordinal_position": 2,
+                "char_length": 40,
+                "numeric_precision": 0,
+                "numeric_scale": 0,
+                "numeric_scale_null": true,
+                "datetime_precision": 0,
+                "datetime_precision_null": 1,
+                "has_no_default": false,
+                "default_value_null": true,
+                "srs_id_null": true,
+                "srs_id": 0,
+                "default_value": "",
+                "default_value_utf8_null": true,
+                "default_value_utf8": "",
+                "default_option": "",
+                "update_option": "",
+                "comment": "",
+                "generation_expression": "",
+                "generation_expression_utf8": "",
+                "options": "interval_count=0;",
+                "se_private_data": "table_id=1091;",
+                "engine_attribute": "",
+                "secondary_engine_attribute": "",
+                "column_key": 1,
+                "column_type_utf8": "char(10)",
+                "elements": [],
+                "collation_id": 255,
+                "is_explicit_collation": false
+            },
+            {
+                "name": "DB_ROW_ID",
+                "type": 10,
+                "is_nullable": false,
+                "is_zerofill": false,
+                "is_unsigned": false,
+                "is_auto_increment": false,
+                "is_virtual": false,
+                "hidden": 2,
+                "ordinal_position": 3,
+                "char_length": 6,
+                "numeric_precision": 0,
+                "numeric_scale": 0,
+                "numeric_scale_null": true,
+                "datetime_precision": 0,
+                "datetime_precision_null": 1,
+                "has_no_default": false,
+                "default_value_null": true,
+                "srs_id_null": true,
+                "srs_id": 0,
+                "default_value": "",
+                "default_value_utf8_null": true,
+                "default_value_utf8": "",
+                "default_option": "",
+                "update_option": "",
+                "comment": "",
+                "generation_expression": "",
+                "generation_expression_utf8": "",
+                "options": "",
+                "se_private_data": "table_id=1091;",
+                "engine_attribute": "",
+                "secondary_engine_attribute": "",
+                "column_key": 1,
+                "column_type_utf8": "",
+                "elements": [],
+                "collation_id": 63,
+                "is_explicit_collation": false
+            },
+            {
+                "name": "DB_TRX_ID",
+                "type": 10,
+                "is_nullable": false,
+                "is_zerofill": false,
+                "is_unsigned": false,
+                "is_auto_increment": false,
+                "is_virtual": false,
+                "hidden": 2,
+                "ordinal_position": 4,
+                "char_length": 6,
+                "numeric_precision": 0,
+                "numeric_scale": 0,
+                "numeric_scale_null": true,
+                "datetime_precision": 0,
+                "datetime_precision_null": 1,
+                "has_no_default": false,
+                "default_value_null": true,
+                "srs_id_null": true,
+                "srs_id": 0,
+                "default_value": "",
+                "default_value_utf8_null": true,
+                "default_value_utf8": "",
+                "default_option": "",
+                "update_option": "",
+                "comment": "",
+                "generation_expression": "",
+                "generation_expression_utf8": "",
+                "options": "",
+                "se_private_data": "table_id=1091;",
+                "engine_attribute": "",
+                "secondary_engine_attribute": "",
+                "column_key": 1,
+                "column_type_utf8": "",
+                "elements": [],
+                "collation_id": 63,
+                "is_explicit_collation": false
+            },
+            {
+                "name": "DB_ROLL_PTR",
+                "type": 9,
+                "is_nullable": false,
+                "is_zerofill": false,
+                "is_unsigned": false,
+                "is_auto_increment": false,
+                "is_virtual": false,
+                "hidden": 2,
+                "ordinal_position": 5,
+                "char_length": 7,
+                "numeric_precision": 0,
+                "numeric_scale": 0,
+                "numeric_scale_null": true,
+                "datetime_precision": 0,
+                "datetime_precision_null": 1,
+                "has_no_default": false,
+                "default_value_null": true,
+                "srs_id_null": true,
+                "srs_id": 0,
+                "default_value": "",
+                "default_value_utf8_null": true,
+                "default_value_utf8": "",
+                "default_option": "",
+                "update_option": "",
+                "comment": "",
+                "generation_expression": "",
+                "generation_expression_utf8": "",
+                "options": "",
+                "se_private_data": "table_id=1091;",
+                "engine_attribute": "",
+                "secondary_engine_attribute": "",
+                "column_key": 1,
+                "column_type_utf8": "",
+                "elements": [],
+                "collation_id": 63,
+                "is_explicit_collation": false
+            }
+        ],
+        "schema_ref": "pat",
+        "se_private_id": 18446744073709551615,
+        "engine": "InnoDB",
+        "last_checked_for_upgrade_version_id": 0,
+        "comment": "",
+        "se_private_data": "",
+        "engine_attribute": "",
+        "secondary_engine_attribute": "",
+        "row_format": 2,
+        "partition_type": 9,
+        "partition_expression": "id;name",
+        "partition_expression_utf8": "`id`,`name`",
+        "default_partitioning": 1,
+        "subpartition_type": 0,
+        "subpartition_expression": "",
+        "subpartition_expression_utf8": "",
+        "default_subpartitioning": 0,
+        "indexes": [
+            {
+                "name": "PRIMARY",
+                "hidden": true,
+                "is_generated": false,
+                "ordinal_position": 1,
+                "comment": "",
+                "options": "",
+                "se_private_data": "",
+                "type": 2,
+                "algorithm": 2,
+                "is_algorithm_explicit": false,
+                "is_visible": true,
+                "engine": "InnoDB",
+                "engine_attribute": "",
+                "secondary_engine_attribute": "",
+                "elements": [
+                    {
+                        "ordinal_position": 1,
+                        "length": 4294967295,
+                        "order": 2,
+                        "hidden": true,
+                        "column_opx": 2
+                    },
+                    {
+                        "ordinal_position": 2,
+                        "length": 4294967295,
+                        "order": 2,
+                        "hidden": true,
+                        "column_opx": 3
+                    },
+                    {
+                        "ordinal_position": 3,
+                        "length": 4294967295,
+                        "order": 2,
+                        "hidden": true,
+                        "column_opx": 4
+                    },
+                    {
+                        "ordinal_position": 4,
+                        "length": 4294967295,
+                        "order": 2,
+                        "hidden": true,
+                        "column_opx": 0
+                    },
+                    {
+                        "ordinal_position": 5,
+                        "length": 4294967295,
+                        "order": 2,
+                        "hidden": true,
+                        "column_opx": 1
+                    }
+                ]
+            }
+        ],
+        "foreign_keys": [],
+        "check_constraints": [],
+        "partitions": [
+            {
+                "name": "p0",
+                "parent_partition_id": 18446744073709551615,
+                "number": 0,
+                "se_private_id": 1091,
+                "description_utf8": "1,'aaa'",
+                "engine": "InnoDB",
+                "comment": "",
+                "options": "",
+                "se_private_data": "",
+                "values": [
+                    {
+                        "max_value": false,
+                        "null_value": false,
+                        "default_value": false,
+                        "list_num": 0,
+                        "column_num": 0,
+                        "value_utf8": "1"
+                    },
+                    {
+                        "max_value": false,
+                        "null_value": false,
+                        "default_value": false,
+                        "list_num": 0,
+                        "column_num": 1,
+                        "value_utf8": "'aaa'"
+                    }
+                ],
+                "indexes": [
+                    {
+                        "options": "",
+                        "se_private_data": "id=181;root=4;space_id=30;table_id=1091;trx_id=16656;",
+                        "index_opx": 0,
+                        "tablespace_ref": "pat/t#p#p0"
+                    }
+                ],
+                "subpartitions": []
+            },
+            {
+                "name": "p1",
+                "parent_partition_id": 18446744073709551615,
+                "number": 1,
+                "se_private_id": 1092,
+                "description_utf8": "2,'bbb'",
+                "engine": "InnoDB",
+                "comment": "",
+                "options": "",
+                "se_private_data": "",
+                "values": [
+                    {
+                        "max_value": false,
+                        "null_value": false,
+                        "default_value": false,
+                        "list_num": 0,
+                        "column_num": 0,
+                        "value_utf8": "2"
+                    },
+                    {
+                        "max_value": false,
+                        "null_value": false,
+                        "default_value": false,
+                        "list_num": 0,
+                        "column_num": 1,
+                        "value_utf8": "'bbb'"
+                    }
+                ],
+                "indexes": [
+                    {
+                        "options": "",
+                        "se_private_data": "id=182;root=4;space_id=31;table_id=1092;trx_id=16656;",
+                        "index_opx": 0,
+                        "tablespace_ref": "pat/t#p#p1"
+                    }
+                ],
+                "subpartitions": []
+            },
+            {
+                "name": "p2",
+                "parent_partition_id": 18446744073709551615,
+                "number": 2,
+                "se_private_id": 1093,
+                "description_utf8": "MAXVALUE,MAXVALUE",
+                "engine": "InnoDB",
+                "comment": "",
+                "options": "",
+                "se_private_data": "",
+                "values": [
+                    {
+                        "max_value": true,
+                        "null_value": false,
+                        "default_value": false,
+                        "list_num": 0,
+                        "column_num": 0,
+                        "value_utf8": ""
+                    },
+                    {
+                        "max_value": true,
+                        "null_value": false,
+                        "default_value": false,
+                        "list_num": 0,
+                        "column_num": 1,
+                        "value_utf8": ""
+                    }
+                ],
+                "indexes": [
+                    {
+                        "options": "",
+                        "se_private_data": "id=183;root=4;space_id=32;table_id=1093;trx_id=16656;",
+                        "index_opx": 0,
+                        "tablespace_ref": "pat/t#p#p2"
+                    }
+                ],
+                "subpartitions": []
+            }
+        ],
+        "collation_id": 255
+    }
+}
+}
+,
+{
+	"type": 2,
+	"id": 35,
+	"object":
+		{
+    "mysqld_version_id": 80030,
+    "dd_version": 80023,
+    "sdi_version": 80019,
+    "dd_object_type": "Tablespace",
+    "dd_object": {
+        "name": "pat/t#p#p0",
+        "comment": "",
+        "options": "autoextend_size=0;encryption=N;",
+        "se_private_data": "flags=16417;id=30;server_version=80030;space_version=1;state=normal;",
+        "engine": "InnoDB",
+        "engine_attribute": "",
+        "files": [
+            {
+                "ordinal_position": 1,
+                "filename": "./pat/t#p#p0.ibd",
+                "se_private_data": "id=30;"
+            }
+        ]
+    }
+}
+}
+]

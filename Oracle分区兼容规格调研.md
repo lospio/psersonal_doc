@@ -57,8 +57,7 @@ create table t(a date ,b varchar(10)) partition by range(a,b) (partition p0 valu
  ```sql
  create table t (id int , name varchar(10)) partition by list (id)(partition p0 values(1,2,3,4,5), partition p1 values('6'));
 ```
-- 分区键可以包含最多 16 列
--  允许按照一列进行分区
+- 允许按照一列进行分区
 	```sql
 	SQL> create table t (id int , name varchar(10)) partition by list (id,name)(partition p0 values(1,2,3,4,5),('a','b'), partition p1 values('6'));
 	create table t (id int , name varchar(10)) partition by list (id,name)(partition p0 values(1,2,3,4,5),('a','b'), partition p1 values('6'))

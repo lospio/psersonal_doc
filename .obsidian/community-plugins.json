@@ -1,7 +1,6 @@
 [
   "obsidian-minimal-settings",
   "obsidian-excalidraw-plugin",
-  "cm-editor-syntax-highlight-obsidian",
   "table-editor-obsidian",
   "url-into-selection",
   "dataview",
@@ -12,6 +11,7 @@
   "obsidian-activity-history",
   "code-block-copy",
   "auto-note-mover",
-  "cmenu-plugin",
-  "obsidian-plantuml"
+  "obsidian-plantuml",
+  "editing-toolbar",
+  "nldates-obsidian"
 ]

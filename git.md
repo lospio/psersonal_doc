@@ -76,7 +76,7 @@ git branch --set-upstream-to=origin/8.0.30-oraclelike-sysdate
 ```
 查找某段代码是哪个提交加入的
 ```bash
-git log -s "relKind = RELKIND_GLOBAL_INDEX;"
+git log -S "relKind = RELKIND_GLOBAL_INDEX;"
 ```
 查找 log 信息
 ```bash
