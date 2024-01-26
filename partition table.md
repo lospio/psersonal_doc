@@ -491,6 +491,27 @@ thread #42, name = 'connection', stop reason = breakpoint 16.1
     frame #20: 0x00000001053c2ac0 mysqld`handle_connection(arg=0x00006000020249e0) at connection_handler_per_thread.cc:302:13
     frame #21: 0x0000000107072ba4 mysqld`pfs_spawn_thread(arg=0x0000000147f3ee90) at pfs.cc:2942:3
     frame #22: 0x0000000189beb034
+//index scan
+(gdb) bt
+#0  get_partition_set (table=0x7fff2c0974e0, buf=0x7fff2c0c7180 "\371\005", index=0, key_spec=0x7fff2c09d8f8, part_spec=0x7fff2c09d8ec) at /root/sync/mysql/sql/sql_partition.cc:3708
+#1  0x00005555588aeaa7 in Partition_helper::partition_scan_set_up (this=0x7fff2c09d8b0, buf=0x7fff2c0c7180 "\371\005", idx_read_flag=true) at /root/sync/mysql/sql/partitioning/partition_handler.cc:2222
+#2  0x00005555588add33 in Partition_helper::common_index_read (this=0x7fff2c09d8b0, buf=0x7fff2c0c7180 "\371\005", have_start_key=true) at /root/sync/mysql/sql/partitioning/partition_handler.cc:1855
+#3  0x00005555588adb8c in Partition_helper::ph_index_read_map (this=0x7fff2c09d8b0, buf=0x7fff2c0c7180 "\371\005", key=0x7fff2c0235f0 "", keypart_map=1, find_flag=HA_READ_KEY_EXACT) at /root/sync/mysql/sql/partitioning/partition_handler.cc:1836
+#4  0x000055555a461a2b in ha_innopart::index_read_map (this=0x7fff2c09c220, buf=0x7fff2c0c7180 "\371\005", key=0x7fff2c0235f0 "", keypart_map=1, find_flag=HA_READ_KEY_EXACT) at /root/sync/mysql/storage/innobase/handler/ha_innopart.h:1149
+#5  0x0000555558ea4548 in handler::ha_index_read_map (this=0x7fff2c09c220, buf=0x7fff2c0c7180 "\371\005", key=0x7fff2c0235f0 "", keypart_map=1, find_flag=HA_READ_KEY_EXACT) at /root/sync/mysql/sql/handler.cc:3347
+#6  0x00005555592bfc95 in RefIterator<false>::Read (this=0x7fff2c023df0) at /root/sync/mysql/sql/iterators/ref_row_iterators.cc:384
+#7  0x0000555558bae255 in Query_expression::ExecuteIteratorQuery (this=0x7fff2c01eb10, thd=0x7fff2c000be0) at /root/sync/mysql/sql/sql_union.cc:1295
+#8  0x0000555558bae674 in Query_expression::execute (this=0x7fff2c01eb10, thd=0x7fff2c000be0) at /root/sync/mysql/sql/sql_union.cc:1359
+#9  0x0000555558af19a2 in Sql_cmd_dml::execute_inner (this=0x7fff2c0213c0, thd=0x7fff2c000be0) at /root/sync/mysql/sql/sql_select.cc:786
+#10 0x0000555558af0e66 in Sql_cmd_dml::execute (this=0x7fff2c0213c0, thd=0x7fff2c000be0) at /root/sync/mysql/sql/sql_select.cc:586
+#11 0x0000555558a66c4b in mysql_execute_command (thd=0x7fff2c000be0, first_level=true) at /root/sync/mysql/sql/sql_parse.cc:4668
+#12 0x0000555558a690dc in dispatch_sql_command (thd=0x7fff2c000be0, parser_state=0x7fffe07f6970) at /root/sync/mysql/sql/sql_parse.cc:5322
+#13 0x0000555558a5e849 in dispatch_command (thd=0x7fff2c000be0, com_data=0x7fffe07f7380, command=COM_QUERY) at /root/sync/mysql/sql/sql_parse.cc:1996
+#14 0x0000555558a5c899 in do_command (thd=0x7fff2c000be0) at /root/sync/mysql/sql/sql_parse.cc:1394
+#15 0x0000555558c9d7f1 in handle_connection (arg=0x55556090bd10) at /root/sync/mysql/sql/conn_handler/connection_handler_per_thread.cc:302
+#16 0x000055555ac3de34 in pfs_spawn_thread (arg=0x555560892960) at /root/sync/mysql/storage/perfschema/pfs.cc:2942
+#17 0x00007ffff7f9d609 in start_thread (arg=<optimized out>) at pthread_create.c:477
+#18 0x00007ffff76aa133 in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:95
 ```
 
 # todo
