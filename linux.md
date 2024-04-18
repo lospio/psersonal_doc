@@ -10,3 +10,8 @@
 	# 改路径必须存在
 	ulimit -c unlimited
 	```
+- perf
+	```bash
+	sudo apt install linux-tools-generic 
+	sudo ln -s /usr/lib/linux-tools/4.15.0-162-generic/perf /usr/bin/perf
+	```

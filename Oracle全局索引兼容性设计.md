@@ -57,7 +57,6 @@ Table created.
 ```
 #### 索引操作
 ###### 创建逻辑
-#todo
 先创建对应的index page，挂在指定的内存中，再填数据，落入InnoDB中写入数据文件
 - mysql_inplace_alter_table
 	- ha_innopart::prepare_inplace_alter_table
@@ -72,9 +71,10 @@ Table created.
 ###### insert
 `row_ins_sec_index_entry`
 1. 根据插入的值算出所属的分区id（part_id)。
-2. 对指定part_id的分区进行类似普通表的插入操作。
-3. 遍历该表上的所有index（第一个为cluster index），插入新的值。
-4. 插入二级索引entry时，首先遍历找到对应的位置，插入该entry。
+2. 调用set_partition，设置分区上下文。
+3. 调用普通表对应的处理函数。
+4. 遍历该表上的所有index（第一个为cluster index），插入新的值。
+5. 插入二级索引entry时，首先遍历找到对应的位置，插入该entry。
 
 ![[Pasted image 20231116154239.png]]
 ###### update
@@ -151,18 +151,27 @@ Table created.
 Oracle对于索引组织表的分区键有一个限制条件：
 索引组织表的分区键必须是主键的子集。
 ### 思路
-对于所有分区，创建一个共同的二级索引，我们需要通过该二级索引拿到该行数据所属的分区。根据分区表的处理规则我们知道，在每次操作前需要将上下文替换为相应的分区，这一步需要我们能或计算或读取partition_id，所以我们的设计就围绕partition_id获取这一目标展开。
+对于所有分区，创建一个共同的二级索引，我们需要通过该二级索引获得<font color="#ff0000">该行数据所属的分区</font>。根据分区表的处理规则我们知道，在每次操作前需要将上下文替换为相应的分区，这一步需要我们或计算或读取partition_id，所以我们的设计就围绕partition_id获取这一目标展开。
 #### 设计A 将partition_id存储于二级索引
 将partition_id存储于二级索引中，添加一列filed。
 这样对于分区表的global secondary index就表现为
+![[Pasted image 20240129100941.png]]
+![[Pasted image 20240129104423.png]]
+##### 问题点
+#todo 
+索引中的fields有三种类型
+- columns（用户定义）
+- system columns（系统定义）
+- virtual columns（用户定义）
+
+每个field必须绑定到对应的column
+- 索引中只存储了该field在cluster index中的序号
+- 索引中的fields和dml中更改的columns作比较，可以得到需要更新的索引
+
+解决该问题需要将分区键中的fields加入索引键中，这样分区键相关的修改可以触发索引更改
 
 #### 设计B
 延用Oracle的限制条件，修改唯一索引的唯一约束实现
-
-#### 思路
-把分区表当成一个非分区表，为这个表添加一个secondary index，key值为用户自定义，value值为（part_id，pk_key)，等于在原有二级索引的基础上添加一列part_id
-![[Pasted image 20240108191326.png]]
-
 # 参考
 - [MySQL · 内核分析 · InnoDB主键约束和唯一约束的实现分析](http://mysql.taobao.org/monthly/2021/04/05/)
 - [MySQL · 引擎特性 · 二级索引分析](http://mysql.taobao.org/monthly/2020/01/01/)

@@ -385,3 +385,6 @@ partition_info::fix_partition_values
 # 参考 
 - [ORACLE create table 语法细则](https://docs.oracle.com/cd/E11882_01/server.112/e41084/statements_7002.htm#i2146287)
 - [Partitioning in MySQL](https://dev.mysql.com/doc/refman/8.0/en/partitioning-overview.html)
+找到方法量化latency，trace
+binlog flush过程中关键节点的latency
+并发模型
