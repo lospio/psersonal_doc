@@ -7,20 +7,32 @@
 ## 物理结构
 ![[Pasted image 20240718165443.png]]
 Buffer pool的物理结构自上而下分instance、chunk和page三层
+<<<<<<< HEAD
 ### Buffer pool instance
+=======
+- Buffer pool instance
+>>>>>>> e951294 (更新文档，buffer pool)
   - 对应的结构体是buf_pool_t
   - 整个buffer pool由`innodb_buffer_pool_instances`个buffer pool instances组成
   - Instances 之间没有锁竞争
   - 每个Page固定属于其中一个Instances
   - 拥有hash_map, LRU, unzip_LRU, free_list, flush_list等结构方便管理
+<<<<<<< HEAD
 ### Buffer pool chunk
 	- 对应的结构体为buf_chunk_t
 	- 每个buffer pool instance被均匀划分为多个chunk，buffer pool resize以chunk为粒度
 ### Buffer pool page
+=======
+- Buffer pool chunk
+	- 对应的结构体为buf_chunk_t
+	- 每个buffer pool instance被均匀划分为多个chunk，buffer pool resize以chunk为粒度
+- Buffer pool page
+>>>>>>> e951294 (更新文档，buffer pool)
 	- 对应的结构体是buf_block_t和buf_page_t，存储控制信息，不需要存储到文件中
 	- block 和 page可以相互转换，buf_page_t的第一个成员变量就是buf_page_t
 	- block和page存储page_id,页面mutex，page type ，所属链表等等信息
 	- 指向数据存储的frame
+<<<<<<< HEAD
 ### Page 类型
 - BUF_BLOCK_POOL_WATCH：用于purge操作异步读取磁盘页面的一种类型。每个buf_pool_t结构体中都有一个名为watch的数组，元素类型为buf_page_t，大小为purge线程数+1。当purge操作需要读取一个不在buffer pool中的页面时，会将watch数组中一个BUF_BLOCK_POOL_WATCH状态的页面设置为BUF_BLOCK_ZIP_PAGE，设置对应space id，page id，设置buf_fix_count设置为1防止其被淘汰出buffer pool，并将其加入page hash中（buf_pool_watch_set）。当磁盘数据被读取进入buffer pool时，会将watch数组对应的页面状态恢复为BUF_BLOCK_POOL_WATCH，将watch页面从page hash中删除（buf_pool_watch_remove），后续会将新页面加入page hash中。通过较为tricky地判断存在于page hash的page地址是否在watch数组范围内，可以巧妙地判断目标页面是否成功读入buffer pool。
 - BUF_BLOCK_ZIP_PAGE：压缩页未解压的对应状态。从磁盘读取压缩页时，用buf_page_alloc_descriptor分配一个临时页面描述符buf_page_t，再调用buf_buddy_alloc从伙伴系统中分配一个空间存放压缩页原始数据，临时的bpage会被加入LRU list和page hash（buf_page_init_for_read）。这个临时buf_page_t等到页面被解压时，innodb会使用从free_list中申请到的状态为BUF_BLOCK_FILE_PAGE的buf_page_t替换掉临时buf_page_t，放在LRU list相同的位置，并把解压页面的块描述符buf_block_t放入unzip LRU list中；删除page hash中的临时buf_page_t，在其中加入新的buf_page_t；最后通过buf_zip_decompress解压页面（zip_page_handler）。如果解压页被淘汰，而压缩页本身未被淘汰，并且页面未被修改，则此页面会再次被标记为BUF_BLOCK_ZIP_PAGE。关于BUF_BLOCK_ZIP_PAGE的另一个用法如前所述，为在watch操作中被用来标记尚未读入的页面，不再复述。
@@ -30,6 +42,8 @@ Buffer pool的物理结构自上而下分instance、chunk和page三层
 - BUF_BLOCK_FILE_PAGE：非压缩页面的页面状态，压缩页解压页的页面状态。最常见的页面状态。
 - BUF_BLOCK_MEMORY：用于存储内存对象，包括innodb行锁、AHI（自适应哈希）、压缩页伙伴系统等。此类页面不存在任何逻辑链表中。
 - BUF_BLOCK_REMOVE_HASH：页面从page hash删除后，被放入free_list前处于的临时状态
+=======
+>>>>>>> e951294 (更新文档，buffer pool)
 ## 逻辑结构
 ![[Pasted image 20240718165505.png]]
 ### Page hash
@@ -53,6 +67,7 @@ innodb为加速buffer pool中页面的查找，在每个buffer pool instance（b
 - 脏页除了存在于LRU list，还会存在于FLush list
 - Flush list中的Page大体按照oldest_modification有序排列的，接受在一定范围内（log_sys->recent_closed的容量大小）的乱序
 # 机制
+<<<<<<< HEAD
 ## 并发控制  
 ### 锁类型
 - Chunks Mutex 在buffer pool resize的时候保护chunks，n_chunks
@@ -136,6 +151,19 @@ buf_page_get_gen
 | buf_flush_single_page_from_LRU    | 将LRU末尾的Page刷盘，将其从Hash Map，LRU中移除，加入free |
 | fil_io                            | 完成io操作读取Page                            |
 | buf_page_io_complete              | 设置状态                                    |
+=======
+## free list
+1. 添加
+	- buf_pool_create 过程中，将所有新建的block存入free list
+	- 向free list中申请block，但free list为空时，会从LRU中移除一个block添加到free中
+2. 移除
+	- 如果目标page不在buffer pool中，会重新申请一个空白block，此时向free list申请，成功后会移除一个block
+	- buffer pool resize过程中，如果需要withdraw，则会从free list中移除block
+
+## LRU
+1. 添加
+	- 在初始化过程中，
+>>>>>>> e951294 (更新文档，buffer pool)
 # 代码
 ## 函数
 buf_pool_get_oldest_modification_approx
