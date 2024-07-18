@@ -1,9 +1,9 @@
 # Execution
-输入：plan,树状结构，语法树
+输入：plan,树状结构
 输出：results
 执行器做的工作就是按照执行计划执行SQL，返回最终结果。
 - Data flows from the leaves of the tree up towards the root
-- 语法树中的每个节点是一个执行算子，下层节点输入数据，处理完吐出数据给上层节点
+- 树中的每个节点是一个执行算子，下层节点输入数据，处理完吐出数据给上层节点
 
 up towards the root.
 ![[Pasted image 20240418190243.png]]

@@ -516,3 +516,22 @@ thread #42, name = 'connection', stop reason = breakpoint 16.1
 
 # todo
 mysql 和 oracle 区别 需求分析
+# 实现
+创建index
+```cpp
+#0  prepare_inplace_alter_table_dict<dd::Partition> (ha_alter_info=0x7fffe817d0b0, altered_table=0x7fff34216f70, old_table=0x7fff3424ad50, old_dd_tab=0x7fff342114b8, new_dd_tab=0x7fff34211be8, table_name=0x7fff3423703d "t3", flags=33, flags2=2064, fts_doc_id_col=18446744073709551615, add_fts_doc_id=false, add_fts_doc_id_idx=false) at /root/sync/mysql/storage/innobase/handler/handler0alter.cc:5342
+#1  0x000055555a5e0797 in ha_innobase::prepare_inplace_alter_table_impl<dd::Partition> (this=0x7fff3424ca30, altered_table=0x7fff34216f70, ha_alter_info=0x7fffe817d0b0, old_dd_tab=0x7fff342114b8, new_dd_tab=0x7fff34211be8) at /root/sync/mysql/storage/innobase/handler/handler0alter.cc:6498
+#2  0x000055555a5bffd7 in ha_innopart::prepare_inplace_alter_table (this=0x7fff3424ca30, altered_table=0x7fff34216f70, ha_alter_info=0x7fffe817d0b0, old_table_def=0x7fff341c1f48, new_table_def=0x7fff341d7fd8) at /root/sync/mysql/storage/innobase/handler/handler0alter.cc:10837
+#3  0x0000555559062511 in handler::ha_prepare_inplace_alter_table (this=0x7fff3424ca30, altered_table=0x7fff34216f70, ha_alter_info=0x7fffe817d0b0, old_table_def=0x7fff341c1f48, new_table_def=0x7fff341d7fd8) at /root/sync/mysql/sql/handler.cc:5064
+#4  0x0000555558d06861 in mysql_inplace_alter_table (thd=0x7fff34001040, schema=..., new_schema=..., table_def=0x7fff341c1f48, altered_table_def=0x7fff341d7fd8, table_list=0x7fff341e59e0, table=0x7fff3424ad50, altered_table=0x7fff34216f70, ha_alter_info=0x7fffe817d0b0, inplace_supported=HA_ALTER_INPLACE_NO_LOCK_AFTER_PREPARE, alter_ctx=0x7fffe817dcd0, columns=std::set with 0 elements, fk_key_info=0x7fff34214028, fk_key_count=0, fk_invalidator=0x7fffe817cff0) at /root/sync/mysql/sql/sql_table.cc:13681
+#5  0x0000555558d135cc in mysql_alter_table (thd=0x7fff34001040, new_db=0x7fff341e6138 "test", new_name=0x7fff341e56b0 "t3", create_info=0x7fffe817efd0, table_list=0x7fff341e59e0, alter_info=0x7fffe817f110) at /root/sync/mysql/sql/sql_table.cc:17819
+#6  0x0000555558b5e623 in Sql_cmd_create_or_drop_index_base::execute (this=0x7fff341e62c0, thd=0x7fff34001040) at /root/sync/mysql/sql/sql_cmd_ddl_table.cc:548
+#7  0x0000555558c130bd in mysql_execute_command (thd=0x7fff34001040, first_level=true) at /root/sync/mysql/sql/sql_parse.cc:3626
+#8  0x0000555558c18d83 in dispatch_sql_command (thd=0x7fff34001040, parser_state=0x7fffe8180960) at /root/sync/mysql/sql/sql_parse.cc:5338
+#9  0x0000555558c0e3d5 in dispatch_command (thd=0x7fff34001040, com_data=0x7fffe8181370, command=COM_QUERY) at /root/sync/mysql/sql/sql_parse.cc:1997
+#10 0x0000555558c0c424 in do_command (thd=0x7fff34001040) at /root/sync/mysql/sql/sql_parse.cc:1395
+#11 0x0000555558e57be7 in handle_connection (arg=0x555560a92410) at /root/sync/mysql/sql/conn_handler/connection_handler_per_thread.cc:302
+#12 0x000055555ad8460e in pfs_spawn_thread (arg=0x555560b000a0) at /root/sync/mysql/storage/perfschema/pfs.cc:2942
+#13 0x00007ffff7f9c609 in start_thread (arg=<optimized out>) at pthread_create.c:477
+#14 0x00007ffff76a9353 in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:95
+```

@@ -177,3 +177,4 @@ Oracle对于索引组织表的分区键有一个限制条件：
 - [MySQL · 引擎特性 · 二级索引分析](http://mysql.taobao.org/monthly/2020/01/01/)
 - [MySQL · 源码阅读 · 创建二级索引](http://mysql.taobao.org/monthly/2020/11/03/)
 - [MySQL · 源码分析 · innodb 空间索引实现](http://mysql.taobao.org/monthly/2022/08/04/)
+- 索引干啥的 ，怎么使用的关键函数，打开代码，有没有修改
