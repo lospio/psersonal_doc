@@ -7,20 +7,29 @@
 ## 物理结构
 ![[Pasted image 20240718165443.png]]
 Buffer pool的物理结构自上而下分instance、chunk和page三层
-- Buffer pool instance
+### Buffer pool instance
   - 对应的结构体是buf_pool_t
   - 整个buffer pool由`innodb_buffer_pool_instances`个buffer pool instances组成
   - Instances 之间没有锁竞争
   - 每个Page固定属于其中一个Instances
   - 拥有hash_map, LRU, unzip_LRU, free_list, flush_list等结构方便管理
-- Buffer pool chunk
+### Buffer pool chunk
 	- 对应的结构体为buf_chunk_t
 	- 每个buffer pool instance被均匀划分为多个chunk，buffer pool resize以chunk为粒度
-- Buffer pool page
+### Buffer pool page
 	- 对应的结构体是buf_block_t和buf_page_t，存储控制信息，不需要存储到文件中
 	- block 和 page可以相互转换，buf_page_t的第一个成员变量就是buf_page_t
 	- block和page存储page_id,页面mutex，page type ，所属链表等等信息
 	- 指向数据存储的frame
+### Page 类型
+- BUF_BLOCK_POOL_WATCH：用于purge操作异步读取磁盘页面的一种类型。每个buf_pool_t结构体中都有一个名为watch的数组，元素类型为buf_page_t，大小为purge线程数+1。当purge操作需要读取一个不在buffer pool中的页面时，会将watch数组中一个BUF_BLOCK_POOL_WATCH状态的页面设置为BUF_BLOCK_ZIP_PAGE，设置对应space id，page id，设置buf_fix_count设置为1防止其被淘汰出buffer pool，并将其加入page hash中（buf_pool_watch_set）。当磁盘数据被读取进入buffer pool时，会将watch数组对应的页面状态恢复为BUF_BLOCK_POOL_WATCH，将watch页面从page hash中删除（buf_pool_watch_remove），后续会将新页面加入page hash中。通过较为tricky地判断存在于page hash的page地址是否在watch数组范围内，可以巧妙地判断目标页面是否成功读入buffer pool。
+- BUF_BLOCK_ZIP_PAGE：压缩页未解压的对应状态。从磁盘读取压缩页时，用buf_page_alloc_descriptor分配一个临时页面描述符buf_page_t，再调用buf_buddy_alloc从伙伴系统中分配一个空间存放压缩页原始数据，临时的bpage会被加入LRU list和page hash（buf_page_init_for_read）。这个临时buf_page_t等到页面被解压时，innodb会使用从free_list中申请到的状态为BUF_BLOCK_FILE_PAGE的buf_page_t替换掉临时buf_page_t，放在LRU list相同的位置，并把解压页面的块描述符buf_block_t放入unzip LRU list中；删除page hash中的临时buf_page_t，在其中加入新的buf_page_t；最后通过buf_zip_decompress解压页面（zip_page_handler）。如果解压页被淘汰，而压缩页本身未被淘汰，并且页面未被修改，则此页面会再次被标记为BUF_BLOCK_ZIP_PAGE。关于BUF_BLOCK_ZIP_PAGE的另一个用法如前所述，为在watch操作中被用来标记尚未读入的页面，不再复述。
+- BUF_BLOCK_ZIP_DIRTY：压缩页的解压页被释放时，如果页面被修改过（oldest_modification非0），则页面从BUF_BLOCK_FILE_PAGE状态变为BUF_BLOCK_ZIP_DIRTY状态，未被修改过则为BUF_BLOCK_ZIP_PAGE（buf_LRU_free_page/buf_CLOCK_free_page）。解压页被释放后，BUF_BLOCK_ZIP_PAGE/BUF_BLOCK_ZIP_DIRTY压缩页的页面描述符也会在buf_LRU_free_page/buf_CLOCK_free_page临时分配。BUF_BLOCK_ZIP_DIRTY状态的页面无法从LRU/CLOCK list中淘汰，只能在flush_list中等待刷盘。**在flush_list中，也只存在BUF_BLOCK_FILE_PAGE和BUF_BLOCK_ZIP_DIRTY这两种页面。**
+- BUF_BLOCK_NOT_USED：页面在free_list中时的状态，此类页面较为常见。
+- BUF_BLOCK_READY_FOR_USE：当页面从free list取下，准备放入LRU/CLOCK list（buf_LRU_get_free_block）时处于的临时状态。
+- BUF_BLOCK_FILE_PAGE：非压缩页面的页面状态，压缩页解压页的页面状态。最常见的页面状态。
+- BUF_BLOCK_MEMORY：用于存储内存对象，包括innodb行锁、AHI（自适应哈希）、压缩页伙伴系统等。此类页面不存在任何逻辑链表中。
+- BUF_BLOCK_REMOVE_HASH：页面从page hash删除后，被放入free_list前处于的临时状态
 ## 逻辑结构
 ![[Pasted image 20240718165505.png]]
 ### Page hash
@@ -44,7 +53,89 @@ innodb为加速buffer pool中页面的查找，在每个buffer pool instance（b
 - 脏页除了存在于LRU list，还会存在于FLush list
 - Flush list中的Page大体按照oldest_modification有序排列的，接受在一定范围内（log_sys->recent_closed的容量大小）的乱序
 # 机制
-
+## 并发控制  
+### 锁类型
+- Chunks Mutex 在buffer pool resize的时候保护chunks，n_chunks
+- Hash Map Lock  
+- List Mutex  
+	list都有自己的互斥锁Mutex，对List的读取或修改都需要持有List本身的Mutex这些锁的目的是保护对应的List本身的数据结构，因此会最小化到对List本身数据结构访问和修改的范围内。
+- Block Mutex  
+	每个Page的控制结构体buf_block_t上都有一个`block->mutex`用来保护这个block的一些诸如io_fix，buf_fix_count、访问时间等状态信息。
+- Page Frame Mutex
+	buf_block_t上有一个读写锁结构`block->lock`，这个读写锁保护的是真正的page内容，也就是block->frame。在对B+Tree的遍历和修改中都可能需要获取这把锁，除此之外，涉及到Page的IO的过程中也需要持有这把锁。
+### 死锁避免
+按照从下往上的顺序获取锁
+```cpp
+enum latch_level_t {
+	...
+	SYNC_BUF_FLUSH_LIST,  
+	SYNC_BUF_FLUSH_STATE,  
+	SYNC_BUF_ZIP_HASH,  
+	SYNC_BUF_FREE_LIST,  
+	SYNC_BUF_ZIP_FREE,  
+	SYNC_BUF_BLOCK,  
+	SYNC_BUF_PAGE_HASH,  
+	SYNC_BUF_IM_LIST,  
+	SYNC_BUF_LRU_LIST,  
+	SYNC_BUF_CHUNKS,
+	...
+}
+```
+### 示例
+设想一种场景：一个用户读请求，需要通过`buf_page_get_gen`来获取Page a，首先查找Hash Map发现其不在内存，检查Free List发现也没有空页，只好从LRU的Tail先踢出一个老的Page，将其Block A加入Free List，之后再从磁盘将Page a读入Block A，最后获得这个Page a，并持有其Lock及FIX状态。得到一个如下表所示的加锁过程：
+![[Pasted image 20240719142541.png]]
+## free list 
+1. 添加 - buf_pool_create 过程中，将所有新建的block存入free list - 向free list中申请block，但free list为空时，会从LRU中移除一个block添加到free中 2. 移除 - 如果目标page不在buffer pool中，会重新申请一个空白block，此时向free list申请，成功后会移除一个block - buffer pool resize过程中，如果需要withdraw，则会从free list中移除block ## LRU 1. 添加 - 向buffer pool申请一个Page，该Page未在Page hash中找到时，需要从磁盘读取Page存入buffer pool，此时会从free list申请一个Page承载该内容，然后加入LRU  
+- buf_create_page  
+2. 移除  
+- 向free list申请一个Page，free list为空时，会尝试释放一个LRU中的Page或者对LRU末尾位置申请刷新一页，成功后会移除该Page加入free list  
+## 申请block
+![[Pasted image 20240704111657.png]]
+1. 首先从free list中申请block，如果成功，则返回block，否则继续2
+2. 第一轮扫描，从LRU list尾部查找可用的blcok，如果成功，则返回block，否则继续步骤3。如果设置了try_LRU_scan，则调用buf_LRU_scan_and_free_block开始第一轮扫描LRU list，最多从LRU list尾部扫描srv_LRU_scan_depth个block，如果还没成功的话调用buf_flush_single_page_from_LRU将flush list中最尾部的页面刷入磁盘。如果还是没有获取到空闲block则跳转到步骤3重新开始第二轮扫描。
+3. 第二轮扫描，即使没有设置try_LRU_scan，也会扫描整个lru list。没有获取到空闲block则再调用buf_flush_single_page_from_LRU将flush list中最尾部的页面刷入磁盘。还是没获取空闲页面则进入第三轮。
+4. 第三轮扫描，每轮中间间隔10ms，其他和第二轮扫描相同。
+## 读取Page
+### 关键代码
+```cpp
+buf_page_get_gen  
+	Buf_fetch<T>::single_page    
+		Buf_fetch_normal::get     
+			lookup      
+			read_page        
+				buf_read_page_low          
+					buf_page_init_for_read            
+						buf_LRU_get_free_block              
+							buf_LRU_get_free_only              
+							buf_LRU_scan_and_free_block                
+								buf_LRU_free_from_unzip_LRU_list                  
+									buf_LRU_free_page                    
+										buf_LRU_block_remove_hashed                
+								buf_LRU_free_from_common_LRU_list              
+								buf_flush_single_page_from_LRU         
+						buf_LRU_add_block              
+							buf_LRU_add_block_low          
+					fil_io          
+					buf_page_io_complete
+```
+### 主要函数
+| 函数                                | 功能                                      |
+| --------------------------------- | --------------------------------------- |
+| single_page                       | 从buffer poo中读取Page a，若存在直接返回，否则调用IO读取   |
+| lookup                            | 根据传入的page_id在Hash Map中寻找Page            |
+| read_page                         | 从磁盘中读取page存入buffer pool                 |
+| buf_read_page_low                 | 分配一个新的Block，从磁盘中读取Page，装入该Block         |
+| buf_page_init_for_read            | 申请一个未使用的block，完成初始化后加入LRU               |
+| buf_LRU_get_free_block            | 申请一个未使用的Block，参考上述申请Block流程             |
+| buf_LRU_get_free_only             | 向Free List申请一个Page                      |
+| buf_LRU_scan_and_free_block       | 扫描LRU，释放Page                            |
+| buf_LRU_free_from_unzip_LRU_list  | 遍历unzip_LRU,查找可替换的Page并释放               |
+| buf_LRU_free_from_common_LRU_list | 遍历LRU,查找可替换的Page并释放                     |
+| buf_LRU_free_page                 | 释放单个Page，如果是压缩页，则要将解压的Frame释放           |
+| buf_LRU_block_remove_hashed       | 从Hash Map,LRU中剔除该页，并且释放Frame            |
+| buf_flush_single_page_from_LRU    | 将LRU末尾的Page刷盘，将其从Hash Map，LRU中移除，加入free |
+| fil_io                            | 完成io操作读取Page                            |
+| buf_page_io_complete              | 设置状态                                    |
 # 代码
 ## 函数
 buf_pool_get_oldest_modification_approx
