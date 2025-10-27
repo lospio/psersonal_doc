@@ -1,4 +1,4 @@
-# 01. 需求
+.00# 01. 需求
 ## 需求描述
 MySQL分区表支持全局索引
 - 可以为分区表创建全局索引
@@ -126,7 +126,7 @@ Table created.
 
 1. partition prune：根据partition key查找对应的partition_id,获得一个使用的partition list。
 2. 再对列表中的每个分区表，进行select操作。
-3. 把对整体分区表的操作分散到每个分区表。
+3. 把对整体分区表的操作分散到每个分区表。¬øø
 #### InnoDB文件物理结构
 #todo
 

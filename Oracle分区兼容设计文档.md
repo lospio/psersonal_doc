@@ -1,4 +1,5 @@
- # 1. 需求
+.
+# 1. 需求
 ## 1.1 需求描述
 MySQL 分区功能对齐 Oracle
 - 优先解决各分区功能支持多种数据类型(string, datetime, number)

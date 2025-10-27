@@ -1,4 +1,4 @@
-t# 01. Parser
+# 01. Parser
 
 ![[mysqld1 1.svg]]
 1. 词法解析生成tokens

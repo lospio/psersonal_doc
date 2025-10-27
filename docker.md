@@ -8,7 +8,7 @@ docker run --cap-add=SYS_PTRACE --cap-add=SYS_ADMIN --security-opt seccomp=uncon
 
 docker run -it -d --cap-add=SYS_PTRACE --cap-add=SYS_ADMIN --security-opt seccomp=unconfined --privileged=true -v /sys/kernel/debug:/sys/kernel/debug:rw  -v /lib/modules:/lib/modules:ro  -v /usr/src:/usr/src:ro  -v /etc/localtime:/etc/localtime:ro --name=bcc  --pid=host --network host bcc:v1 bash
 
-docker run -it -d --cap-add=SYS_PTRACE --cap-add=SYS_ADMIN --security-opt seccomp=unconfined --privileged=true --name dev_zzly  -v /mnt/disk5/sync_zzly:/root/sync --network host -p 10630:22 -p 10631:3306  jzyhywxz/myubuntu:mysql
+	 
 
 docker exec -it -e COLUMNS=$(tput cols) -e LINES=$(tput lines) ptrace_test bash
 ```

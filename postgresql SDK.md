@@ -1,8 +1,8 @@
-| 开发语言 | 操作系统      | SDK包                                                    | SDK文档                                                   |                                                       |
-| -------- | ------------- | -------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------- |
-| Java     | Linux/Windows | https://jdbc.postgresql.org/download.html#current        | https://jdbc.postgresql.org/documentation/head/index.html | 提供JAVA开发语言通用访问接口JDBC相关驱动与使用说明    |
-| C/C++    | Linux/Windows | https://github.com/jtv/libpqxx                           | https://libpqxx.readthedocs.io/en/latest/                 | 提供C/C++开发语言通用访问接口JDBC相关驱动与使用说明   |
-| .NET     | Linux/Windows | https://www.npgsql.org/doc/installation.html             | https://www.npgsql.org/doc/index.html                     | 提供.NET开发语言通用访问接口JDBC相关驱动与使用说明    |
-| Python2  | Linux/Windows | https://pypi.org/project/psycopg2/                       | https://www.psycopg.org/docs/                             | 提供Python2开发语言通用访问接口JDBC相关驱动与使用说明 |
-| Python3  | Linux/Windows | https://www.psycopg.org/psycopg3/docs/basic/install.html | https://www.psycopg.org/psycopg3/docs/#documentation      | 提供Python3开发语言通用访问接口JDBC相关驱动与使用说明 |
-| 其它         |               |                                                          |   https://www.postgresql.org/docs/10/external-interfaces.html                                                        | 提供其他开发语言通用访问接口JDBC相关驱动与使用说明                                                      |
+| 开发语言    | 操作系统          | SDK包                                                     | SDK文档                                                       |                                  |
+| ------- | ------------- | -------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------- |
+| Java    | Linux/Windows | https://jdbc.postgresql.org/download.html#current        | https://jdbc.postgresql.org/documentation/head/index.html   | 提供JAVA开发语言通用访问接口JDBC相关驱动与使用说明    |
+| C/C++   | Linux/Windows | https://github.com/jtv/libpqxx                           | https://libpqxx.readthedocs.io/en/latest/                   | 提供C/C++开发语言通用访问接口JDBC相关驱动与使用说明   |
+| .NET    | Linux/Windows | https://www.npgsql.org/doc/installation.html             | https://www.npgsql.org/doc/index.html                       | 提供.NET开发语言通用访问接口JDBC相关驱动与使用说明    |
+| Python2 | Linux/Windows | https://pypi.org/project/psycopg2/                       | https://www.psycopg.org/docs/                               | 提供Python2开发语言通用访问接口JDBC相关驱动与使用说明 |
+| Python3 | Linux/Windows | https://www.psycopg.org/psycopg3/docs/basic/install.html | https://www.psycopg.org/psycopg3/docs/#documentation        | 提供Python3开发语言通用访问接口JDBC相关驱动与使用说明 |
+| 其它      |               |                                                          | https://www.postgresql.org/docs/10/external-interfaces.html | 提供其他开发语言通用访问接口JDBC相关驱动与使用说明      |
