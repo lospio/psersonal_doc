@@ -1,0 +1,1 @@
+在initdb时候赋予值，通过boot模式启动postgres，将值传给全局变量，启动xlog的时候，把值持久化到pg_controldata

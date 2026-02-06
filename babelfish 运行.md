@@ -20,4 +20,20 @@ babelfishpg_tsql.sql_dialect = 'tsql'
 3. 以上文字为提示，不必在ppt中展示
 
 
+```sql
+CREATE USER babelfish_user WITH CREATEDB CREATEROLE PASSWORD '12345678' INHERIT;
+DROP DATABASE IF EXISTS babelfish_db;
+CREATE DATABASE babelfish_db OWNER babelfish_user;
+\c babelfish_db
+CREATE EXTENSION IF NOT EXISTS "babelfishpg_tds" CASCADE;
+GRANT ALL ON SCHEMA sys to babelfish_user;
+ALTER SYSTEM SET babelfishpg_tsql.database_name = 'babelfish_db';
+ALTER DATABASE babelfish_db SET babelfishpg_tsql.migration_mode = 'single-db'|'multi-db';
+SELECT pg_reload_conf();
+CALL SYS.INITIALIZE_BABELFISH('babelfish_user');
+
+```
+
+1500*3
+320000 350000
 
